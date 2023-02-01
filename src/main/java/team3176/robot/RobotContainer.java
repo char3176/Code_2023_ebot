@@ -5,8 +5,11 @@
 package team3176.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import team3176.robot.commands.SwerveDrive;
+import team3176.robot.subsystems.controller.Controller;
+import team3176.robot.subsystems.drivetrain.Drivetrain;
+import team3176.robot.subsystems.drivetrain.Drivetrain.coordType;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /**
@@ -18,25 +21,29 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   
-
+  private final Controller m_Controller;
+  //private final Compressor m_Compressor;
+  private final Drivetrain m_Drivetrain;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    m_Controller = Controller.getInstance();
+    m_Drivetrain = Drivetrain.getInstance();
+    m_Drivetrain.setDefaultCommand(new SwerveDrive(
+          () -> m_Controller.getForward(),
+          () -> m_Controller.getStrafe(),
+          () -> m_Controller.getSpin()));
     configureBindings();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    
+    m_Controller.getTransStick_Button1().whileTrue(new InstantCommand( () -> m_Drivetrain.setTurbo(true), m_Drivetrain));
+    m_Controller.getTransStick_Button1().onFalse(new InstantCommand( () -> m_Drivetrain.setTurbo(false), m_Drivetrain));
+    //m_Controller.getTransStick_Button3().whileTrue(new SwerveDefense());
+    m_Controller.getTransStick_Button4().whileTrue(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
+    m_Controller.getTransStick_Button4().onFalse(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+
   }
 
   /**
