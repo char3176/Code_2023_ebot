@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodConstants2022;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -82,9 +82,9 @@ public class SwervePod {
 
     public SwervePod(int id, TalonFX thrustController, CANSparkMax azimuthController) {
         this.id = id;
-        azimuthEncoder = new CANCoder(SwervePodConstants2022.STEER_CANCODER_CID[id]);
+        azimuthEncoder = new CANCoder(DrivetrainConstants.STEER_CANCODER_CID[id]);
         azimuthEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
-        azimuthEncoder.configMagnetOffset(SwervePodConstants2022.AZIMUTH_ABS_ENCODER_OFFSET_POSITION[id]);
+        azimuthEncoder.configMagnetOffset(DrivetrainConstants.AZIMUTH_ABS_ENCODER_OFFSET_POSITION[id]);
         azimuthEncoder.configSensorDirection(true,100);
         updateAzimuthAbsEncoder();
         initializeSmartDashboard();
@@ -362,7 +362,7 @@ public class SwervePod {
 
     public void setupShuffleboard() {
         Shuffleboard.getTab(this.idString)
-            .add(idString+"/podAzimuth_setpoint_angle",SwervePodConstants2022.AZIMUTH_ABS_ENCODER_OFFSET_POSITION[id])
+            .add(idString+"/podAzimuth_setpoint_angle",DrivetrainConstants.AZIMUTH_ABS_ENCODER_OFFSET_POSITION[id])
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", -3.16, "max", 3.16))
             .withSize(2,1)

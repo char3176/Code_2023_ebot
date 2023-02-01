@@ -3,12 +3,26 @@ package team3176.robot.constants;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import team3176.robot.constants.Hardwaremap;
 //import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
 
-public class DrivetrainConstants extends DrivetrainHardwareMap {
-    // IDs for Drivetrain motors and solenoids
+public class DrivetrainConstants extends Hardwaremap {
+    public static final SwervePodHardwareID FR = pod006;
+    public static final SwervePodHardwareID FL = pod005;
+    public static final SwervePodHardwareID BL = pod008;
+    public static final SwervePodHardwareID BR = pod007;
+    
+    
+    public static final int[] STEER_CANCODER_CID = 
+    {(int) FR.CANCODER_CID, (int) FL.CANCODER_CID, (int) BL.CANCODER_CID, (int) BR.CANCODER_CID}; 
+    
 
+    //The swerve pod offset is measured when the swerve pod is in the front right position and the wheel gear is facing the right
+    // to counteract the offset caused by the mounting in different positions
+    public static final double[] 
+    AZIMUTH_ABS_ENCODER_OFFSET_POSITION = 
+    { FR.OFFSET, FL.OFFSET + 90, BL.OFFSET, BR.OFFSET+180};
     
 
     public static final double POD0_LOCATION_X = 1.0;   // <---TODO: REPLACE WITH MEASURED VALUES

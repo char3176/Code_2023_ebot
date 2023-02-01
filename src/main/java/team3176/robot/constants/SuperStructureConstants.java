@@ -1,6 +1,7 @@
 package team3176.robot.constants;
 
 public class SuperStructureConstants {
+  
     /**
    * How many amps the arm motor can use.
    */
