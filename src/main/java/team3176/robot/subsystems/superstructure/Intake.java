@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team3176.robot.constants.Hardwaremap;
@@ -15,7 +16,6 @@ public class Intake extends SubsystemBase {
     private CANSparkMax intake;
     public enum intakeStates {IDLE,HOLD,INTAKE,SCORE};
     public GamePiece currentGamePiece = GamePiece.NONE;
-    private GamePiece desiredGamePiece = GamePiece.NONE;
     private intakeStates intakeState = intakeStates.IDLE;
     private Intake() {
         intake = new CANSparkMax(Hardwaremap.intake_CID, MotorType.kBrushless);
@@ -70,9 +70,10 @@ public class Intake extends SubsystemBase {
                 break;
             case SCORE:
                 if(currentGamePiece == GamePiece.CUBE) {
-                    setIntakeMotor(-SuperStructureConstants.INTAKE_HOLD_POWER,SuperStructureConstants.INTAKE_HOLD_CURRENT_LIMIT_A);
-                } else {
-                    setIntakeMotor(-SuperStructureConstants.INTAKE_HOLD_POWER,SuperStructureConstants.INTAKE_HOLD_CURRENT_LIMIT_A);
+                    setIntakeMotor(-SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
+                }
+                else if(currentGamePiece == GamePiece.CONE) {
+                    setIntakeMotor(SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
                 }
                 break;
         }
