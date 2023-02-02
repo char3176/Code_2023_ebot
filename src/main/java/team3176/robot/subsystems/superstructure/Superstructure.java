@@ -13,14 +13,13 @@ public class Superstructure extends SubsystemBase {
     
     private Superstructure instance;
     
-    private CANSparkMax arm;
+    
     
 
     public static enum GamePiece {CUBE, CONE, NONE};
     
 
     private Superstructure() {
-        arm = new CANSparkMax(Hardwaremap.arm_CID, MotorType.kBrushless);
     }
     public Superstructure getInstance() {
         if (instance == null){instance = new Superstructure();}
