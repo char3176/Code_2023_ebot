@@ -3,6 +3,7 @@ package team3176.robot.subsystems.superstructure;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,54 +12,77 @@ import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
 public class Claw extends SubsystemBase {
-    private CANSparkMax intake;
+    private CANSparkMax claw;
+    private DigitalInput linebreakOne;
+    private DigitalInput linebreakTwo;
+    private static Claw instance;
     public GamePiece currentGamePiece = GamePiece.NONE;
     private Claw() {
-        intake = new CANSparkMax(Hardwaremap.intake_CID, MotorType.kBrushless);
+        instance = new Claw();
+        claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
+        linebreakOne = new DigitalInput(0);
+        linebreakTwo = new DigitalInput(2);
     }
-    public void setIntakeMotor(double percent, int amps) {
-        intake.set(percent);
-        intake.setSmartCurrentLimit(amps);
+    public void setClawMotor(double percent, int amps) {
+        claw.set(percent);
+        claw.setSmartCurrentLimit(amps);
         SmartDashboard.putNumber("intake power (%)", percent);
-        SmartDashboard.putNumber("intake motor current (amps)", intake.getOutputCurrent());
-        SmartDashboard.putNumber("intake motor temperature (C)", intake.getMotorTemperature());
+        SmartDashboard.putNumber("intake motor current (amps)", claw.getOutputCurrent());
+        SmartDashboard.putNumber("intake motor temperature (C)", claw.getMotorTemperature());
     }
 
     //states now implemented as functions
     
-    private void intake() {
+    private void claw() {
         if(currentGamePiece == GamePiece.CUBE) {
-            setIntakeMotor(SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
+            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
          else if(currentGamePiece == GamePiece.CONE) {
-             setIntakeMotor(-SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
+             setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
     }
     private void hold() {
         if(currentGamePiece == GamePiece.CONE) {
-            setIntakeMotor(-SuperStructureConstants.INTAKE_HOLD_POWER,SuperStructureConstants.INTAKE_HOLD_CURRENT_LIMIT_A);
+            setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
             
         } else {
-            setIntakeMotor(-SuperStructureConstants.INTAKE_HOLD_POWER,SuperStructureConstants.INTAKE_HOLD_CURRENT_LIMIT_A);
+            setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
         }
     }
     private void score() {
         if(currentGamePiece == GamePiece.CUBE) {
-            setIntakeMotor(-SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
+            setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
         else if(currentGamePiece == GamePiece.CONE) {
-            setIntakeMotor(SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
+            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
     }
     private void idle() {
-        setIntakeMotor(0, 0);
+        setClawMotor(0, 0);
+    }
+
+    public boolean getLinebreaks()
+    {
+        if (linebreakOne.get() == false || linebreakTwo.get() == false)
+        {
+            return false;
+        }
+        else 
+        {
+            return true;
+        }
+    }
+
+    public static Claw getInstance()
+    {
+        return instance;
     }
 
     /**
      * to be called with a whileTrue trigger binding
      */
     public Command intakeGamePiece(GamePiece piece) {
-        return this.startEnd(() ->  {this.currentGamePiece = piece; intake();},() -> hold());
+        return this.startEnd(() ->  {this.currentGamePiece = piece; claw();},() -> hold());
     }
     /**
      *  scores game piece then returns to idle state

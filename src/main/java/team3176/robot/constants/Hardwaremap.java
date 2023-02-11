@@ -8,7 +8,7 @@ public class Hardwaremap {
      * Superstructer CIDs
      */
     public static int arm_CID = 5;
-    public static int intake_CID = 6;
+    public static int claw_CID = 6;
 
     /*
      * Drivetrain CIDs
