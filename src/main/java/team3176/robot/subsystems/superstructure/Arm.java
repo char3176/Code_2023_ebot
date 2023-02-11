@@ -36,6 +36,6 @@ public class Arm extends SubsystemBase {
         return this.startEnd(() -> armUp(), () -> idle());
     }
     public Command armDownCommand() {
-        return this.startEnd(() -> armUp(), () -> idle());
+        return this.startEnd(() -> armDown(), () -> idle());
     }
 }
