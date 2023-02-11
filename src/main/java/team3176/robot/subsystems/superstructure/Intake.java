@@ -1,70 +1,51 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package team3176.robot.subsystems.superstructure;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team3176.robot.constants.Hardwaremap;
-import team3176.robot.constants.SuperStructureConstants;
-import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
 public class Intake extends SubsystemBase {
-    private CANSparkMax intake;
-    public GamePiece currentGamePiece = GamePiece.NONE;
-    private Intake() {
-        intake = new CANSparkMax(Hardwaremap.intake_CID, MotorType.kBrushless);
-    }
-    public void setIntakeMotor(double percent, int amps) {
-        intake.set(percent);
-        intake.setSmartCurrentLimit(amps);
-        SmartDashboard.putNumber("intake power (%)", percent);
-        SmartDashboard.putNumber("intake motor current (amps)", intake.getOutputCurrent());
-        SmartDashboard.putNumber("intake motor temperature (C)", intake.getMotorTemperature());
-    }
+  /** Creates a new Intake. */
+  private TalonFX rollermotor = new TalonFX(20);
+  private DoubleSolenoid piston;
+  private boolean isExtended;
+  private static Intake instance;
+  public Intake() 
+  {
+    piston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
+  }
 
-    //states now implemented as functions
-    
-    private void intake() {
-        if(currentGamePiece == GamePiece.CUBE) {
-            setIntakeMotor(SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
-         }
-         else if(currentGamePiece == GamePiece.CONE) {
-             setIntakeMotor(-SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
-         }
-    }
-    private void hold() {
-        if(currentGamePiece == GamePiece.CONE) {
-            setIntakeMotor(-SuperStructureConstants.INTAKE_HOLD_POWER,SuperStructureConstants.INTAKE_HOLD_CURRENT_LIMIT_A);
-            
-        } else {
-            setIntakeMotor(-SuperStructureConstants.INTAKE_HOLD_POWER,SuperStructureConstants.INTAKE_HOLD_CURRENT_LIMIT_A);
-        }
-    }
-    private void score() {
-        if(currentGamePiece == GamePiece.CUBE) {
-            setIntakeMotor(-SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
-        }
-        else if(currentGamePiece == GamePiece.CONE) {
-            setIntakeMotor(SuperStructureConstants.INTAKE_OUTPUT_POWER,SuperStructureConstants.INTAKE_CURRENT_LIMIT_A);
-        }
-    }
-    private void idle() {
-        setIntakeMotor(0, 0);
-    }
+  public void spinVelocityPercent(double pct) {
+    rollermotor.set(ControlMode.PercentOutput, pct);
+  }
 
-    /**
-     * to be called with a whileTrue trigger binding
-     */
-    public Command intakeGamePiece(GamePiece piece) {
-        return this.startEnd(() ->  {this.currentGamePiece = piece; intake();},() -> hold());
+  public void Extend() {
+    piston.set(Value.kForward);
+    this.isExtended = true;
+  }
+
+  public void Retract() {
+    piston.set(Value.kReverse);
+    this.isExtended = false;
+  }
+
+  public static Intake getInstance(){
+    if ( instance == null ) {
+      instance = new Intake();
     }
-    /**
-     *  scores game piece then returns to idle state
-     * @return to be called with a whileTrue trigger binding
-     */
-    public Command scoreGamePiece() {
-        return this.startEnd(() ->  {score(); this.currentGamePiece = GamePiece.NONE;},() -> idle());
-    }
+    return instance;
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
 }
