@@ -12,6 +12,12 @@
  *  6. Drive forward slowly to bring down ramp and drive up 
  *  7. Balance 
  *  8. Wait for auto to end
+ * 
+ * (If we want to get the most points we actually want to fully cross the 
+ *  ramp and leave the community to get the 3 point for that before 
+ *  climbing the ramp. I dont think that is a realistic goal for week 1 
+ *  tho. It would also be easier to do from a side position where we 
+ *  actually drive around the ramp and then drive up from the field side)
  */
 
 package team3176.robot.commands.autons;
