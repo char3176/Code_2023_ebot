@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -47,5 +48,15 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public Command extendAndSpin() {
+    return this.startEnd(() ->{
+      this.Extend();
+      this.spinVelocityPercent(.3);
+    }, () -> {
+      this.Retract();
+      this.spinVelocityPercent(0.0);
+    });
   }
 }

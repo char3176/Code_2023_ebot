@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
@@ -33,7 +34,7 @@ public class Claw extends SubsystemBase {
 
     //states now implemented as functions
     
-    private void claw() {
+    private void intake() {
         if(currentGamePiece == GamePiece.CUBE) {
             setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
@@ -81,8 +82,8 @@ public class Claw extends SubsystemBase {
     /**
      * to be called with a whileTrue trigger binding
      */
-    public Command intakeGamePiece(GamePiece piece) {
-        return this.startEnd(() ->  {this.currentGamePiece = piece; claw();},() -> hold());
+    public CommandBase intakeGamePiece(GamePiece piece) {
+        return this.startEnd(() ->  {this.currentGamePiece = piece; intake();},() -> hold());
     }
     /**
      *  scores game piece then returns to idle state
@@ -90,5 +91,13 @@ public class Claw extends SubsystemBase {
      */
     public Command scoreGamePiece() {
         return this.startEnd(() ->  {score(); this.currentGamePiece = GamePiece.NONE;},() -> idle());
+    }
+
+    //more examples of command composition and why its awesome!!
+    public Command intakeCone() {
+        return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreaks);
+    }
+    public Command intakeCube() {
+        return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreaks);
     }
 }
