@@ -18,7 +18,12 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 
 public class Controller {
   private static Controller instance = new Controller();
-  public static Controller getInstance() {return instance;}
+
+  public static Controller getInstance() {
+    if (instance == null ) {
+      instance = new Controller();
+    }
+      return instance;}
 
   /* The Three Physical Controllers that we have */
 
@@ -416,7 +421,7 @@ public class Controller {
 
   /* Returns the object of the named button */
 
-  public JoystickButton getTransStick_Button1() {return transStick_Button1;}
+   public JoystickButton getTransStick_Button1() {return transStick_Button1;}
   public JoystickButton getTransStick_Button2() {return transStick_Button2;}
   public JoystickButton getTransStick_Button3() {return transStick_Button3;}
   public JoystickButton getTransStick_Button4() {return transStick_Button4;}

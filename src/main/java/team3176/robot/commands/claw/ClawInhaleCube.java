@@ -2,16 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package team3176.robot.commands;
+package team3176.robot.commands.claw;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
-public class ClawInhaleCone extends CommandBase {
+public class ClawInhaleCube extends CommandBase {
   /** Creates a new ClawInhale. */
   Claw m_Claw = Claw.getInstance();
-  public ClawInhaleCone() {
+  public ClawInhaleCube() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Claw);
   }
@@ -24,7 +24,7 @@ public class ClawInhaleCone extends CommandBase {
   @Override
   public void execute() 
   {
-    m_Claw.intakeGamePiece(GamePiece.CONE);
+    m_Claw.intakeGamePiece(GamePiece.CUBE);
   }
 
   // Called once the command ends or is interrupted.

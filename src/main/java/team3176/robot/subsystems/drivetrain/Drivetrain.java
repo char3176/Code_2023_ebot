@@ -3,9 +3,15 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package team3176.robot.subsystems.drivetrain;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.*;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -13,25 +19,39 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 // import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
+import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import team3176.robot.util.God.PID3176;
@@ -46,30 +66,29 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team3176.robot.subsystems.controller.Controller;
 
-
 import org.littletonrobotics.junction.Logger;
 import team3176.robot.subsystems.drivetrain.DrivetrainIO.DrivetrainIOInputs;
-
-
-
-  
 
 public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance;
   private AHRS m_NavX;
   public SwerveDriveOdometry odom;
+  public SwerveDrivePoseEstimator poseEstimator;
 
   public NetworkTableInstance inst;
   public NetworkTable table;
   public DoubleTopic dblTopic;
   public DoublePublisher dblPub;
-  //private Controller controller = Controller.getInstance();
-  //private Vision m_Vision = Vision.getInstance();
+
+  // private Controller controller = Controller.getInstance();
+  // private Vision m_Vision = Vision.getInstance();
   public enum coordType {
     FIELD_CENTRIC, ROBOT_CENTRIC
   }
-  public coordType currentCoordType = coordType.FIELD_CENTRIC; 
- // private PowerDistribution PDP = new PowerDistribution(PowerManagementConstants.PDP_CAN_ID, ModuleType.kCTRE);
+
+  public coordType currentCoordType = coordType.FIELD_CENTRIC;
+  // private PowerDistribution PDP = new
+  // PowerDistribution(PowerManagementConstants.PDP_CAN_ID, ModuleType.kCTRE);
 
   private ArrayList<SwervePod> pods;
 
@@ -80,7 +99,8 @@ public class Drivetrain extends SubsystemBase {
       new TalonFX(DrivetrainConstants.BR.THRUST_CID) };
 
   public CANSparkMax[] azimuthControllers = { new CANSparkMax(DrivetrainConstants.STEER_FR_CID, MotorType.kBrushless),
-      new CANSparkMax(DrivetrainConstants.STEER_FL_CID, MotorType.kBrushless), new CANSparkMax(DrivetrainConstants.STEER_BL_CID, MotorType.kBrushless),
+      new CANSparkMax(DrivetrainConstants.STEER_FL_CID, MotorType.kBrushless),
+      new CANSparkMax(DrivetrainConstants.STEER_BL_CID, MotorType.kBrushless),
       new CANSparkMax(DrivetrainConstants.STEER_BR_CID, MotorType.kBrushless) };
 
   Rotation2d FieldAngleOffset = Rotation2d.fromDegrees(0.0);
@@ -92,7 +112,7 @@ public class Drivetrain extends SubsystemBase {
   private double spinCommand;
   private double spinCommandInit;
 
-  //spin lock
+  // spin lock
   private PIDController spinLockPID;
   private Rotation2d spinLockAngle = Rotation2d.fromDegrees(0.0);
   private boolean isSpinLocked = false;
@@ -111,25 +131,31 @@ public class Drivetrain extends SubsystemBase {
   private SwervePod podFL;
   private SwervePod podBL;
   private SwervePod podBR;
+  public PathPlannerTrajectory teleopTraj;
 
 
+  NetworkTable vision;
+  private boolean hasvisionsubed = false;
+  NetworkTableEntry vision_pose;
+  double lastVisionTimeStamp = 0.0;
   private final DrivetrainIO io;
-  //private final DrivetrainIOInputs inputs = new DrivetrainIOInputs();
+  // private final DrivetrainIOInputs inputs = new DrivetrainIOInputs();
 
   private Drivetrain(DrivetrainIO io) {
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("datatable");
-    
+
     dblTopic = table.getDoubleTopic("Angle");
 
     dblPub = dblTopic.publish();
-    
+
     this.io = io;
-    
-    //check for duplicates
-    assert(!SwervePodHardwareID.check_duplicates_all(DrivetrainConstants.FR,DrivetrainConstants.FL,DrivetrainConstants.BR,DrivetrainConstants.BL));
+
+    // check for duplicates
+    assert (!SwervePodHardwareID.check_duplicates_all(DrivetrainConstants.FR, DrivetrainConstants.FL,
+        DrivetrainConstants.BR, DrivetrainConstants.BL));
     // Instantiate pods
-    
+
     podFR = new SwervePod(0, driveControllers[0], azimuthControllers[0]);
     podFL = new SwervePod(1, driveControllers[1], azimuthControllers[1]);
     podBL = new SwervePod(2, driveControllers[2], azimuthControllers[2]);
@@ -142,21 +168,23 @@ public class Drivetrain extends SubsystemBase {
     pods.add(podBL);
     pods.add(podBR);
 
-
-
-    
     m_NavX = new AHRS(SPI.Port.kMXP);
 
-    odom = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, this.getChassisYaw(), new SwerveModulePosition[] {
-      podFR.getPosition(),
-      podFL.getPosition(),
-      podBL.getPosition(),
-      podBR.getPosition()
-    }, new Pose2d(0.0, 0.0, new Rotation2d()));
-
+    odom = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, this.getChassisYaw(),
+        new SwerveModulePosition[] {
+            podFR.getPosition(),
+            podFL.getPosition(),
+            podBL.getPosition(),
+            podBR.getPosition()
+        }, new Pose2d(0.0, 0.0, new Rotation2d()));
+    poseEstimator = new SwerveDrivePoseEstimator(DrivetrainConstants.DRIVE_KINEMATICS, getChassisYaw(),
+        getSwerveModulePositions(), odom.getPoseMeters());
+    // TODO: update covariance matrix for vision
+    // poseEstimator.setVisionMeasurementStdDevs(new MatBuilder<>(Nat.N3(),
+    // Nat.N1()).fill(0.1,0.1,0.01));
     spinLockPID = new PIDController(0.15, 0.0, 0.0);
-    //set for max and min of degrees for Rotation2D
-    spinLockPID.enableContinuousInput(-180,180);
+    // set for max and min of degrees for Rotation2D
+    spinLockPID.enableContinuousInput(-180, 180);
 
     arraytrack = 0;
     angleAvgRollingWindow = 0;
@@ -170,12 +198,16 @@ public class Drivetrain extends SubsystemBase {
     this.forwardCommand = Math.pow(10, -15); // Has to be positive to turn that direction?
     this.strafeCommand = 0.0;
     this.spinCommand = 0.0;
+    vision = NetworkTableInstance.getDefault().getTable("limelight");
 
   }
 
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() {
-    if(instance == null) {instance = new Drivetrain(new DrivetrainIO() {});}
+    if (instance == null) {
+      instance = new Drivetrain(new DrivetrainIO() {
+      });
+    }
     return instance;
   }
 
@@ -188,23 +220,27 @@ public class Drivetrain extends SubsystemBase {
    * = Pi..-2PI // right? // Fixed by new rescaling at line 140?
    * pods.get(0).set(smallNum, angle); }
    */
-  
-   /**
-    * public facing drive command that allows command to specify if the command is field centric or not
-    * @param forwardCommand feet per second
-    * @param strafeCommand feet per second
-    * @param spinCommand feet per second
-    * @param type  FIELD CENTRIC or ROBOT_CENTRIC
-    */
+
+  /**
+   * public facing drive command that allows command to specify if the command is
+   * field centric or not
+   * 
+   * @param forwardCommand meters per second
+   * @param strafeCommand  meters per second
+   * @param spinCommand    meters per second
+   * @param type           FIELD CENTRIC or ROBOT_CENTRIC
+   */
   public void drive(double forwardCommand, double strafeCommand, double spinCommand, coordType type) {
-    ChassisSpeeds speed = new ChassisSpeeds(forwardCommand,strafeCommand,spinCommand);
-    if(type == coordType.FIELD_CENTRIC) {
+    ChassisSpeeds speed = new ChassisSpeeds(forwardCommand, strafeCommand, spinCommand);
+    if (type == coordType.FIELD_CENTRIC) {
       speed = ChassisSpeeds.fromFieldRelativeSpeeds(speed, this.getChassisYaw());
     }
     p_drive(speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond);
   }
+
   /**
    * default call will assume robot_centric
+   * 
    * @param forwardCommand
    * @param strafeCommand
    * @param spinCommand
@@ -212,39 +248,43 @@ public class Drivetrain extends SubsystemBase {
   public void drive(double forwardCommand, double strafeCommand, double spinCommand) {
     drive(forwardCommand, strafeCommand, spinCommand, currentCoordType);
   }
-   /**
+
+  /**
    * 
-   * @param forwardCommand feet per second
-   * @param strafeCommand  feet per second
-   * @param spinCommand    feet per second
+   * @param forwardCommand meters per second
+   * @param strafeCommand  meters per second
+   * @param spinCommand    meters per second
    */
   private void p_drive(double forwardCommand, double strafeCommand, double spinCommand) {
     this.spinCommandInit = spinCommand;
     this.forwardCommand = forwardCommand;
-    this.strafeCommand = strafeCommand;  // TODO: The y is inverted because it is backwards for some reason, why?
+    this.strafeCommand = strafeCommand; // TODO: The y is inverted because it is backwards for some reason, why?
     this.spinCommand = spinCommand;
-    //System.out.println("forward: "+ forwardCommand + "strafe: " + strafeCommand + "spin: " + spinCommand);
-    if (!isTurboOn) {
-      this.forwardCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-      this.strafeCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-      //this.spinCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-      this.spinCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-    } else {
-      this.spinCommand *= 2; 
-    }
-    if(isSpinLocked) {
+    // System.out.println("forward: "+ forwardCommand + "strafe: " + strafeCommand +
+    // "spin: " + spinCommand);
+    // if (!isTurboOn) {
+    // this.forwardCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
+    // this.strafeCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
+    // //this.spinCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
+    // this.spinCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
+    // } else {
+    // this.spinCommand *= 2;
+    // }
+    if (isSpinLocked) {
       this.spinCommand = spinLockPID.calculate(getChassisYaw().getDegrees(), spinLockAngle.getDegrees());
     }
 
     calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);
-    
+
   }
 
   /**
-   * Robot Centric Forward, strafe, and spin to set individual pods commanded spin speed and drive speed
-   * @param forwardCommand feet per second
-   * @param strafeCommand  feet per second
-   * @param spinCommand    feet per second
+   * Robot Centric Forward, strafe, and spin to set individual pods commanded spin
+   * speed and drive speed
+   * 
+   * @param forwardCommand meters per second
+   * @param strafeCommand  meters per second
+   * @param spinCommand    meters per second
    */
   private void calculateNSetPodPositions(double forwardCommand, double strafeCommand, double spinCommand) {
 
@@ -252,22 +292,28 @@ public class Drivetrain extends SubsystemBase {
       // Create arrays for the speed and angle of each pod
       // double[] podDrive = new double[4];
       // double[] podSpin = new double[4];
-      ChassisSpeeds curr_chassisSpeeds = new ChassisSpeeds(forwardCommand,strafeCommand,spinCommand);
+      ChassisSpeeds curr_chassisSpeeds = new ChassisSpeeds(forwardCommand, strafeCommand, spinCommand);
       SwerveModuleState[] pod_states = DrivetrainConstants.DRIVE_KINEMATICS.toSwerveModuleStates(curr_chassisSpeeds);
       for (int idx = 0; idx < (pods.size()); idx++) {
-          pods.get(idx).set_module(pod_states[idx]);
+
+        pods.get(idx).set_module(pod_states[idx]);
+
       }
+      SmartDashboard.putNumber("spinCommand", spinCommand);
+      SmartDashboard.putNumber("pod0 m/s", pod_states[0].speedMetersPerSecond);
+
     } else if (currentDriveMode == driveMode.DEFENSE) { // Enter defensive position
       double smallNum = Math.pow(10, -5);
-      pods.get(0).set(smallNum, 1.0 * Math.PI / 8.0);
-      pods.get(1).set(smallNum, -1.0 * Math.PI / 8.0);
-      pods.get(2).set(smallNum, -3.0 * Math.PI / 8.0);
-      pods.get(3).set(smallNum, 3.0 * Math.PI / 8.0);
+      pods.get(0).set(smallNum, Rotation2d.fromRadians(1.0 * Math.PI / 8.0));
+      pods.get(1).set(smallNum, Rotation2d.fromRadians(-1.0 * Math.PI / 8.0));
+      pods.get(2).set(smallNum, Rotation2d.fromRadians(-3.0 * Math.PI / 8.0));
+      pods.get(3).set(smallNum, Rotation2d.fromRadians(3.0 * Math.PI / 8.0));
     }
   }
 
   public void stopMotors() {
-    //TODO: this seems to voilate a data flow overiding pods and could cause issues should be a state variable
+    // TODO: this seems to voilate a data flow overiding pods and could cause issues
+    // should be a state variable
     for (int idx = 0; idx < (pods.size()); idx++) {
       driveControllers[idx].set(ControlMode.PercentOutput, 0);
       azimuthControllers[idx].set(0);
@@ -276,11 +322,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setPodsAzimuthHome() {
-      double smallNum = Math.pow(10, -5);
-      pods.get(0).set(smallNum, 0 * Math.PI / 4.0);
-      pods.get(1).set(smallNum, 0 * Math.PI / 4.0);
-      pods.get(2).set(smallNum, 0 * Math.PI / 4.0);
-      pods.get(3).set(smallNum, 0 * Math.PI / 4.0);
+    double smallNum = Math.pow(10, -5);
+    pods.get(0).set(smallNum, Rotation2d.fromRadians(0.0));
+    pods.get(1).set(smallNum, Rotation2d.fromRadians(0.0));
+    pods.get(2).set(smallNum, Rotation2d.fromRadians(0.0));
+    pods.get(3).set(smallNum, Rotation2d.fromRadians(0.0));
   }
 
   public void sendPodsAzimuthToHome() {
@@ -295,23 +341,48 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-
   public void setDriveMode(driveMode wantedDriveMode) {
     currentDriveMode = wantedDriveMode;
   }
 
- 
   public driveMode getCurrentDriveMode() {
     return currentDriveMode;
   }
- 
+
+  public Pose2d getPose() {
+    return odom.getPoseMeters();
+  }
+
+  public void resetPose(Pose2d pose) {
+    odom.resetPosition(getChassisYaw(), new SwerveModulePosition[] {
+        podFR.getPosition(),
+        podFL.getPosition(),
+        podBL.getPosition(),
+        podBR.getPosition() }, pose);
+    poseEstimator.resetPosition(getChassisYaw(), new SwerveModulePosition[] {
+          podFR.getPosition(),
+          podFL.getPosition(),
+          podBL.getPosition(),
+          podBR.getPosition() }, pose);
+  }
+
+  public void setModuleStates(SwerveModuleState[] states) {
+    for (int idx = 0; idx < (pods.size()); idx++) {
+      pods.get(idx).set_module(states[idx]);
+    }
+  }
+
   /**
    * Sets Turbo mode on or off
-   * @param onOrOff Passing a value of true sets Turbo on (ie isTurboOn = true), and passing value of false sets Turbo off (ie isTurboOn = false)
+   * 
+   * @param onOrOff Passing a value of true sets Turbo on (ie isTurboOn = true),
+   *                and passing value of false sets Turbo off (ie isTurboOn =
+   *                false)
    */
   public void setTurbo(boolean onOrOff) {
     this.isTurboOn = onOrOff;
   }
+
   public void setCoordType(coordType c) {
     this.currentCoordType = c;
   }
@@ -319,6 +390,7 @@ public class Drivetrain extends SubsystemBase {
   public void setSpinLock(boolean b) {
     this.isSpinLocked = b;
   }
+
   public void setSpinLockAngle() {
     this.spinLockAngle = getChassisYaw();
   }
@@ -328,19 +400,24 @@ public class Drivetrain extends SubsystemBase {
    * @return returns the chassis yaw wrapped between -pi and pi
    */
   public Rotation2d getChassisYawWrapped() {
-    //its ugly but rotation2d is continuos but I imagine most of our applications we want it bounded between -pi and pi
-    return Rotation2d.fromRadians(MathUtil.angleModulus(m_NavX.getRotation2d().minus(this.FieldAngleOffset).getRadians())); 
+    // its ugly but rotation2d is continuos but I imagine most of our applications
+    // we want it bounded between -pi and pi
+    return Rotation2d
+        .fromRadians(MathUtil.angleModulus(m_NavX.getRotation2d().minus(this.FieldAngleOffset).getRadians()));
   }
+
   /**
-   * The unbounded angle 
+   * The unbounded angle
+   * 
    * @return Rotation2d of the yaw
    */
   public Rotation2d getChassisYaw() {
-    return m_NavX.getRotation2d().minus(this.FieldAngleOffset); 
+    return m_NavX.getRotation2d().minus(this.FieldAngleOffset);
   }
 
-  public void resetFieldOrientation(){
-    //do not need to invert because the navx rotation2D call returns a NWU coordsys!
+  public void resetFieldOrientation() {
+    // do not need to invert because the navx rotation2D call returns a NWU
+    // coordsys!
     this.FieldAngleOffset = m_NavX.getRotation2d();
   }
 
@@ -348,40 +425,78 @@ public class Drivetrain extends SubsystemBase {
     return pods.get(podID).getVelocity();
   }
 
-  public double  getPodAzimuth(int podID) {
+  public double getPodAzimuth(int podID) {
     return pods.get(podID).getAzimuth();
   }
 
-
-/*
-  public ChassisSpeeds getChassisSpeed() {
-    return DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(podFR.getState(), podFL.getState(), podBL.getState(), podBR.getState());
+  public SwerveModulePosition[] getSwerveModulePositions() {
+    return new SwerveModulePosition[] {
+        podFR.getPosition(),
+        podFL.getPosition(),
+        podBL.getPosition(),
+        podBR.getPosition()
+    };
   }
-*/
 
-
-
+  /*
+   * public ChassisSpeeds getChassisSpeed() {
+   * return DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(podFR.getState(),
+   * podFL.getState(), podBL.getState(), podBR.getState());
+   * }
+   */
 
   @Override
   public void periodic() {
     dblPub.set(3.0);
+    
+    vision_pose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose_wpiblue");
+    double[] vision_pose_array=vision_pose.getDoubleArray(new double[6]);
+    //System.out.println(vision_pose_array[0]);
+    Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
+    //poseEstimator.addVisionMeasurement(cam_pose,  Timer.getFPGATimestamp() - (15) / 1000);
+    SmartDashboard.putNumber("camX",cam_pose.getX());
+    //commenting out because I believe we should update the limelight apriltag map
 
+    // double xoffset = Units.inchesToMeters(285.16+ 40.45);
+    // double yoffset = Units.inchesToMeters(115.59 + 42.49);
+    // cam_pose = cam_pose.transformBy(new Transform2d(new Translation2d(xoffset,yoffset),new Rotation2d()));
+    
+    //update the pose estimator with correct timestamped values
+    
+    // for (NetworkTableValue v:  vision_pose.readQueue()){
+    //   double[] vision_pose_array=v.getDoubleArray();
+    //   Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
+    //   poseEstimator.addVisionMeasurement(cam_pose, v.getTime());
+    // }
+    
 
+    //testing new limelight command
+    //LimelightHelpers.LimelightResults r = LimelightHelpers.getLatestResults("limelight");
+    // LimelightHelpers.LimelightResults r = LimelightHelpers.getLatestResults("limelight");
+    // SmartDashboard.putNumber("lastTimeStamp",r.targetingResults.timestamp_LIMELIGHT_publish);
+    // if(lastVisionTimeStamp != r.targetingResults.timestamp_LIMELIGHT_publish) {
+    //   lastVisionTimeStamp = r.targetingResults.timestamp_LIMELIGHT_publish;
+    //   Pose2d cam_pose = r.targetingResults.getBotPose2d();
+    //   //adding a fudge factor for pipeline and capture of 15 ms
+    //   poseEstimator.addVisionMeasurement(cam_pose,  Timer.getFPGATimestamp() - (15) / 1000);
 
-
+    //   SmartDashboard.putNumber("camX",cam_pose.getX());
+    // }
+    
+      
+    // update encoders
+    this.poseEstimator.update(getChassisYaw(), getSwerveModulePositions());
+    this.odom.update(getChassisYaw(), getSwerveModulePositions());
+    
     // This method will be called once per scheduler every 500ms
     
     this.arraytrack++;
     if (this.arraytrack > 3) {
       this.arraytrack = 0;
     }
-    this.odom.update(getChassisYaw(),new SwerveModulePosition[] {
-      podFR.getPosition(),
-      podFL.getPosition(),
-      podBL.getPosition(),
-      podBR.getPosition()
-    });
-
+    
+    SmartDashboard.putNumber("odomx", getPose().getX());
+    SmartDashboard.putNumber("odomy", getPose().getY());
     SmartDashboard.putBoolean("Turbo", isTurboOn);
     // SmartDashboard.putBoolean("Defense", currentDriveMode == driveMode.DEFENSE);
   }
@@ -390,4 +505,6 @@ public class Drivetrain extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
+  
 }

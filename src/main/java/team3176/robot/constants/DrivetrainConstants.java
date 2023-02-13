@@ -3,47 +3,51 @@ package team3176.robot.constants;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import team3176.robot.constants.Hardwaremap;
 //import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
+import team3176.robot.Robot;
+import team3176.robot.constants.RobotConstants;
+import team3176.robot.constants.RobotConstants.RobotType;
 
-public class DrivetrainConstants extends Hardwaremap {
-    public static final SwervePodHardwareID FR = pod006;
-    public static final SwervePodHardwareID FL = pod005;
-    public static final SwervePodHardwareID BL = pod008;
-    public static final SwervePodHardwareID BR = pod007;
-    
-    
-    public static final int[] STEER_CANCODER_CID = 
-    {(int) FR.CANCODER_CID, (int) FL.CANCODER_CID, (int) BL.CANCODER_CID, (int) BR.CANCODER_CID}; 
+public class DrivetrainConstants extends DrivetrainHardwareMap {
+    // IDs for Drivetrain motors and solenoids
+
     
 
-    //The swerve pod offset is measured when the swerve pod is in the front right position and the wheel gear is facing the right
-    // to counteract the offset caused by the mounting in different positions
-    public static final double[] 
-    AZIMUTH_ABS_ENCODER_OFFSET_POSITION = 
-    { FR.OFFSET, FL.OFFSET + 90, BL.OFFSET, BR.OFFSET+180};
-    
-
-    public static final double POD0_LOCATION_X = 1.0;   // <---TODO: REPLACE WITH MEASURED VALUES
-    public static final double POD0_LOCATION_Y = 1.0;   // <---TODO: REPLACE WITH MEASURED VALUES
-    public static final double POD1_LOCATION_X = 1.0;   // <---TODO: REPLACE WITH MEASURED VALUES
-    public static final double POD1_LOCATION_Y = -1.0;   // <---TODO: REPLACE WITH MEASURED VALUES
-    public static final double POD2_LOCATION_X = -1.0;   // <---TODO: REPLACE WITH MEASURED VALUES
-    public static final double POD2_LOCATION_Y = 1.0;   // <---TODO: REPLACE WITH MEASURED VALUES
-    public static final double POD3_LOCATION_X = -1.0;   // <---TODO: REPLACE WITH MEASURED VALUES
-    public static final double POD3_LOCATION_Y = -1.0;   // <---TODO: REPLACE WITH MEASURED VALUES
+    public static final double POD0_LOCATION_X = .3;   // <---TODO: REPLACE WITH MEASURED VALUES
+    public static final double POD0_LOCATION_Y = .3;   // <---TODO: REPLACE WITH MEASURED VALUES
+    public static final double POD1_LOCATION_X = .3;   // <---TODO: REPLACE WITH MEASURED VALUES
+    public static final double POD1_LOCATION_Y = -.3;   // <---TODO: REPLACE WITH MEASURED VALUES
+    public static final double POD2_LOCATION_X = -0.3;   // <---TODO: REPLACE WITH MEASURED VALUES
+    public static final double POD2_LOCATION_Y = 0.3;   // <---TODO: REPLACE WITH MEASURED VALUES
+    public static final double POD3_LOCATION_X = -0.3;   // <---TODO: REPLACE WITH MEASURED VALUES
+    public static final double POD3_LOCATION_Y = -0.3;   // <---TODO: REPLACE WITH MEASURED VALUES
   
 
     // Drivetrain dimensions for kinematics and odometry
-    public static final double LENGTH_IN_METERS_2022 = 0.581; // measured in inches as 24.75
-    public static final double LENGTH_IN_INCHES_2022 = Units.metersToInches(LENGTH_IN_METERS_2022); //58.1 * (1.0/2.54); // 22.87 inches but measured in cm as 58.1cm
+    public static final double EBOT_LENGTH_IN_INCHES_2023 = 29.5; 
+    public static final double EBOT_LENGTH_IN_METERS_2023 = Units.inchesToMeters(EBOT_LENGTH_IN_INCHES_2023);
+    public static final double PROTCHASSIS_LENGTH_IN_INCHES_2023 = 24.35; 
+    public static final double PROTCHASSIS_LENGTH_IN_METERS_2023 = Units.inchesToMeters(PROTCHASSIS_LENGTH_IN_INCHES_2023);
+    public static final double PRODBOT_LENGTH_IN_INCHES_2023 = 30; 
+    public static final double PRODBOT_LENGTH_IN_METERS_2023 = Units.inchesToMeters(PRODBOT_LENGTH_IN_INCHES_2023);
 
-    public static final double WIDTH_IN_METERS_2022 = 0.61595; // measured in inches as 24.25in   24.75
-    public static final double WIDTH_IN_INCHES_2022 = Units.metersToInches(WIDTH_IN_METERS_2022); //64.0 * (1.0/2.54); // 25.197 inches but measured in cm as 64.0cm
 
-    public static double LENGTH = LENGTH_IN_INCHES_2022;
-    public static double WIDTH = WIDTH_IN_INCHES_2022;
+    public static final double EBOT_WIDTH_IN_INCHES_2023 = 30;
+    public static final double EBOT_WIDTH_IN_METERS_2023 = Units.inchesToMeters(EBOT_WIDTH_IN_INCHES_2023);
+    public static final double PROTCHASSIS_WIDTH_IN_INCHES_2023 = 28.75;
+    public static final double PROTCHASSIS_WIDTH_IN_METERS_2023 = Units.inchesToMeters(PROTCHASSIS_WIDTH_IN_INCHES_2023);
+    public static final double PRODBOT_WIDTH_IN_INCHES_2023 = 29.5;
+    public static final double PRODBOT_WIDTH_IN_METERS_2023 = Units.inchesToMeters(PRODBOT_WIDTH_IN_INCHES_2023);
+
+    
+//    public static double LENGTH = (RobotConstants.isEBOT()) ? EBOT_LENGTH_IN_METERS_2023 : 0 ; 
+//    public static double WIDTH = (RobotConstants.isEBOT()) ? EBOT_WIDTH_IN_METERS_2023 : 0 ; 
+ 
+    public static double LENGTH = PROTCHASSIS_LENGTH_IN_METERS_2023;
+    public static double WIDTH = PROTCHASSIS_WIDTH_IN_METERS_2023;
+    
+    
     public static double DRIVE_ENCODER_UNITS_PER_REVOLUTION;
 
     public static final double WHEEL_DIAMETER_INCHES = 3.00; // Inches
@@ -71,18 +75,18 @@ public class DrivetrainConstants extends Hardwaremap {
     //public static final double LENGTH_CENTER_TO_CENTER = 23.5;
     //public static final double WIDTH_CENTER_TO_CENTER = 23.5;
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
-        new Translation2d(-Units.inchesToMeters(LENGTH) / 2, Units.inchesToMeters(WIDTH) / 2),  //FR where +x=forward and +y=port
-        new Translation2d(Units.inchesToMeters(LENGTH) / 2, Units.inchesToMeters(WIDTH) / 2),   //FL where +x=forward and +y=port
-        new Translation2d(-Units.inchesToMeters(LENGTH) / 2, -Units.inchesToMeters(WIDTH) / 2), //BL where +x=forward and +y=port
-        new Translation2d(Units.inchesToMeters(LENGTH) / 2, -Units.inchesToMeters(WIDTH) / 2)   //BR where +x=forward and +y=port
+        new Translation2d(LENGTH / 2.0, -WIDTH / 2.0),  //FR where +x=forward and -y=starboard
+        new Translation2d(LENGTH / 2.0, WIDTH / 2.0),   //FL where +x=forward and +y=port
+        new Translation2d(-LENGTH / 2.0, WIDTH / 2.0), //BL where -x=backward(aft) and +y=port
+        new Translation2d(-LENGTH / 2.0, -WIDTH/ 2.0)   //BR where -x=backward(aft) and -y=starboard
     );
 
     /* NOTE: Related to above decomposition of pod locations where
      *               O (Chassis center) = 0,0,
-     *              FR (front right pod) = -x +y, 
+     *              FR (front right pod) = -x -y, 
      *              FL (front left pod) = +x, +y,
-     *              BL (back left pod) = -x, -y, 
-     *              BR (back right pod) = +x -y
+     *              BL (back left pod) = -x, +y, 
+     *              BR (back right pod) = -x -y
      *      and +x is considered the forward direction (fore) and +y is 
      *      considered the direction to port on the chassis
      *      IT MUST BE NOTED that with current orientation of NavX-MXP on the 2021 bot
@@ -105,7 +109,7 @@ public class DrivetrainConstants extends Hardwaremap {
      // Below line contains offset needed to rotate raw navx angle output such that +x=fore and +y=port
     public static final double GYRO_ROTATIONAL_OFFSET_2022_practiceBot = 0; 
     public static final double GYRO_ROTATIONAL_OFFSET_2022_actualBot = 0; 
-    public static final double GYRO_ROTATIONAL_OFFSET_FOR_RIO_MOUNTING = (true) ? GYRO_ROTATIONAL_OFFSET_2022_practiceBot : GYRO_ROTATIONAL_OFFSET_2022_actualBot; 
+    public static final double GYRO_ROTATIONAL_OFFSET_FOR_RIO_MOUNTING = (LoggerConstants.IS_PRACTICE_BOT) ? GYRO_ROTATIONAL_OFFSET_2022_practiceBot : GYRO_ROTATIONAL_OFFSET_2022_actualBot; 
 
     public static final double[] AUTON_THETA_CONTROLLER_PIDF = { 3.0 /*kP*/, 0.0 /*kI*/, 0.0 /*kD*/, 0.0 /*kF*/};
 
