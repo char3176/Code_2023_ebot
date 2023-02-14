@@ -21,7 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private TalonFX rollermotor = new TalonFX(20);
-  private DoubleSolenoid piston;
+  private DoubleSolenoid pistonOne;
+  private DoubleSolenoid pistonTwo;
   private DigitalInput linebreak;
 
   private boolean isExtended;
@@ -33,7 +34,8 @@ public class Intake extends SubsystemBase {
   private static Intake instance;
   public Intake() 
   {
-    piston = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
+    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
+    pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
     linebreak = new DigitalInput(0);
 
   }
@@ -43,12 +45,14 @@ public class Intake extends SubsystemBase {
   }
 
   public void Extend() {
-    piston.set(Value.kForward);
+    pistonOne.set(Value.kForward);
+    pistonTwo.set(Value.kForward);
     this.isExtended = true;
   }
 
   public void Retract() {
-    piston.set(Value.kReverse);
+    pistonOne.set(Value.kReverse);
+    pistonTwo.set(Value.kReverse);
     this.isExtended = false;
   }
 
