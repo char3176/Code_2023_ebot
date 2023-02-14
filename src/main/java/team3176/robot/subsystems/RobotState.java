@@ -15,6 +15,10 @@ import org.littletonrobotics.junction.Logger;
 import team3176.robot.subsystems.RobotStateIO; 
 import team3176.robot.subsystems.RobotStateIO.RobotStateIOInputs; 
 
+import team3176.robot.subsystems.signalling.Signalling;
+import team3176.robot.subsystems.superstructure.Intake;
+import team3176.robot.constants.RobotConstants.Status;
+
 
 
 public class RobotState extends SubsystemBase {
@@ -22,6 +26,8 @@ public class RobotState extends SubsystemBase {
   private final RobotStateIO io;
   private final RobotStateIOInputs inputs = new RobotStateIOInputs();
   private static RobotState instance;
+  private Signalling m_Signalling;
+  private Intake m_Intake;
 
   private Alliance alliance; 
 
@@ -71,13 +77,13 @@ public class RobotState extends SubsystemBase {
     IsFLOORCUBE,  // Means Arm is in Floor Position to deposit cube
   }
 
-  enum e_CurrentGameElementImWanting{
+  public enum e_CurrentGameElementImWanting{
     CONE,
     CUBE,
     NONE
   }
 
-  enum e_CurrentGameElementImHolding{
+  public enum e_CurrentGameElementImHolding{
     CONE,
     CUBE,
     NONE
@@ -86,6 +92,8 @@ public class RobotState extends SubsystemBase {
 
   private RobotState(RobotStateIO io) {
     this.io = io;
+    m_Signalling = Signalling.getInstance();
+    m_Intake = Intake.getInstance();
   }
 
   public void update() {
@@ -99,12 +107,24 @@ public class RobotState extends SubsystemBase {
     return instance;
   }
 
+  // public Command setColorStateCommand()
+  // {
+  //   return this.runOnce(if (m_Intake.isCone() == true));
+  // }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Intake", inputs);
-
+    if (m_Intake.isCone() == true)
+    {
+      m_Signalling.setleft(Status.CONE);
+    }
+    else if (m_Intake.isSquircle() == true)
+    {
+      m_Signalling.setleft(Status.CUBE);
+    }
+    else{m_Signalling.setleft(Status.NONE);}
   }
 
   @Override

@@ -11,12 +11,16 @@ import edu.wpi.first.wpilibj.util.Color;
 import team3176.robot.constants.RobotConstants.Status;
 import team3176.robot.constants.SignalingConstants;
 
+import team3176.robot.subsystems.RobotState.e_CurrentGameElementImHolding;
+import team3176.robot.subsystems.RobotState.e_CurrentGameElementImWanting;
+
 
 public class Signalling extends SubsystemBase {
   
   private static Signalling instance = new Signalling();
   private AddressableLED m_led;
   private AddressableLEDBuffer m_ledBuffer;
+
 
   private int m_flashcounter = 0;
   private boolean leftflash = false;
@@ -110,6 +114,8 @@ public class Signalling extends SubsystemBase {
       case CONEFLASH: c = Color.kOrange;
       break;
       case CUBEFLASH: c = Color.kPurple;
+      break;
+      case NONE: c = Color.kBlack;
       break;
     }
     return c;
