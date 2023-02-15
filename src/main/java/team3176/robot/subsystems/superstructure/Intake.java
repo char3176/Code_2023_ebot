@@ -12,9 +12,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.util.Color;
-import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -27,16 +24,12 @@ public class Intake extends SubsystemBase {
 
   private boolean isExtended;
   private boolean isInIntake;
-  private boolean isCone;
-  private boolean isSquircle;
-  private I2C.Port m_I2C = I2C.Port.kOnboard;
-  private ColorSensorV3 m_ColorSensor = new ColorSensorV3(m_I2C);
   private static Intake instance;
   public Intake() 
   {
     pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
     pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
-    linebreak = new DigitalInput(0);
+    linebreak = new DigitalInput(8);
 
   }
 
@@ -56,14 +49,9 @@ public class Intake extends SubsystemBase {
     this.isExtended = false;
   }
 
-  public boolean isCone()
+  public boolean getLinebreak()
   {
-    return isCone;
-  }
-
-  public boolean isSquircle()
-  {
-    return isSquircle;
+    return linebreak.get();
   }
 
   public static Intake getInstance(){
@@ -76,59 +64,9 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    Color detectedColor = m_ColorSensor.getColor();
-    SmartDashboard.putNumber("Red", detectedColor.red);
-    SmartDashboard.putNumber("Green", detectedColor.green);
-    SmartDashboard.putNumber("Blue", detectedColor.blue);
-
-    
-    if ((0.35 <= detectedColor.red && detectedColor.red <= 0.379) && 
-        (0.466 <= detectedColor.green && detectedColor.green <= 0.516) && 
-        (0.083 <= detectedColor.blue && detectedColor.blue <= 0.188))
-    {
-      isCone = true;
-      // System.out.println("TRUE");
-    }
-    else 
-    {
-      isCone = false;
-      // System.out.println("FALSE");
-    }
-    SmartDashboard.putBoolean("isCone", isCone);
-    
-    if ((0.241 <= detectedColor.red && detectedColor.red <= 0.318) && 
-        (0.382 <= detectedColor.green && detectedColor.green <= 0.458) && 
-        (0.227 <= detectedColor.blue && detectedColor.blue <= 0.375))
-    {
-      isSquircle = true;
-    }
-    else 
-    {
-      isSquircle = false;
-    }
-    SmartDashboard.putBoolean("isSquircle", isSquircle);
-
-
-
     // Code stating if something is in the Intake
-    if (m_ColorSensor.getProximity() <= 150)
-    {
-    if (linebreak.get() == false)
-    {
-      isInIntake = true;
-      if (this.isExtended = true)
-        {
-          // Retract();
-        }
-      }
-      else
-      {
-        isInIntake = false;
-      }
-    }
     SmartDashboard.putBoolean("isInIntake", isInIntake);
     SmartDashboard.putBoolean("isExtended", isExtended);
-    SmartDashboard.putNumber("getProximity", m_ColorSensor.getProximity());
 
    }
 

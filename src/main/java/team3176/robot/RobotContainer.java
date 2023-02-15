@@ -11,6 +11,7 @@ import team3176.robot.subsystems.controller.Controller;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
 import team3176.robot.subsystems.drivetrain.Drivetrain.coordType;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import team3176.robot.subsystems.RobotState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,10 +25,12 @@ public class RobotContainer {
   private final Controller m_Controller;
   //private final Compressor m_Compressor;
   private final Drivetrain m_Drivetrain;
+  private final RobotState m_RobotState;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     m_Controller = Controller.getInstance();
+    m_RobotState = RobotState.getInstance();
     m_Drivetrain = Drivetrain.getInstance();
     m_Drivetrain.setDefaultCommand(new SwerveDrive(
           () -> m_Controller.getForward(),
@@ -43,6 +46,8 @@ public class RobotContainer {
     //m_Controller.getTransStick_Button3().whileTrue(new SwerveDefense());
     m_Controller.getTransStick_Button4().whileTrue(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
     m_Controller.getTransStick_Button4().onFalse(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+
+    m_Controller.operator.a().onTrue(m_RobotState.setColorWantStateCommand());
 
   }
 

@@ -6,6 +6,7 @@ package team3176.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.Supplier;
@@ -17,6 +18,7 @@ import team3176.robot.subsystems.RobotStateIO.RobotStateIOInputs;
 
 import team3176.robot.subsystems.signalling.Signalling;
 import team3176.robot.subsystems.superstructure.Intake;
+import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.constants.RobotConstants.Status;
 
 
@@ -26,8 +28,10 @@ public class RobotState extends SubsystemBase {
   private final RobotStateIO io;
   private final RobotStateIOInputs inputs = new RobotStateIOInputs();
   private static RobotState instance;
+  private int wantedLEDState;
   private Signalling m_Signalling;
   private Intake m_Intake;
+  private Claw m_Claw;
 
   private Alliance alliance; 
 
@@ -94,6 +98,8 @@ public class RobotState extends SubsystemBase {
     this.io = io;
     m_Signalling = Signalling.getInstance();
     m_Intake = Intake.getInstance();
+    m_Claw = Claw.getInstance();
+    wantedLEDState = 0;
   }
 
   public void update() {
@@ -102,29 +108,58 @@ public class RobotState extends SubsystemBase {
     }
   }
 
+  public void setColorWantState()
+  {
+    System.out.println("WAS CALLED");
+    wantedLEDState = 1;
+    if (wantedLEDState == 0)
+    {
+      m_Signalling.setleft(Status.NONE);
+    }
+    else if (wantedLEDState == 1)
+    {
+      m_Signalling.setleft(Status.CONEFLASH);
+    }
+    else if (wantedLEDState == 2)
+    {
+      m_Signalling.setleft(Status.CUBEFLASH);
+    }
+
+    wantedLEDState++;
+    if (wantedLEDState == 3) {wantedLEDState = 0;}
+  }
+
+  public Command setColorWantStateCommand()
+  {
+    return this.runOnce(() -> setColorWantState());
+  }
+
   public static RobotState getInstance() {
     if(instance == null) {instance = new RobotState(new RobotStateIO() {});}
     return instance;
   }
 
-  // public Command setColorStateCommand()
-  // {
-  //   return this.runOnce(if (m_Intake.isCone() == true));
-  // }
-
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Intake", inputs);
-    if (m_Intake.isCone() == true)
+    // m_Claw.getLinebreaks() == false || m_Intake.getLinebreak() == false
+    if (m_Intake.getLinebreak() == false)
     {
-      m_Signalling.setleft(Status.CONE);
+      if (wantedLEDState == 1)
+      {
+        m_Signalling.setleft(Status.CONE);
+      }
+      else if (wantedLEDState == 2)
+      {
+        m_Signalling.setleft(Status.CUBE);
+      }
     }
-    else if (m_Intake.isSquircle() == true)
+    else
     {
-      m_Signalling.setleft(Status.CUBE);
+      m_Signalling.setleft(Status.NONE);
+      wantedLEDState = 0;
     }
-    else{m_Signalling.setleft(Status.NONE);}
   }
 
   @Override
