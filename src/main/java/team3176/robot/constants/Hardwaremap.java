@@ -9,6 +9,7 @@ public class Hardwaremap {
      */
     public static int arm_CID = 5;
     public static int claw_CID = 6;
+    public static int intake_CID = 7;
 
     /*
      * Drivetrain CIDs
