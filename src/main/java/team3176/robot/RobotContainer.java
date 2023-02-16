@@ -44,10 +44,16 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_Controller.getTransStick_Button1().whileTrue(new InstantCommand( () -> m_Drivetrain.setTurbo(true), m_Drivetrain));
     m_Controller.getTransStick_Button1().onFalse(new InstantCommand( () -> m_Drivetrain.setTurbo(false), m_Drivetrain));
-    m_Controller.getTransStick_Button3().whileTrue(new SwerveDefense());
-    m_Controller.getTransStick_Button4().whileTrue(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    m_Controller.getTransStick_Button4().onFalse(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
-    
+    //m_Controller.getTransStick_Button2().whileTrue(new GyroReset());
+    //m_Controller.getTransStick_Button3().whileTrue(new ClawRelease());
+    //m_Controller.getTransStick_Button4().whileTrue(new PickupProtocol());
+    //m_Controller.getTransStick_Button3().whileTrue(new SwerveDefense());
+   
+    //m_Controller.getRotStick_Button1().whileTrue(new TurtleSpeed());
+    //m_Controller.getRotStick_Button2().whileTrue(new FlipField);
+    m_Controller.getRotStick_Button4().whileTrue(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
+    m_Controller.getRotStick_Button4().onFalse(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+    //m_Controller.getRotStick_Button4().whileTrue(new SpinLock());
 
     m_Controller.operator.a().onTrue(m_RobotState.setColorWantStateCommand());
 
@@ -64,7 +70,7 @@ public class RobotContainer {
     //m_Controller.operator.b().onTrue(AskForCone());
     //m_Controller.operator.x().onTrue(AskForCube());
 
-    //m_Controller.operator.leftBumper().and(m_Controller.operator.leftStick()).whileTrue(new manuallyPositionArm(m_Controller.operator.getLeftY()));   // <-- I don't think this is right -char
+    //m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () -> m_Controller.operator.getLeftY()));
   }
 
   /**
