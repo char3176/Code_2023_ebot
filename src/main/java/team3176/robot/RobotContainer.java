@@ -47,9 +47,24 @@ public class RobotContainer {
     m_Controller.getTransStick_Button3().whileTrue(new SwerveDefense());
     m_Controller.getTransStick_Button4().whileTrue(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
     m_Controller.getTransStick_Button4().onFalse(new InstantCommand( () -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+    
 
     m_Controller.operator.a().onTrue(m_RobotState.setColorWantStateCommand());
 
+    //m_Controller.operator.povUp().onTrue(new ArmToHighPosition());
+    //m_Controller.operator.povRight().onTrue(new ArmToCarryPosition());
+    //m_Controller.operator.povDown().onTrue(new ArmToLowPosition());
+    //m_Controller.operator.povLeft().onTrue(new ArmToMidPosition());
+
+    //m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
+    //m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
+
+    //m_Controller.operator.y().whileTrue(new ClawSpit());
+    //m_Controller.operator.a().whileTrue(new PickupProtocol());
+    //m_Controller.operator.b().onTrue(AskForCone());
+    //m_Controller.operator.x().onTrue(AskForCube());
+
+    //m_Controller.operator.leftBumper().and(m_Controller.operator.leftStick()).whileTrue(new manuallyPositionArm(m_Controller.operator.getLeftY()));   // <-- I don't think this is right -char
   }
 
   /**
