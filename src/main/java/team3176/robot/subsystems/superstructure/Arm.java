@@ -9,12 +9,12 @@ import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
 
 public class Arm extends SubsystemBase {
-    private Arm instance;
+    private static Arm instance;
     private CANSparkMax arm;
     private Arm() {
         arm = new CANSparkMax(Hardwaremap.arm_CID, MotorType.kBrushless);
     }
-    public Arm getInstance() {
+    public static Arm getInstance() {
         if (instance == null){instance = new Arm();}
         return instance;
     }

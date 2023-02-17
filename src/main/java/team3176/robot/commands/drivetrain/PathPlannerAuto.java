@@ -12,8 +12,12 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
+import team3176.robot.subsystems.superstructure.Arm;
+import team3176.robot.subsystems.superstructure.Claw;
+import team3176.robot.subsystems.superstructure.Intake;
 
 public class PathPlannerAuto {
     Command auto;
@@ -25,8 +29,13 @@ public class PathPlannerAuto {
     // This is just an example event map. It would be better to have a constant, global event map
     // in your code that will be used by all path following commands.
     HashMap<String, Command> eventMap = new HashMap<>();
-    // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
-    // eventMap.put("intakeDown", new IntakeDown());
+    eventMap.put("print", new PrintCommand("Passed marker 1"));
+    eventMap.put("arm_up", Arm.getInstance().armUpCommand().withTimeout(1.0));
+    eventMap.put("arm_down", Arm.getInstance().armDownCommand().withTimeout(1.0));
+    eventMap.put("intake_cube", Claw.getInstance().intakeCube().withTimeout(1.0));
+    eventMap.put("intake_cone", Claw.getInstance().intakeCone().withTimeout(1.0));
+    eventMap.put("score", Claw.getInstance().scoreGamePiece().withTimeout(1.0));
+    //eventMap.put("intakeDown", new IntakeDown());
 
     // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
     SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
