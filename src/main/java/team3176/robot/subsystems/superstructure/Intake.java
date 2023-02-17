@@ -15,9 +15,11 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import team3176.robot.constants.Hardwaremap;
+
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFX rollermotor = new TalonFX(20);
+  private TalonFX rollermotor = new TalonFX(Hardwaremap.intake_CID);
   private DoubleSolenoid pistonOne;
   private DoubleSolenoid pistonTwo;
   private DigitalInput linebreak;
