@@ -141,25 +141,28 @@ public class RobotState extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Intake", inputs);
+    // io.updateInputs(inputs);
+    // Logger.getInstance().processInputs("Intake", inputs);
     // m_Claw.getLinebreaks() == false || m_Intake.getLinebreak() == false
-    if (m_Intake.getLinebreak() == false)
-    {
-      if (wantedLEDState == 1)
-      {
-        m_Signalling.setleft(Status.CONE);
-      }
-      else if (wantedLEDState == 2)
-      {
-        m_Signalling.setleft(Status.CUBE);
-      }
-    }
-    else
-    {
-      m_Signalling.setleft(Status.NONE);
-      wantedLEDState = 0;
-    }
+    // for (int i = 0; i < 51; i++)
+    // {
+    //   if (m_Intake.getLinebreak() == false && i == 50)
+    //   {
+    //     if (wantedLEDState == 1)
+    //     {
+    //       m_Signalling.setleft(Status.CONE);
+    //     }
+    //     else if (wantedLEDState == 2)
+    //     {
+    //       m_Signalling.setleft(Status.CUBE);
+    //     }
+    //   }
+    //   else if (m_Intake.getLinebreak() == true && i == 50)
+    //   {
+    //     m_Signalling.setleft(Status.NONE);
+    //     wantedLEDState = 0;
+    //   }
+    // }
   }
 
   @Override

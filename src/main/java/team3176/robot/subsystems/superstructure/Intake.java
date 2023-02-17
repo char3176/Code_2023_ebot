@@ -65,8 +65,8 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // Code stating if something is in the Intake
-    SmartDashboard.putBoolean("isInIntake", isInIntake);
-    SmartDashboard.putBoolean("isExtended", isExtended);
+    // SmartDashboard.putBoolean("isInIntake", isInIntake);
+    // SmartDashboard.putBoolean("isExtended", isExtended);
 
    }
 
