@@ -4,6 +4,11 @@
 
 package team3176.robot;
 
+import java.io.File;
+
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -44,6 +49,7 @@ public class RobotContainer {
   //private final Compressor m_Compressor;
   private final Drivetrain m_Drivetrain;
   private final RobotState m_RobotState;
+  private SendableChooser<String> m_autonChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -57,6 +63,17 @@ public class RobotContainer {
           () -> m_Controller.getForward(),
           () -> m_Controller.getStrafe(),
           () -> m_Controller.getSpin()));
+
+    File paths = new File(Filesystem.getDeployDirectory(), "pathplanner");
+    for(File f:paths.listFiles()){
+      if(!f.isDirectory()) {
+        String s= f.getName().split(".",1)[0];
+        m_autonChooser.addOption(s, s);
+      }
+    }
+    
+    //m_autonChooser.setDefaultOption("cube_balance", "cube_balance");
+    SmartDashboard.putData("Auton Choice", m_autonChooser);
     configureBindings();
   }
 
@@ -112,6 +129,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new WaitCommand(1.0);
+    String chosen = m_autonChooser.getSelected();
+
+    
+    PathPlannerAuto PPSwerveauto = new PathPlannerAuto(chosen);
+    return PPSwerveauto.getauto();
   }
 }
