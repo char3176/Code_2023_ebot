@@ -44,7 +44,7 @@ public class DrivetrainHardwareMap {
     // to counteract the offset caused by the mounting in different positions
     public static final double[] 
     AZIMUTH_ABS_ENCODER_OFFSET_POSITION = 
-    { FR.OFFSET, FL.OFFSET + 90, BL.OFFSET, BR.OFFSET+180}; //TODO: I think these offsets are wrong. I would double check the pods by setting them each as if they were FR zero and remeasuring the offsets
+    { FR.OFFSET, FL.OFFSET + 270, BL.OFFSET+180, BR.OFFSET+90}; //TODO: I think these offsets are wrong. I would double check the pods by setting them each as if they were FR zero and remeasuring the offsets
     
     
      //CAN IDs static to the frame

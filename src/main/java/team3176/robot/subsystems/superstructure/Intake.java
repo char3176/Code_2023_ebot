@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+/// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -29,25 +29,27 @@ public class Intake extends SubsystemBase {
   private static Intake instance;
   public Intake() 
   {
-    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 0);
-    pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
+    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 6);
+    //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
     linebreak = new DigitalInput(8);
 
   }
 
   public void spinVelocityPercent(double pct) {
-    rollermotor.set(ControlMode.PercentOutput, pct);
+    rollermotor.configPeakOutputReverse(-pct);
+    rollermotor.set(ControlMode.PercentOutput, -pct);
+    
   }
 
   public void Extend() {
     pistonOne.set(Value.kForward);
-    pistonTwo.set(Value.kForward);
+    //pistonTwo.set(Value.kForward);
     this.isExtended = true;
   }
 
   public void Retract() {
     pistonOne.set(Value.kReverse);
-    pistonTwo.set(Value.kReverse);
+    //pistonTwo.set(Value.kReverse);
     this.isExtended = false;
   }
 
@@ -75,7 +77,7 @@ public class Intake extends SubsystemBase {
   public Command extendAndSpin() {
     return this.startEnd(() ->{
       this.Extend();
-      this.spinVelocityPercent(.3);
+      this.spinVelocityPercent(.1);
     }, () -> {
       this.Retract();
       this.spinVelocityPercent(0.0);

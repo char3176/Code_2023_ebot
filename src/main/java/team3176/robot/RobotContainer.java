@@ -5,11 +5,19 @@
 package team3176.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import team3176.robot.commands.arm.*;
 import team3176.robot.commands.arm.manuallyPositionArm;
+import team3176.robot.commands.autons.*;
+import team3176.robot.commands.claw.*;
+import team3176.robot.commands.claw.ClawInhaleCube;
+import team3176.robot.commands.drivetrain.*;
 import team3176.robot.commands.drivetrain.SwerveDrive;
 import team3176.robot.commands.drivetrain.SwerveDefense;
+import team3176.robot.commands.intake.*;
+import team3176.robot.commands.vision.*;
 import team3176.robot.subsystems.controller.Controller;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
 import team3176.robot.subsystems.drivetrain.Drivetrain.coordType;
@@ -78,12 +86,23 @@ public class RobotContainer {
     //m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
     //m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
 
-    m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
+    m_Controller.operator.y().onTrue(new ClawInhaleCube());
+    m_Controller.operator.x().onTrue(new ClawInhaleCone());
+    m_Controller.operator.a().whileTrue(new IntakeExtendSpin());
+    m_Controller.operator.a().onFalse(new IntakeRetractSpinot ());
+
     //m_Controller.operator.a().whileTrue(new PickupProtocol());
     //m_Controller.operator.b().onTrue(AskForCone());
     //m_Controller.operator.x().onTrue(AskForCube());
 
-    m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () -> m_Controller.operator.getLeftY()));
+    //m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () -> m_Controller.operator.getLeftY()));
+    m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());
+    m_Controller.operator.leftBumper().onFalse(new armAnalogIdle());
+
+    m_Controller.operator.rightBumper().whileTrue(new armAnalogUp());
+    m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
+
+    m_Controller.operator.back().whileTrue(m_Claw.scoreGamePiece());
   }
 
   /**

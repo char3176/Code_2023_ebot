@@ -10,12 +10,13 @@ public class SuperStructureConstants {
   /**
    * Percent output to run the arm up/down at
    */
-  public static final double ARM_OUTPUT_POWER = 0.4;
+  public static final double ARM_OUTPUT_POWER = 0.2;
 
   /**
    * How many amps the claw can use while picking up
    */
   public static final int CLAW_CURRENT_LIMIT_A = 25;
+  public static final int CLAW_AMPS = 25;
 
   /**
    * How many amps the claw can use while holding
@@ -25,12 +26,13 @@ public class SuperStructureConstants {
   /**
    * Percent output for inhaling
    */
-  public static final double CLAW_OUTPUT_POWER = 1.0;
+  public static final double CLAW_OUTPUT_POWER_CUBE = .3;
+  public static final double CLAW_OUTPUT_POWER_CONE = 1.0;
 
   /**
    * Percent output for holding
    */
-  public static final double CLAW_HOLD_POWER = 0.07;
+  public static final double CLAW_HOLD_POWER = 0.14;
 
   public static final int ARM_ENCODER_OFFSET = 0; 
 
@@ -38,4 +40,11 @@ public class SuperStructureConstants {
   public static final int ARM_kI = 0;
   public static final int ARM_kD = 0;
   public static final double ARM_TOLERANCE = 0.1;
+
+
+  public static final double ARM_POOP_POS = 327.884;
+  public static final double ARM_CARRY_POS = 338.115;
+  public static final double ARM_CATCH_POS = 11.77;
+  public static final double ARM_MID_POS = 65.666;
+  public static final double ARM_HIGH_POS = 114.961;
 }

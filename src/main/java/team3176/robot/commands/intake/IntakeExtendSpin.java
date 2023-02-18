@@ -24,7 +24,7 @@ public class IntakeExtendSpin extends CommandBase {
   public void execute() 
   {
     m_Intake.Extend();
-    m_Intake.spinVelocityPercent(.3);
+    m_Intake.spinVelocityPercent(1);
   }
 
   // Called once the command ends or is interrupted.

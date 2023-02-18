@@ -2,50 +2,49 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package team3176.robot.commands.claw;
+package team3176.robot.commands.arm;
+
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import team3176.robot.subsystems.superstructure.Claw;
-import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
+import team3176.robot.subsystems.superstructure.Arm;
 
-public class ClawInhaleCube extends CommandBase {
-  /** Creates a new ClawInhale. */
-  Claw m_Claw = Claw.getInstance();
-  public ClawInhaleCube() {
+public class armAnalogUp  extends CommandBase {
+  /** Creates a new IntakeExtendSpin. */
+  private Arm m_Arm = Arm.getInstance();
+  private DoubleSupplier analogInput;
+  private Double analogInputDeadband;
+
+  public armAnalogUp() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_Claw);
+    addRequirements(m_Arm);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Claw.setCurrentGamePiece(GamePiece.CUBE);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() 
-  {
-    m_Claw.intake();
-    System.out.println("ClawInhaleCube");
+  public void execute() {
+      m_Arm.armAnalogUp();
   }
+   
+    //if ((updatedAnalogInput < (0 + analogInputDeadband)) && (updatedAnalogInput > (0 + analogInputDeadband))) {
+    //  m_Arm.
+    //}
+    
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_Claw.idle();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_Claw.getLinebreakOne() == true)
-    {
       return false;
-    }
-    else
-    {
-      return true;
-    }
   }
 }

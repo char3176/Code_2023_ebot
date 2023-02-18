@@ -20,12 +20,12 @@ public class Claw extends SubsystemBase {
     public GamePiece currentGamePiece = GamePiece.NONE;
     private Claw() {
         claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
-        linebreakOne = new DigitalInput(0);
-        linebreakTwo = new DigitalInput(2);
+        linebreakOne = new DigitalInput(9);
+        linebreakTwo = new DigitalInput(7);
     }
-    public void setClawMotor(double percent, int amps) {
+    public void setClawMotor(double percent, double amps) {
         claw.set(percent);
-        claw.setSmartCurrentLimit(amps);
+        claw.setSmartCurrentLimit(SuperStructureConstants.CLAW_AMPS);
         SmartDashboard.putNumber("intake power (%)", percent);
         SmartDashboard.putNumber("intake motor current (amps)", claw.getOutputCurrent());
         SmartDashboard.putNumber("intake motor temperature (C)", claw.getMotorTemperature());
@@ -33,44 +33,53 @@ public class Claw extends SubsystemBase {
 
     //states now implemented as functions
     
-    private void intake() {
+    public void intake() {
+        System.out.println("m_Claw.intake()");
         if(currentGamePiece == GamePiece.CUBE) {
-            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
          else if(currentGamePiece == GamePiece.CONE) {
-             setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+             setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
     }
-    private void hold() {
-        if(currentGamePiece == GamePiece.CONE) {
-            setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
-            
+    
+    public void hold() {
+        System.out.println("m_Claw.hold()");
+        if(currentGamePiece == GamePiece.CUBE) {
+            //setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
+            idle(); 
         } else {
             setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
         }
     }
-    private void score() {
+
+    public void score() {
+        System.out.println("m_Claw.score()");
         if(currentGamePiece == GamePiece.CUBE) {
-            setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+            setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
         else if(currentGamePiece == GamePiece.CONE) {
-            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
     }
-    private void idle() {
+    public void idle() {
+        System.out.println("m_Claw.idle()");
         setClawMotor(0, 0);
     }
 
-    public boolean getLinebreaks()
+    public void setCurrentGamePiece(GamePiece piece) {
+        System.out.println("m_Claw.setCurrentGamePiece() to " + piece);
+        this.currentGamePiece = piece;
+    }
+
+    public boolean getLinebreakOne()
     {
-        if (linebreakOne.get() == false || linebreakTwo.get() == false)
-        {
-            return false;
-        }
-        else 
-        {
-            return true;
-        }
+        return linebreakOne.get();
+    }
+    
+    public boolean getLinebreakTwo()
+    {
+        return linebreakTwo.get();
     }
 
     public static Claw getInstance()
@@ -97,11 +106,13 @@ public class Claw extends SubsystemBase {
 
     //more examples of command composition and why its awesome!!
     public Command intakeCone() {
-        return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreaks);
+        return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreakTwo);
     }
     public Command intakeCube() {
-        return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreaks);
+        return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreakOne);
     }
+
+
 
     @Override
   public void periodic() {

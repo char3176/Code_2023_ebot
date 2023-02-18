@@ -17,7 +17,9 @@ public class Arm extends SubsystemBase {
     private static Arm instance;
     private CANSparkMax armController;
     private CANCoder armEncoder;
-    
+    private double armEncoderAbsPosition;    
+    private double turnOutput;
+    private double lastEncoderPos;
     private final PIDController m_turningPIDController;
 
 
@@ -51,13 +53,20 @@ public class Arm extends SubsystemBase {
         return instance;
     }
 
-    private void armAnalogUp() {
+    public void setPIDPosition(Double desiredPosition) {
+        this.armEncoderAbsPosition = armEncoder.getAbsolutePosition();
+        this.turnOutput = m_turningPIDController.calculate(this.armEncoderAbsPosition, this.lastEncoderPos);
+
+    }
+
+    public void armAnalogUp() {
         armController.set(SuperStructureConstants.ARM_OUTPUT_POWER);
     }
-    private void armAnalogDown() {
+    public void armAnalogDown() {
         armController.set(-SuperStructureConstants.ARM_OUTPUT_POWER);
+        System.out.println("Arm Analog Down"); 
     }
-    private void idle() {
+    public void idle() {
         armController.set(0.0);
     }
 
