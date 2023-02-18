@@ -30,8 +30,8 @@ public class PathPlannerAuto {
     // in your code that will be used by all path following commands.
     HashMap<String, Command> eventMap = new HashMap<>();
     eventMap.put("print", new PrintCommand("Passed marker 1"));
-    eventMap.put("arm_up", Arm.getInstance().armUpCommand().withTimeout(1.0));
-    eventMap.put("arm_down", Arm.getInstance().armDownCommand().withTimeout(1.0));
+    eventMap.put("arm_up", Arm.getInstance().armAnalogUpCommand().withTimeout(1.0));
+    eventMap.put("arm_down", Arm.getInstance().armAnalogDownCommand().withTimeout(1.0));
     eventMap.put("intake_cube", Claw.getInstance().intakeCube().withTimeout(1.0));
     eventMap.put("intake_cone", Claw.getInstance().intakeCone().withTimeout(1.0));
     eventMap.put("score", Claw.getInstance().scoreGamePiece().withTimeout(1.0));

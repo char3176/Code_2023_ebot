@@ -7,6 +7,7 @@ package team3176.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import team3176.robot.commands.arm.manuallyPositionArm;
 import team3176.robot.commands.drivetrain.SwerveDrive;
 import team3176.robot.commands.drivetrain.SwerveDefense;
 import team3176.robot.subsystems.controller.Controller;
@@ -28,15 +29,17 @@ import team3176.robot.subsystems.superstructure.Superstructure;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   
+  private final Arm m_Arm;
   private final Controller m_Controller;
   private final Claw m_Claw;
+  private final Intake m_Intake;
   //private final Compressor m_Compressor;
   private final Drivetrain m_Drivetrain;
-  private final Intake m_Intake;
   private final RobotState m_RobotState;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    m_Arm = Arm.getInstance();
     m_Controller = Controller.getInstance();
     m_Claw = Claw.getInstance();
     m_Drivetrain = Drivetrain.getInstance();
@@ -80,7 +83,7 @@ public class RobotContainer {
     //m_Controller.operator.b().onTrue(AskForCone());
     //m_Controller.operator.x().onTrue(AskForCube());
 
-    //m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () -> m_Controller.operator.getLeftY()));
+    m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () -> m_Controller.operator.getLeftY()));
   }
 
   /**
