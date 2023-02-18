@@ -32,6 +32,7 @@ public class RobotState extends SubsystemBase {
   private Signalling m_Signalling;
   private Intake m_Intake;
   private Claw m_Claw;
+  private int i = 0;
 
   private Alliance alliance; 
 
@@ -141,28 +142,28 @@ public class RobotState extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // io.updateInputs(inputs);
-    // Logger.getInstance().processInputs("Intake", inputs);
-    // m_Claw.getLinebreaks() == false || m_Intake.getLinebreak() == false
-    // for (int i = 0; i < 51; i++)
-    // {
-    //   if (m_Intake.getLinebreak() == false && i == 50)
-    //   {
-    //     if (wantedLEDState == 1)
-    //     {
-    //       m_Signalling.setleft(Status.CONE);
-    //     }
-    //     else if (wantedLEDState == 2)
-    //     {
-    //       m_Signalling.setleft(Status.CUBE);
-    //     }
-    //   }
-    //   else if (m_Intake.getLinebreak() == true && i == 50)
-    //   {
-    //     m_Signalling.setleft(Status.NONE);
-    //     wantedLEDState = 0;
-    //   }
-    // }
+    io.updateInputs(inputs);
+    Logger.getInstance().processInputs("Intake", inputs);
+    //m_Claw.getLinebreaks() == false || m_Intake.getLinebreak() == false
+    i++;
+    if (m_Intake.getLinebreak() == false && i == 50)
+    {
+      if (wantedLEDState == 1)
+      {
+        m_Signalling.setleft(Status.CONE);
+      }
+      else if (wantedLEDState == 2)
+      {
+        m_Signalling.setleft(Status.CUBE);
+      }
+      i = 0;
+    }
+    else if (m_Intake.getLinebreak() == true && i == 50)
+    {
+      m_Signalling.setleft(Status.NONE);
+      wantedLEDState = 0;
+      i = 0;
+    }
   }
 
   @Override
