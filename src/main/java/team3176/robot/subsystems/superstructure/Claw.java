@@ -19,7 +19,6 @@ public class Claw extends SubsystemBase {
     private static Claw instance;
     public GamePiece currentGamePiece = GamePiece.NONE;
     private Claw() {
-        instance = new Claw();
         claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
         linebreakOne = new DigitalInput(0);
         linebreakTwo = new DigitalInput(2);
@@ -76,6 +75,9 @@ public class Claw extends SubsystemBase {
 
     public static Claw getInstance()
     {
+        if (instance == null ) {
+            instance = new Claw();
+          }
         return instance;
     }
 
@@ -100,4 +102,14 @@ public class Claw extends SubsystemBase {
     public Command intakeCube() {
         return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreaks);
     }
+
+    @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    // Code stating if something is in the Intake
+    SmartDashboard.putBoolean("linebreakOne",linebreakOne.get());
+    SmartDashboard.putBoolean("linebreakTwo",linebreakTwo.get());
+    // SmartDashboard.putBoolean("isExtended", isExtended);
+
+   }
 }
