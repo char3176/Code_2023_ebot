@@ -39,7 +39,7 @@ public class SuperStructureConstants {
   public static final int ARM_kP = 0;
   public static final int ARM_kI = 0;
   public static final int ARM_kD = 0;
-  public static final double ARM_TOLERANCE = 0.1;
+  public static final double ARM_TOLERANCE = 4;
 
 
   public static final double ARM_POOP_POS = 327.884;
