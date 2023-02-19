@@ -103,8 +103,10 @@ public class RobotContainer {
     //m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
     //m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
 
-    m_Controller.operator.y().onTrue(new ClawInhaleCube());
-    m_Controller.operator.x().onTrue(new ClawInhaleCone());
+    //m_Controller.operator.b().onTrue(new ClawInhaleCone());
+    m_Controller.operator.b().whileTrue(new ClawInhaleCone());
+    //m_Controller.operator.x().onTrue(new ClawInhaleCube());
+    m_Controller.operator.x().onTrue(new ClawInhaleCube());
     m_Controller.operator.a().whileTrue(new IntakeExtendSpin());
     m_Controller.operator.a().onFalse(new IntakeRetractSpinot ());
     m_Controller.operator.b().onTrue(m_RobotState.setColorWantStateCommand());
@@ -120,7 +122,7 @@ public class RobotContainer {
     m_Controller.operator.rightBumper().whileTrue(new armAnalogUp());
     m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
 
-    m_Controller.operator.back().whileTrue(m_Claw.scoreGamePiece());
+    m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
   }
 
   /**
