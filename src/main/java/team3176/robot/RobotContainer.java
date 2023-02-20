@@ -106,7 +106,7 @@ public class RobotContainer {
     //m_Controller.operator.b().onTrue(new ClawInhaleCone());
     m_Controller.operator.b().whileTrue(new ClawInhaleCone());
     //m_Controller.operator.x().onTrue(new ClawInhaleCube());
-    m_Controller.operator.x().onTrue(new ClawInhaleCube());
+    m_Controller.operator.x().whileTrue(new ClawInhaleCube());
     m_Controller.operator.a().whileTrue(new IntakeExtendSpin());
     m_Controller.operator.a().onFalse(new IntakeRetractSpinot ());
     m_Controller.operator.b().onTrue(m_RobotState.setColorWantStateCommand());
