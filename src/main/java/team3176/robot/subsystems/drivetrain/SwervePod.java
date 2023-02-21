@@ -111,9 +111,9 @@ public class SwervePod {
 
 
         
-      
+        
         m_turningPIDController2 = new PIDController(kP_Azimuth, kI_Azimuth, kD_Azimuth);
-        m_turningPIDController2.setTolerance(0.1);
+        m_turningPIDController2.setTolerance(4);
         m_turningPIDController2.enableContinuousInput(-180, 180);
 
         m_turningPIDController2.reset();
@@ -145,6 +145,7 @@ public class SwervePod {
         this.thrustController.configFactoryDefault();
         //this.azimuthController.restoreFactoryDefaults();
         this.azimuthController.setOpenLoopRampRate(0.5);
+        this.azimuthController.setSmartCurrentLimit(20);
         this.azimuthController.setInverted(true);
         //this.azimuthController.setClosedLoopRampRate(0.5);
         //this.azimuthController.burnFlash();
