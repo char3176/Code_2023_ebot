@@ -5,7 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
-
+import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,7 +19,6 @@ import team3176.robot.constants.SuperStructureConstants;
 public class Arm extends SubsystemBase {
     private static final double MAX_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_HIGH_POS;
     private static final double MIN_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_POOP_POS;
-    private static final double MIN_COMMANDED_ANGLE = -32;
     private static Arm instance;
     private CANSparkMax armController;
     private CANCoder armEncoder;
@@ -27,6 +26,9 @@ public class Arm extends SubsystemBase {
     private double lastEncoderPos;
     private final PIDController m_turningPIDController;
     private int counter;
+    public enum States {OPEN_LOOP,CLOSED_LOOP};
+    private States currentState = States.OPEN_LOOP;
+    private double arm_setpoint_angle = SuperStructureConstants.ARM_POOP_POS;
 
     private Arm() {
         armController = new CANSparkMax(Hardwaremap.arm_CID, MotorType.kBrushless);
@@ -60,14 +62,6 @@ public class Arm extends SubsystemBase {
         if (instance == null){instance = new Arm();}
         return instance;
     }
-    private double clampArmAngle(double angle) {
-        if (angle > 200 && angle < Arm.MIN_ENCODER_ANGLE_VALUE){
-            angle = Arm.MIN_ENCODER_ANGLE_VALUE;
-        } else if (angle < 200 && angle > Arm.MAX_ENCODER_ANGLE_VALUE) {
-            angle = Arm.MAX_ENCODER_ANGLE_VALUE;
-        }
-        return angle;
-    }
     /**
      * 
      * @param desiredAngle in degrees in Encoder Frame
@@ -90,9 +84,11 @@ public class Arm extends SubsystemBase {
     }
 
     public void armAnalogUp() {
+        this.currentState = States.OPEN_LOOP;
         armController.set(SuperStructureConstants.ARM_OUTPUT_POWER);
     }
     public void armAnalogDown() {
+        this.currentState = States.OPEN_LOOP;
         armController.set(-SuperStructureConstants.ARM_OUTPUT_POWER);
         System.out.println("Arm Analog Down"); 
         System.out.println("Arm_Abs_Position: " + armEncoder.getAbsolutePosition()); 
@@ -101,12 +97,24 @@ public class Arm extends SubsystemBase {
     public void idle() {
         armController.set(0.0);
     }
-    
+    public void fineTune(double delta) {
+        this.currentState = States.CLOSED_LOOP;
+        this.arm_setpoint_angle += delta * 2;
+        
+    }
     /*
      * Commands
      */
     public Command armSetPosition(double angleInDegrees) {
         return this.run(() -> setPIDPosition(angleInDegrees));
+    }
+    public Command armSetPositionOnce(double angleInDegrees) {
+        return this.runOnce(() -> {
+            this.currentState = States.CLOSED_LOOP;
+            this.arm_setpoint_angle = angleInDegrees;});
+    }
+    public Command armFineTune(DoubleSupplier angleDeltaCommand) {
+        return this.run(() -> fineTune(angleDeltaCommand.getAsDouble()));
     }
     public Command armAnalogUpCommand() {
         return this.runEnd(() -> armAnalogUp(), () -> idle());
@@ -114,6 +122,7 @@ public class Arm extends SubsystemBase {
     public Command armAnalogDownCommand() {
         return this.runEnd(() -> armAnalogDown(), () -> idle());
     }
+    
     
     @Override
     public void periodic() {
@@ -123,6 +132,10 @@ public class Arm extends SubsystemBase {
             counter = 0;
         } else {
             counter = counter++;
+        }
+        if(this.currentState == States.CLOSED_LOOP) {
+            this.arm_setpoint_angle = MathUtil.clamp(this.arm_setpoint_angle, SuperStructureConstants.ARM_POOP_POS, SuperStructureConstants.ARM_HIGH_POS);
+            setPIDPosition(arm_setpoint_angle);
         }
     }
 }
