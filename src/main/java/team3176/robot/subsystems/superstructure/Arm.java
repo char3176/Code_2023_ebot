@@ -71,8 +71,7 @@ public class Arm extends SubsystemBase {
      */
     public void setPIDPosition(double desiredAngle) {
         //need to double check these values
-        desiredAngle = clampArmAngle(desiredAngle);
-        double physicsAngle = ((desiredAngle +180) % 360.0) - 180;
+        double physicsAngle = (desiredAngle - 200) ;
         this.armEncoderAbsPosition = armEncoder.getAbsolutePosition();
         
         //kg is the scalar representing the percent power needed to hold the arm at 90 degrees away from the robot

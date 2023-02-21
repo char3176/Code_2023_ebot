@@ -42,9 +42,9 @@ public class SuperStructureConstants {
   public static final double ARM_TOLERANCE = 4;
 
 
-  public static final double ARM_POOP_POS = 327.884;
-  public static final double ARM_CARRY_POS = 338.115;
+  public static final double ARM_POOP_POS = 170.947;
+  public static final double ARM_CARRY_POS = 209.795;
   public static final double ARM_CATCH_POS = 11.77;
-  public static final double ARM_MID_POS = 65.666;
-  public static final double ARM_HIGH_POS = 114.961;
+  public static final double ARM_MID_POS = 277.734;
+  public static final double ARM_HIGH_POS = 310.869;
 }
