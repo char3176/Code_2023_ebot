@@ -110,4 +110,9 @@ public class Arm extends SubsystemBase {
     public Command armAnalogDownCommand() {
         return this.runEnd(() -> armAnalogDown(), () -> idle());
     }
+    
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Arm_Position", armEncoder.getAbsolutePosition());
+    }
 }
