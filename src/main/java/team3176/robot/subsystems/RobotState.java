@@ -16,10 +16,13 @@ import org.littletonrobotics.junction.Logger;
 import team3176.robot.subsystems.RobotStateIO; 
 import team3176.robot.subsystems.RobotStateIO.RobotStateIOInputs; 
 
-import team3176.robot.subsystems.signalling.Signalling;
-import team3176.robot.subsystems.superstructure.Intake;
-import team3176.robot.subsystems.superstructure.Claw;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.util.Color;
 import team3176.robot.constants.RobotConstants.Status;
+import team3176.robot.constants.SignalingConstants;
+
+import team3176.robot.subsystems.superstructure.Claw;
 
 
 
@@ -29,10 +32,18 @@ public class RobotState extends SubsystemBase {
   private final RobotStateIOInputs inputs = new RobotStateIOInputs();
   private static RobotState instance;
   private int wantedLEDState;
-  private Signalling m_Signalling;
-  private Intake m_Intake;
   private Claw m_Claw;
+  private AddressableLED m_led;
+  private AddressableLEDBuffer m_ledBuffer;
   private int i = 0;
+
+  private int m_flashcounter = 0;
+  private boolean leftflash = false;
+  private boolean rightflash = false;
+  private boolean crossflash = false;
+  private Color leftflcolor = Color.kBlack;
+  private Color rightflcolor = Color.kBlack;
+  private Color crossflcolor = Color.kBlack;
 
   private Alliance alliance; 
 
@@ -97,11 +108,117 @@ public class RobotState extends SubsystemBase {
 
   private RobotState(RobotStateIO io) {
     this.io = io;
-    m_Signalling = Signalling.getInstance();
-    m_Intake = Intake.getInstance();
     m_Claw = Claw.getInstance();
     wantedLEDState = 0;
+
+    m_led = new AddressableLED(0);
+    m_ledBuffer = new AddressableLEDBuffer(73);
+    m_led.setLength(m_ledBuffer.getLength());
+
+    m_led.setData(m_ledBuffer);
+    m_led.start();
   }
+
+  public void setSegment(int start, int end, int red, int green, int blue)
+    {
+      for (var i=start; i < end; i++)
+      {
+        m_ledBuffer.setRGB(i, red , green, blue);
+      }
+    }
+
+    public void setSegment(int start, int end, Color color)
+    {
+      for (var i=start; i < end; i++)
+      {
+        m_ledBuffer.setLED(i, color);
+      }
+      // m_led.setData(m_ledBuffer);
+    }
+
+    public void setleft(Status s)
+    {
+      leftflcolor = LookUpColor(s);
+      leftflash = LookUpFlash(s);
+      setSegment(SignalingConstants.LEFTENDSTART, SignalingConstants.LEFTENDSTOP, leftflcolor);
+      m_led.setData(m_ledBuffer);
+    }
+    public void setright(Status s)
+    {
+      rightflcolor = LookUpColor(s);
+      rightflash = LookUpFlash(s);
+      setSegment(SignalingConstants.RIGHTENDSTART, SignalingConstants.RIGHTENDSTOP, rightflcolor);
+      m_led.setData(m_ledBuffer);
+    }
+    public void setcrossbar(Status s)
+    {
+      crossflcolor = LookUpColor(s);
+      crossflash = LookUpFlash(s);
+      setSegment(SignalingConstants.CROSSENDSTART, SignalingConstants.CROSSENDSTOP, crossflcolor);
+      m_led.setData(m_ledBuffer);
+    }
+  private Color LookUpColor(Status s){
+    Color c = Color.kBlack;
+    switch(s){
+      case STABLE: c = Color.kGreen;
+      break;
+      case OK: c = Color.kDarkRed;
+      break;
+      case OPTIONALCHECK: c = Color.kLightYellow;
+      break;
+      case WARNING: c = Color.kFuchsia;
+      break;
+      case GOOD: c = Color.kLightCoral;
+      break;
+      case ERROR: c = Color.kLime;
+      break;
+      case CONE: c = Color.kOrange;
+      break;
+      case CUBE: c = Color.kPurple;
+      break;
+      case CONEFLASH: c = Color.kOrange;
+      break;
+      case CUBEFLASH: c = Color.kPurple;
+      break;
+      case NONE: c = Color.kBlack;
+      break;
+    }
+    return c;
+  }
+  private Boolean LookUpFlash(Status s){
+      return ((s == Status.CUBEFLASH) || (s == Status.CONEFLASH));
+  }
+
+  public void FlashColor()
+  {
+    m_flashcounter++;
+    if (m_flashcounter == 25){
+     if (leftflash){
+      setSegment(SignalingConstants.LEFTENDSTART, SignalingConstants.LEFTENDSTOP,leftflcolor);
+     }
+     if (rightflash){
+      setSegment(SignalingConstants.RIGHTENDSTART, SignalingConstants.RIGHTENDSTOP, rightflcolor);
+     }
+     if (crossflash){
+      setSegment(SignalingConstants.CROSSENDSTART, SignalingConstants.CROSSENDSTOP, crossflcolor);
+     }
+     m_led.setData(m_ledBuffer);
+     }
+    if (m_flashcounter == 50){
+      if (leftflash){
+        setSegment(SignalingConstants.LEFTENDSTART, SignalingConstants.LEFTENDSTOP, Color.kBlack);
+       }
+       if (rightflash){
+        setSegment(SignalingConstants.RIGHTENDSTART, SignalingConstants.RIGHTENDSTOP, Color.kBlack);
+       }
+       if (crossflash){
+        setSegment(SignalingConstants.CROSSENDSTART, SignalingConstants.CROSSENDSTOP, Color.kBlack);
+       }
+       m_led.setData(m_ledBuffer);
+      m_flashcounter = 0;
+     }
+  }
+
 
   public void update() {
     if (DriverStation.isFMSAttached() && (alliance == null)) {
@@ -115,15 +232,21 @@ public class RobotState extends SubsystemBase {
     wantedLEDState = 1;
     if (wantedLEDState == 0)
     {
-      m_Signalling.setleft(Status.NONE);
+      setleft(Status.NONE);
+      setright(Status.NONE);
+      setcrossbar(Status.NONE);
     }
     else if (wantedLEDState == 1)
     {
-      m_Signalling.setleft(Status.CONEFLASH);
+      setleft(Status.CONEFLASH);
+      setright(Status.CONEFLASH);
+      setcrossbar(Status.CONEFLASH);
     }
     else if (wantedLEDState == 2)
     {
-      m_Signalling.setleft(Status.CUBEFLASH);
+      setleft(Status.CUBEFLASH);
+      setright(Status.CUBEFLASH);
+      setcrossbar(Status.CUBEFLASH);
     }
 
     wantedLEDState++;
@@ -144,23 +267,29 @@ public class RobotState extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Intake", inputs);
-    //m_Claw.getLinebreaks() == false || m_Intake.getLinebreak() == false
+
+    FlashColor();
+
     i++;
-    if (m_Intake.getLinebreak() == false && i == 50)
+    if ((!m_Claw.getLinebreakOne() || !m_Claw.getLinebreakTwo()) && i == 50)
     {
       if (wantedLEDState == 1)
       {
-        m_Signalling.setleft(Status.CONE);
+        setleft(Status.CONE);
+        setright(Status.CONE);
+        setcrossbar(Status.CONE);
       }
       else if (wantedLEDState == 2)
       {
-        m_Signalling.setleft(Status.CUBE);
+        setleft(Status.CUBE);
+        setright(Status.CUBE);
+        setcrossbar(Status.CUBE);
       }
       i = 0;
     }
-    else if (m_Intake.getLinebreak() == true && i == 50)
+    else if ((m_Claw.getLinebreakOne() || m_Claw.getLinebreakTwo()) && i == 50)
     {
-      m_Signalling.setleft(Status.NONE);
+      setleft(Status.NONE);
       wantedLEDState = 0;
       i = 0;
     }
