@@ -26,11 +26,14 @@ public class Arm extends SubsystemBase {
     private double armEncoderAbsPosition;    
     private double lastEncoderPos;
     private final PIDController m_turningPIDController;
-
+    private int counter;
 
     private Arm() {
         armController = new CANSparkMax(Hardwaremap.arm_CID, MotorType.kBrushless);
         armEncoder = new CANCoder(Hardwaremap.armEncoder_CID);
+        this.armEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
+        this.armEncoder.configMagnetOffset(SuperStructureConstants.ARM_ENCODER_OFFSET);
+        this.armEncoder.configSensorDirection(true,100);
         this.m_turningPIDController = new PIDController(SuperStructureConstants.ARM_kP, SuperStructureConstants.ARM_kI, SuperStructureConstants.ARM_kD);
 
         setArmPidPosMode();
@@ -92,6 +95,8 @@ public class Arm extends SubsystemBase {
     public void armAnalogDown() {
         armController.set(-SuperStructureConstants.ARM_OUTPUT_POWER);
         System.out.println("Arm Analog Down"); 
+        System.out.println("Arm_Abs_Position: " + armEncoder.getAbsolutePosition()); 
+        System.out.println("Arm_Rel_Position: " + armEncoder.getPosition());
     }
     public void idle() {
         armController.set(0.0);
@@ -113,5 +118,11 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm_Position", armEncoder.getAbsolutePosition());
+        if (counter == 50) {
+            System.out.println("Arm_Position: " + armEncoder.getAbsolutePosition()); 
+            counter = 0;
+        } else {
+            counter = counter++;
+        }
     }
 }

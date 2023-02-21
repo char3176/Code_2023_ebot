@@ -516,7 +516,8 @@ public class Drivetrain extends SubsystemBase {
     // update encoders
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
-    
+   
+    /* 
     for (NetworkTableValue v:  vision_pose.readQueue()){
       double[] vision_pose_array=v.getDoubleArray();
       Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
@@ -531,6 +532,7 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("camX",cam_pose.getX());
       SmartDashboard.putNumber("camY",cam_pose.getY());
     }
+    */
     // This method will be called once per scheduler every 500ms
     
     this.arraytrack++;
