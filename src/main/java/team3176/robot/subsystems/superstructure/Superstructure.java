@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.claw.ClawInhaleCone;
 import team3176.robot.commands.claw.ClawInhaleCube;
+import team3176.robot.commands.intake.IntakeExtendFreeSpin;
 import team3176.robot.commands.intake.IntakeExtendSpin;
 import team3176.robot.commands.intake.IntakeRetractSpinot;
 import team3176.robot.constants.Hardwaremap;
@@ -41,6 +42,15 @@ public class Superstructure extends SubsystemBase {
                     .andThen(new IntakeRetractSpinot());
     }
 
+    public Command poopCube() {
+        return new ParallelCommandGroup(new IntakeExtendFreeSpin(),
+                                        this.preparePoop())
+                    .andThen(m_Claw.scoreGamePiece())
+                    .andThen(this.prepareCarry())
+                    .andThen(new IntakeRetractSpinot());
+            //May need to add Wait Cmds in the above logic
+    }
+
     public Command intakeCubeHumanPlayer() {
         return new ParallelCommandGroup(new ClawInhaleCube(), m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS))
         .andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
@@ -51,6 +61,9 @@ public class Superstructure extends SubsystemBase {
         .andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
     }
     
+    public Command preparePoop() {
+        return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_POOP_POS);
+    }
     public Command prepareCarry() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS);
     }
