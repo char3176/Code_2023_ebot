@@ -32,6 +32,7 @@ public class IntakeExtendFreeSpin extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_Intake.setBrakeMode();
+    m_Intake.Retract();
   }
 
   // Returns true when the command should end.

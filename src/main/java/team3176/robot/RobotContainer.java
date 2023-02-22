@@ -132,7 +132,7 @@ public class RobotContainer {
     //m_Controller.operator.rightBumper().onTrue(m_RobotState.setColorWantStateCommand(0));
     m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
 
-    m_Controller.operator.rightBumper().whileTrue(new IntakeExtendFreeSpin());
+    m_Controller.operator.rightBumper().whileTrue(m_Intake.extendAndFreeSpin());
 
     // m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () ->
     //m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());

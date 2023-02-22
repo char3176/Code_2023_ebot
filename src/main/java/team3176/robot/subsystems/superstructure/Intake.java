@@ -92,4 +92,15 @@ public class Intake extends SubsystemBase {
       this.spinVelocityPercent(0.0);
     });
   }
+
+
+  public Command extendAndFreeSpin() {
+    return this.startEnd(() ->{
+      this.Extend();
+      this.setCoastMode();
+    }, () -> {
+      this.Retract();
+      this.setBrakeMode();
+    });
+  }
 }
