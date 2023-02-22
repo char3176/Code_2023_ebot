@@ -34,7 +34,7 @@ public class arm_tune_high  extends CommandBase {
   @Override
   public void execute() {
       
-      m_Arm.armSetPosition(90);
+      m_Arm.setPIDPosition(315);
   }
     //if ((updatedAnalogInput < (0 + analogInputDeadband)) && (updatedAnalogInput > (0 + analogInputDeadband))) {
     //  m_Arm.

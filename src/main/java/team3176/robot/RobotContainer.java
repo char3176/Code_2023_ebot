@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.arm.*;
-import team3176.robot.commands.arm.manuallyPositionArm;
 import team3176.robot.commands.autons.*;
 import team3176.robot.commands.claw.*;
 import team3176.robot.commands.claw.ClawInhaleCube;
@@ -86,6 +86,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    Command adjustarm = m_Arm.armFineTune( () -> m_Controller.operator.getLeftY());
     m_Controller.getTransStick_Button1().whileTrue(new InstantCommand(() -> m_Drivetrain.setTurbo(true), m_Drivetrain));
     m_Controller.getTransStick_Button1().onFalse(new InstantCommand(() -> m_Drivetrain.setTurbo(false), m_Drivetrain));
     m_Controller.getTransStick_Button2()
@@ -105,7 +106,7 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
     // m_Controller.getRotStick_Button4().whileTrue(new SpinLock());
 
-    m_Controller.operator.a().onTrue(m_RobotState.setColorWantStateCommand());
+    //m_Controller.operator.a().onTrue(m_RobotState.setColorWantStateCommand());
 
     // m_Controller.operator.povUp().onTrue(new ArmToHighPosition());
     // m_Controller.operator.povRight().onTrue(new ArmToCarryPosition());
@@ -116,10 +117,13 @@ public class RobotContainer {
     // m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
 
     // m_Controller.operator.b().onTrue(new ClawInhaleCone());
-    m_Controller.operator.b().whileTrue(new ClawInhaleCone());
+    m_Controller.operator.b().whileTrue(new ParallelCommandGroup( new ClawInhaleCone(), m_Arm.armSetPositionOnce(330)));
+    m_Controller.operator.b().onFalse(m_Arm.armSetPositionOnce(240));
     // m_Controller.operator.x().onTrue(new ClawInhaleCube());
-    m_Controller.operator.x().whileTrue(new ClawInhaleCube());
-    m_Controller.operator.a().whileTrue(new IntakeExtendSpin());
+    m_Controller.operator.x().whileTrue(new ParallelCommandGroup( new ClawInhaleCube(), m_Arm.armSetPositionOnce(330)));
+    m_Controller.operator.x().onFalse(m_Arm.armSetPositionOnce(240));
+    Command groundCube = new ParallelCommandGroup(m_Arm.armSetPositionOnce(200),new IntakeExtendSpin(), new ClawInhaleCube());
+    m_Controller.operator.a().whileTrue(groundCube);
     m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
     m_Controller.operator.b().onTrue(m_RobotState.setColorWantStateCommand());
 
@@ -136,6 +140,7 @@ public class RobotContainer {
     m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
 
     m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
+    //m_Controller.operator.a().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
   }
 
   /**
