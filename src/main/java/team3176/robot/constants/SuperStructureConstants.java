@@ -26,7 +26,7 @@ public class SuperStructureConstants {
   /**
    * Percent output for inhaling
    */
-  public static final double CLAW_OUTPUT_POWER_CUBE = .3;
+  public static final double CLAW_OUTPUT_POWER_CUBE = .4;
   public static final double CLAW_OUTPUT_POWER_CONE = 1.0;
 
   /**
@@ -36,15 +36,16 @@ public class SuperStructureConstants {
 
   public static final int ARM_ENCODER_OFFSET = 0; 
 
-  public static final int ARM_kP = 0;
-  public static final int ARM_kI = 0;
-  public static final int ARM_kD = 0;
-  public static final double ARM_TOLERANCE = 4;
+  public static final double ARM_kP = 0.02;
+  public static final double ARM_kI = 0;
+  public static final double ARM_kD = 0;
+  public static final double ARM_kg = 0;
+  public static final double ARM_TOLERANCE = 3;
 
 
-  public static final double ARM_POOP_POS = 170.947;
+  public static final double ARM_POOP_POS = 134;
   public static final double ARM_CARRY_POS = 209.795;
   public static final double ARM_CATCH_POS = 11.77;
   public static final double ARM_MID_POS = 277.734;
-  public static final double ARM_HIGH_POS = 310.869;
+  public static final double ARM_HIGH_POS = 339;
 }
