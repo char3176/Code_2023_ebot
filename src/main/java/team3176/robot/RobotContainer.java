@@ -143,6 +143,8 @@ public class RobotContainer {
 
     
     m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
+
+    m_Controller.operator.rightTrigger().onTrue(m_Superstructure.poopCube());
   }
 
   /**

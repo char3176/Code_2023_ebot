@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -43,8 +44,8 @@ public class Superstructure extends SubsystemBase {
     }
 
     public Command poopCube() {
-        return new ParallelCommandGroup(new IntakeExtendFreeSpin(),
-                                        this.preparePoop())
+        return new ParallelCommandGroup(new IntakeExtendFreeSpin())
+                    .andThen(this.preparePoop())
                     .andThen(m_Claw.scoreGamePiece())
                     .andThen(this.prepareCarry())
                     .andThen(new IntakeRetractSpinot());
