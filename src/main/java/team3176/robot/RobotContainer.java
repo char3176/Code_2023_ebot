@@ -105,8 +105,6 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
     // m_Controller.getRotStick_Button4().whileTrue(new SpinLock());
 
-    m_Controller.operator.a().onTrue(m_RobotState.setColorWantStateCommand());
-
     // m_Controller.operator.povUp().onTrue(new ArmToHighPosition());
     // m_Controller.operator.povRight().onTrue(new ArmToCarryPosition());
     // m_Controller.operator.povDown().onTrue(new ArmToLowPosition());
@@ -115,13 +113,13 @@ public class RobotContainer {
     // m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
     // m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
 
-    // m_Controller.operator.b().onTrue(new ClawInhaleCone());
+    m_Controller.operator.b().onTrue(m_RobotState.setColorWantStateCommand(1));
     m_Controller.operator.b().whileTrue(new ClawInhaleCone());
-    // m_Controller.operator.x().onTrue(new ClawInhaleCube());
+    m_Controller.operator.x().onTrue(m_RobotState.setColorWantStateCommand(2));
     m_Controller.operator.x().whileTrue(new ClawInhaleCube());
+    m_Controller.operator.start().onTrue(m_RobotState.setColorWantStateCommand(0));
     m_Controller.operator.a().whileTrue(new IntakeExtendSpin());
     m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
-    m_Controller.operator.b().onTrue(m_RobotState.setColorWantStateCommand());
 
     // m_Controller.operator.a().whileTrue(new PickupProtocol());
     // m_Controller.operator.b().onTrue(AskForCone());
