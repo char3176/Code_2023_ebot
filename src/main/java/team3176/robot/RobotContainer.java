@@ -90,24 +90,30 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    Command adjustarm = m_Arm.armFineTune( () -> m_Controller.operator.getLeftY());
-    m_Controller.getTransStick_Button1().whileTrue(new InstantCommand(() -> m_Drivetrain.setTurbo(true), m_Drivetrain));
-    m_Controller.getTransStick_Button1().onFalse(new InstantCommand(() -> m_Drivetrain.setTurbo(false), m_Drivetrain));
+    m_Controller.getTransStick_Button1().whileTrue(m_Claw.scoreGamePiece());
+    //m_Controller.getTransStick_Button1().onFalse(new InstantCommand(() -> m_Drivetrain.setTurbo(false), m_Drivetrain));
     m_Controller.getTransStick_Button2()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
-    m_Controller.getTransStick_Button3().whileTrue(m_Claw.scoreGamePiece());
-    // m_Controller.getTransStick_Button4().whileTrue(new PickupProtocol());
-    m_Controller.getTransStick_Button3()
-        .whileTrue(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DEFENSE), m_Drivetrain));
-    m_Controller.getTransStick_Button3()
-        .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
+    m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
+    m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
+    // m_Controller.getTransStick_Button3()
+    //     .whileTrue(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DEFENSE), m_Drivetrain));
+    // m_Controller.getTransStick_Button3()
+    //     .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
 
     // m_Controller.getRotStick_Button1().whileTrue(new TurtleSpeed());
     // m_Controller.getRotStick_Button2().whileTrue(new FlipField);
-    m_Controller.getRotStick_Button4()
-        .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    m_Controller.getRotStick_Button4()
-        .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+    m_Controller.getRotStick_Button1().whileTrue(new TurtleSpeed(
+      () -> m_Controller.getForward(),
+      () -> m_Controller.getStrafe(),
+      () -> m_Controller.getSpin()));
+    m_Controller.getRotStick_Button2().whileTrue(m_Superstructure.groundCube());
+    m_Controller.getRotStick_Button3().whileTrue(m_Superstructure.intakeConeHumanPlayer());
+    m_Controller.getRotStick_Button4().whileTrue(m_Superstructure.intakeCubeHumanPlayer());
+    // m_Controller.getRotStick_Button4()
+    //     .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
+    // m_Controller.getRotStick_Button4()
+    //     .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
     // m_Controller.getRotStick_Button4().whileTrue(new SpinLock());
 
     // m_Controller.operator.povUp().onTrue(new ArmToHighPosition());
