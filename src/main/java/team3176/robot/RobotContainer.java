@@ -101,7 +101,6 @@ public class RobotContainer {
     // m_Controller.getTransStick_Button3()
     //     .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
 
-    // m_Controller.getRotStick_Button1().whileTrue(new TurtleSpeed());
     // m_Controller.getRotStick_Button2().whileTrue(new FlipField);
     m_Controller.getRotStick_Button1().whileTrue(new TurtleSpeed(
       () -> m_Controller.getForward(),
@@ -115,11 +114,13 @@ public class RobotContainer {
     // m_Controller.getRotStick_Button4()
     //     .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
     // m_Controller.getRotStick_Button4().whileTrue(new SpinLock());
+    m_Controller.getTransStick_Button8()
+        .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 
-    // m_Controller.operator.povUp().onTrue(new ArmToHighPosition());
-    // m_Controller.operator.povRight().onTrue(new ArmToCarryPosition());
-    // m_Controller.operator.povDown().onTrue(new ArmToLowPosition());
-    // m_Controller.operator.povLeft().onTrue(new ArmToMidPosition());
+    m_Controller.operator.povUp().whileTrue(m_Superstructure.prepareScoreHigh());
+    m_Controller.operator.povRight().whileTrue(m_Superstructure.prepareCarry());
+    m_Controller.operator.povDown().whileTrue(m_Superstructure.prepareCatch());
+    m_Controller.operator.povLeft().whileTrue(m_Superstructure.prepareScoreMid());
 
     // m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
     // m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
@@ -128,18 +129,18 @@ public class RobotContainer {
     m_Controller.operator.b().whileTrue(m_Superstructure.intakeConeHumanPlayer());
     m_Controller.operator.x().onTrue(m_RobotState.setColorWantStateCommand(2));
     m_Controller.operator.x().whileTrue(m_Superstructure.intakeCubeHumanPlayer());
-    m_Controller.operator.start().onTrue(m_RobotState.setColorWantStateCommand(0));
+    m_Controller.operator.rightBumper().onTrue(m_RobotState.setColorWantStateCommand(0));
     m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
 
     // m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () ->
-    m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());
-    m_Controller.operator.leftBumper().onFalse(new armAnalogIdle());
+    //m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());
+    //m_Controller.operator.leftBumper().onFalse(new armAnalogIdle());
 
-    m_Controller.operator.rightBumper().whileTrue(new armAnalogUp());
-    m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
+    //m_Controller.operator.rightBumper().whileTrue(new armAnalogUp());
+    //m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
 
     
-    //m_Controller.operator.a().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
+    m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
   }
 
   /**
