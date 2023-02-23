@@ -19,7 +19,7 @@ import team3176.robot.constants.SuperStructureConstants;
 
 public class Arm extends SubsystemBase {
     private static final double MAX_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_HIGH_POS;
-    private static final double MIN_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_POOP_POS;
+    private static final double MIN_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_ZERO_POS;
     private static Arm instance;
     private CANSparkMax armController;
     private CANCoder armEncoder;
@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase {
     private int counter;
     public enum States {OPEN_LOOP,CLOSED_LOOP};
     private States currentState = States.OPEN_LOOP;
-    private double arm_setpoint_angle = SuperStructureConstants.ARM_POOP_POS;
+    private double armSetpointAngleRaw = SuperStructureConstants.ARM_ZERO_POS;
 
     private Arm() {
         armController = new CANSparkMax(Hardwaremap.arm_CID, MotorType.kBrushless);
@@ -67,7 +67,7 @@ public class Arm extends SubsystemBase {
      */
     public void setPIDPosition(double desiredAngle) {
         //need to double check these values
-        double physicsAngle = (desiredAngle - 240) ;
+        double physicsAngle = (desiredAngle - SuperStructureConstants.ARM_CATCH_POS);
         this.armEncoderAbsPosition = armEncoder.getAbsolutePosition();
         
         //kg is the scalar representing the percent power needed to hold the arm at 90 degrees away from the robot
@@ -81,7 +81,6 @@ public class Arm extends SubsystemBase {
         turnOutput = MathUtil.clamp(turnOutput,-0.2,0.2);
         armController.set(turnOutput + feedForward);
     }
-
     public void armAnalogUp() {
         this.currentState = States.OPEN_LOOP;
         armController.set(SuperStructureConstants.ARM_OUTPUT_POWER);
@@ -98,11 +97,11 @@ public class Arm extends SubsystemBase {
     }
     public void fineTune(double delta) {
         this.currentState = States.CLOSED_LOOP;
-        this.arm_setpoint_angle += delta * 0.5;
+        this.armSetpointAngleRaw += delta * 0.5;
         
     }
     public boolean isArmAtPosition() {
-        return Math.abs(this.armEncoder.getAbsolutePosition() - this.arm_setpoint_angle) < SuperStructureConstants.ARM_TOLERANCE;
+        return Math.abs(this.armEncoder.getAbsolutePosition() - this.armSetpointAngleRaw) < SuperStructureConstants.ARM_TOLERANCE;
     }
     /*
      * Commands
@@ -113,7 +112,7 @@ public class Arm extends SubsystemBase {
     public Command armSetPositionBlocking(double angleInDegrees) {
         return new FunctionalCommand(() -> {
             this.currentState = States.CLOSED_LOOP;
-            this.arm_setpoint_angle = angleInDegrees;}, 
+            this.armSetpointAngleRaw = angleInDegrees;}, 
             null, 
             null, 
             () -> isArmAtPosition(), 
@@ -122,7 +121,7 @@ public class Arm extends SubsystemBase {
     public Command armSetPositionOnce(double angleInDegrees) {
         return this.runOnce(() -> {
             this.currentState = States.CLOSED_LOOP;
-            this.arm_setpoint_angle = angleInDegrees;});
+            this.armSetpointAngleRaw = angleInDegrees;});
     }
     public Command armFineTune(DoubleSupplier angleDeltaCommand) {
         return this.run(() -> fineTune(-angleDeltaCommand.getAsDouble()));
@@ -138,6 +137,7 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Arm_Position", armEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Arm_Position_Relative", armEncoder.getAbsolutePosition() - SuperStructureConstants.ARM_ZERO_POS);
         // if (counter == 50) {
         //     System.out.println("Arm_Position: " + armEncoder.getAbsolutePosition()); 
         //     counter = 0;
@@ -145,8 +145,8 @@ public class Arm extends SubsystemBase {
         //     counter = counter++;
         // }
         if(this.currentState == States.CLOSED_LOOP) {
-            this.arm_setpoint_angle = MathUtil.clamp(this.arm_setpoint_angle, SuperStructureConstants.ARM_CARRY_POS, SuperStructureConstants.ARM_HIGH_POS);
-            setPIDPosition(arm_setpoint_angle);
+            this.armSetpointAngleRaw = MathUtil.clamp(this.armSetpointAngleRaw, SuperStructureConstants.ARM_CARRY_POS, SuperStructureConstants.ARM_HIGH_POS);
+            setPIDPosition(armSetpointAngleRaw);
         }
     }
 }

@@ -63,7 +63,7 @@ public class Superstructure extends SubsystemBase {
     }
     
     public Command preparePoop() {
-        return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_POOP_POS);
+        return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_ZERO_POS);
     }
     public Command prepareCarry() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS);
