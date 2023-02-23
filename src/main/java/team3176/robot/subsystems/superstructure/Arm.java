@@ -9,10 +9,15 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
@@ -61,11 +66,12 @@ public class Arm extends SubsystemBase {
         if (instance == null){instance = new Arm();}
         return instance;
     }
+    
     /**
      * 
      * @param desiredAngle in degrees in Encoder Frame
      */
-    public void setPIDPosition(double desiredAngle) {
+    private void setPIDPosition(double desiredAngle) {
         //need to double check these values
         double physicsAngle = (desiredAngle - SuperStructureConstants.ARM_CATCH_POS);
         this.armEncoderAbsPosition = armEncoder.getAbsolutePosition();
@@ -100,8 +106,19 @@ public class Arm extends SubsystemBase {
         this.armSetpointAngleRaw += delta * 0.5;
         
     }
+    public double getArmPosition() {
+        return armEncoder.getAbsolutePosition();
+    }
     public boolean isArmAtPosition() {
         return Math.abs(this.armEncoder.getAbsolutePosition() - this.armSetpointAngleRaw) < SuperStructureConstants.ARM_TOLERANCE;
+    }
+    /**
+     * to be used for trajectory following without disrupting other commands
+     * @param setpointAngle
+     */
+    public void setAngleSetpoint(double setpointAngle) {
+        this.currentState = States.CLOSED_LOOP;
+        this.armSetpointAngleRaw = setpointAngle;
     }
     /*
      * Commands
