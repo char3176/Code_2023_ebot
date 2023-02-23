@@ -72,12 +72,12 @@ public class Superstructure extends SubsystemBase {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS);
     }
     public Command prepareScoreMid() {
-        return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_MID_POS)
-        .andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
+        return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_MID_POS);
+        //.andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
     }
     public Command prepareScoreHigh() {
-        return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS)
-        .andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
+        return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS);
+        //.andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
     }
     public Command scoreMid() {
         return new WaitCommand(0);

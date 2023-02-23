@@ -39,12 +39,12 @@ public class SuperStructureConstants {
   public static final double ARM_kP = 0.02;
   public static final double ARM_kI = 0;
   public static final double ARM_kD = 0;
-  public static final double ARM_kg = 0;
+  public static final double ARM_kg = 0.00;
   public static final double ARM_TOLERANCE = 3;
 
-
+  //new real tic value = 115
   public static final double ARM_POOP_POS = 134;
-  public static final double ARM_CARRY_POS = 240;
+  public static final double ARM_CARRY_POS = 182;
   public static final double ARM_CATCH_POS = 200;
   public static final double ARM_MID_POS = 280;
   public static final double ARM_HIGH_POS = 339;

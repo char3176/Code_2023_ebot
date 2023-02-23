@@ -50,7 +50,7 @@ public class Arm extends SubsystemBase {
         this.m_turningPIDController.setP(SuperStructureConstants.ARM_kP);
         this.m_turningPIDController.setI(SuperStructureConstants.ARM_kI);
         this.m_turningPIDController.setD(SuperStructureConstants.ARM_kD);
-        this.m_turningPIDController.enableContinuousInput(0, 360);
+        //this.m_turningPIDController.enableContinuousInput(0, 360);
         this.armController.setOpenLoopRampRate(0.5);
         
         this.armController.burnFlash();
@@ -112,7 +112,7 @@ public class Arm extends SubsystemBase {
             this.arm_setpoint_angle = angleInDegrees;});
     }
     public Command armFineTune(DoubleSupplier angleDeltaCommand) {
-        return this.run(() -> fineTune(angleDeltaCommand.getAsDouble()));
+        return this.run(() -> fineTune(-angleDeltaCommand.getAsDouble()));
     }
     public Command armAnalogUpCommand() {
         return this.runEnd(() -> armAnalogUp(), () -> idle());
@@ -132,7 +132,7 @@ public class Arm extends SubsystemBase {
         //     counter = counter++;
         // }
         if(this.currentState == States.CLOSED_LOOP) {
-            this.arm_setpoint_angle = MathUtil.clamp(this.arm_setpoint_angle, SuperStructureConstants.ARM_POOP_POS, SuperStructureConstants.ARM_HIGH_POS);
+            this.arm_setpoint_angle = MathUtil.clamp(this.arm_setpoint_angle, SuperStructureConstants.ARM_CARRY_POS, SuperStructureConstants.ARM_HIGH_POS);
             setPIDPosition(arm_setpoint_angle);
         }
     }
