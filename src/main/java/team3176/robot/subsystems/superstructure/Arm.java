@@ -38,6 +38,7 @@ public class Arm extends SubsystemBase {
 
     private Arm() {
         armController = new CANSparkMax(Hardwaremap.arm_CID, MotorType.kBrushless);
+        armController.setSmartCurrentLimit(SuperStructureConstants.ARM_CURRENT_LIMIT_A);
         armEncoder = new CANCoder(Hardwaremap.armEncoder_CID);
         this.m_turningPIDController = new PIDController(SuperStructureConstants.ARM_kP, SuperStructureConstants.ARM_kI, SuperStructureConstants.ARM_kD);
         SmartDashboard.putNumber("Arm_kp", SuperStructureConstants.ARM_kP);
@@ -86,6 +87,7 @@ public class Arm extends SubsystemBase {
         double turnOutput = m_turningPIDController.calculate(this.armEncoderAbsPosition, desiredAngle);
         turnOutput = MathUtil.clamp(turnOutput,-0.2,0.2);
         armController.set(turnOutput + feedForward);
+        SmartDashboard.putNumber("Arm_Output", turnOutput + feedForward);
     }
     public void armAnalogUp() {
         this.currentState = States.OPEN_LOOP;
