@@ -5,7 +5,7 @@ public class SuperStructureConstants {
     /**
    * How many amps the arm motor can use.
    */
-  public static final int ARM_CURRENT_LIMIT_A = 20;
+  public static final int ARM_CURRENT_LIMIT_A = 10;
 
   /**
    * Percent output to run the arm up/down at
