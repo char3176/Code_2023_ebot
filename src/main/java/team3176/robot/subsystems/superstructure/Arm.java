@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.constants.Hardwaremap;
@@ -100,11 +101,23 @@ public class Arm extends SubsystemBase {
         this.arm_setpoint_angle += delta * 0.5;
         
     }
+    public boolean isArmAtPosition() {
+        return Math.abs(this.armEncoder.getAbsolutePosition() - this.arm_setpoint_angle) < SuperStructureConstants.ARM_TOLERANCE;
+    }
     /*
      * Commands
      */
     public Command armSetPosition(double angleInDegrees) {
         return this.run(() -> setPIDPosition(angleInDegrees));
+    }
+    public Command armSetPositionBlocking(double angleInDegrees) {
+        return new FunctionalCommand(() -> {
+            this.currentState = States.CLOSED_LOOP;
+            this.arm_setpoint_angle = angleInDegrees;}, 
+            null, 
+            null, 
+            () -> isArmAtPosition(), 
+            this);
     }
     public Command armSetPositionOnce(double angleInDegrees) {
         return this.runOnce(() -> {

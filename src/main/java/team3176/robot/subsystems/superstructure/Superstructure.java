@@ -73,20 +73,9 @@ public class Superstructure extends SubsystemBase {
     }
     public Command prepareScoreMid() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_MID_POS);
-        //.andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
     }
     public Command prepareScoreHigh() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS);
-        //.andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
-    }
-    public Command scoreMid() {
-        return new WaitCommand(0);
-    }
-    public Command scoreHigh() {
-        return new WaitCommand(0);
-    }
-    public Command intake(GamePiece p) {
-        return new WaitCommand(0);
     }
     
 }
