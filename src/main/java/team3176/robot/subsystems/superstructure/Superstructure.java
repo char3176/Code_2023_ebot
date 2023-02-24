@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import team3176.robot.commands.intake.*;
 import team3176.robot.commands.claw.ClawInhaleCone;
 import team3176.robot.commands.claw.ClawInhaleCube;
 import team3176.robot.commands.intake.IntakeExtendSpin;
