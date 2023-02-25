@@ -111,8 +111,10 @@ public class RobotContainer {
     m_Controller.getRotStick_Button2().whileTrue(m_Superstructure.groundCube());
     m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
+
     m_Controller.getRotStick_Button3().whileTrue(m_Superstructure.intakeConeHumanPlayer());
     m_Controller.getRotStick_Button3().onFalse(m_Superstructure.prepareCarry());
+
     m_Controller.getRotStick_Button4().whileTrue(m_Superstructure.intakeCubeHumanPlayer());
     m_Controller.getRotStick_Button4().onFalse(m_Superstructure.prepareCarry());
     // m_Controller.getRotStick_Button4()
