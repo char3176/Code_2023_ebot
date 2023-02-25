@@ -137,12 +137,16 @@ public class RobotContainer {
     m_Controller.operator.b().onTrue(m_RobotState.setColorWantStateCommand(1));
     m_Controller.operator.b().whileTrue(m_Superstructure.intakeConeHumanPlayer());
     m_Controller.operator.b().onFalse(m_Superstructure.prepareCarry());
+
     m_Controller.operator.x().onTrue(m_RobotState.setColorWantStateCommand(2));
     m_Controller.operator.x().whileTrue(m_Superstructure.intakeCubeHumanPlayer());
     m_Controller.operator.x().onFalse(m_Superstructure.prepareCarry());
+
     //m_Controller.operator.rightBumper().onTrue(m_RobotState.setColorWantStateCommand(0));
     m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
     m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
+
+  
     m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
     m_Controller.operator.y().onFalse(new ClawIdle());
 
