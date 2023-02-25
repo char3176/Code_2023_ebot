@@ -143,7 +143,8 @@ public class RobotContainer {
 
     //m_Controller.operator.rightBumper().onTrue(m_RobotState.setColorWantStateCommand(0));
     m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
-    m_Controller.operator.a().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
+    m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
+    m_Controller.operator.a().onFalse(m_Superstructure.prepareCarry());
 
   
     m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
@@ -163,9 +164,9 @@ public class RobotContainer {
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(200).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(new ArmFollowTrajectory(SuperStructureConstants.ARM_MID_POS));
-    m_Controller.operator.rightTrigger().whileTrue(new PoopCube());
-    m_Controller.operator.rightTrigger().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
-    m_Controller.operator.leftTrigger().onTrue(m_Superstructure.preparePoop());
+    m_Controller.operator.start().whileTrue(new PoopCube());
+    m_Controller.operator.start().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
+    m_Controller.operator.back().whileTrue(m_Superstructure.preparePoop());
   }
 
   /**

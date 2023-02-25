@@ -28,28 +28,33 @@ public class PoopCube extends CommandBase {
     addRequirements(m_Claw);
     addRequirements(m_Intake);
     addRequirements(m_Arm);
+    addRequirements(m_Superstructure);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("PoopCube Init");
     m_Intake.extendAndFreeSpin();
     currentArmPosition = m_Arm.getArmPosition();
     kArmPoopLowerLimit = SuperStructureConstants.ARM_ZERO_POS - this.CarryDeadband;
     kArmPoopUpperLimit = SuperStructureConstants.ARM_ZERO_POS + this.CarryDeadband;
     kArmCarryLowerLimit = SuperStructureConstants.ARM_CARRY_POS - this.CarryDeadband;
     kArmCarryUpperLimit = SuperStructureConstants.ARM_CARRY_POS + this.CarryDeadband;
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
+    System.out.println("PoopCube Exec" + kArmPoopLowerLimit + ", " + kArmPoopUpperLimit + ", " + kArmCarryLowerLimit + ", " + kArmCarryUpperLimit);
+    m_Intake.extendAndFreeSpin();
     m_Superstructure.preparePoop();
     if (m_Arm.getArmPosition() >= kArmPoopLowerLimit && m_Arm.getArmPosition() <= kArmPoopUpperLimit) {
       m_Claw.scoreGamePiece();
     }
-    if (m_Claw.getLinebreakOne() == true && m_Claw.getLinebreakTwo() == true) {
+    if (m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false) {
       m_Claw.idle();
       m_Superstructure.prepareCarry();
     }
@@ -60,6 +65,7 @@ public class PoopCube extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("PoopCube End");
     m_Intake.Retract();
     m_Intake.spinVelocityPercent(0);
   }
@@ -67,10 +73,11 @@ public class PoopCube extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (currentArmPosition >= kArmCarryLowerLimit && currentArmPosition <= kArmCarryUpperLimit) {
-      return true;
-    } else{
+    System.out.println("PoopCube IsFinished");
+    //if (currentArmPosition >= kArmCarryLowerLimit && currentArmPosition <= kArmCarryUpperLimit) {
+    //  return true;
+    //} else{
       return false;
-    }
+    //}
   }
 }
