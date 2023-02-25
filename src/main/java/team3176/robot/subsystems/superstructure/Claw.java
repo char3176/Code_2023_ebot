@@ -47,8 +47,8 @@ public class Claw extends SubsystemBase {
     public void hold() {
         System.out.println("m_Claw.hold()");
         if(currentGamePiece == GamePiece.CUBE) {
-            //setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
-            idle(); 
+            setClawMotor(SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
+            //idle(); 
         } else {
             setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
         }
