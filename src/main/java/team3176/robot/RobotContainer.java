@@ -179,7 +179,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // String chosen = m_autonChooser.getSelected();
-    String chosen = "Cube_balance";
+    String chosen = "cone_xwire_balance";
 
     PathPlannerAuto PPSwerveauto = new PathPlannerAuto(chosen);
     return PPSwerveauto.getauto();
