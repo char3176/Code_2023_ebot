@@ -25,6 +25,7 @@ import team3176.robot.commands.drivetrain.*;
 import team3176.robot.commands.drivetrain.SwerveDrive;
 import team3176.robot.commands.drivetrain.SwerveDefense;
 import team3176.robot.commands.intake.*;
+import team3176.robot.commands.superstructure.*;
 import team3176.robot.commands.vision.*;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.controller.Controller;
@@ -164,7 +165,7 @@ public class RobotContainer {
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(200).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     m_Controller.operator.leftBumper().onTrue(new ArmFollowTrajectory(SuperStructureConstants.ARM_MID_POS));
-    m_Controller.operator.rightTrigger().whileTrue(m_Superstructure.poopCube());
+    m_Controller.operator.rightTrigger().whileTrue(new PoopCube());
     m_Controller.operator.rightTrigger().onFalse(new IntakeRetractSpinot());
     m_Controller.operator.leftTrigger().onTrue(m_Superstructure.preparePoop());
   }
