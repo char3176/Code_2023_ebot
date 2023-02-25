@@ -20,8 +20,8 @@ import team3176.robot.commands.drivetrain.SwerveDrive;
 import team3176.robot.commands.drivetrain.SwerveDefense;
 import team3176.robot.commands.superstructure.*;
 import team3176.robot.commands.superstructure.arm.*;
+import team3176.robot.commands.superstructure.claw.*;
 import team3176.robot.commands.superstructure.intake.*;
-import team3176.robot.commands.superstructure.intake.claw.*;
 import team3176.robot.commands.vision.*;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.controller.Controller;
@@ -109,7 +109,7 @@ public class RobotContainer {
       () -> m_Controller.getStrafe(),
       () -> m_Controller.getSpin()));
     m_Controller.getRotStick_Button2().whileTrue(m_Superstructure.groundCube());
-    m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot());
+    m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
     m_Controller.getRotStick_Button3().whileTrue(m_Superstructure.intakeConeHumanPlayer());
     m_Controller.getRotStick_Button3().onFalse(m_Superstructure.prepareCarry());
@@ -141,7 +141,7 @@ public class RobotContainer {
 
     //m_Controller.operator.rightBumper().onTrue(m_RobotState.setColorWantStateCommand(0));
     m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
-    m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
+    m_Controller.operator.a().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
 
   
     m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
@@ -160,9 +160,9 @@ public class RobotContainer {
     
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(200).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
-    m_Controller.operator.leftBumper().onTrue(new ArmFollowTrajectory(SuperStructureConstants.ARM_MID_POS));
+    //m_Controller.operator.leftBumper().onTrue(new ArmFollowTrajectory(SuperStructureConstants.ARM_MID_POS));
     m_Controller.operator.rightTrigger().whileTrue(new PoopCube());
-    m_Controller.operator.rightTrigger().onFalse(new IntakeRetractSpinot());
+    m_Controller.operator.rightTrigger().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.operator.leftTrigger().onTrue(m_Superstructure.preparePoop());
   }
 

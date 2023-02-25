@@ -21,13 +21,13 @@ public class PoopCube extends CommandBase {
   Superstructure m_Superstructure = Superstructure.getInstance();
   Double CarryDeadband = 5.0;
   Double currentArmPosition;
-  Double kArmUpperLimit, kArmLowerLimit;
+  Double kArmPoopUpperLimit, kArmPoopLowerLimit, kArmCarryUpperLimit, kArmCarryLowerLimit;
 
   public PoopCube() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Claw);
-
-
+    addRequirements(m_Intake);
+    addRequirements(m_Arm);
   }
 
   // Called when the command is initially scheduled.
@@ -35,8 +35,10 @@ public class PoopCube extends CommandBase {
   public void initialize() {
     m_Intake.extendAndFreeSpin();
     currentArmPosition = m_Arm.getArmPosition();
-    kArmLowerLimit = SuperStructureConstants.ARM_ZERO_POS - this.CarryDeadband;
-    kArmUpperLimit = SuperStructureConstants.ARM_ZERO_POS + this.CarryDeadband;
+    kArmPoopLowerLimit = SuperStructureConstants.ARM_ZERO_POS - this.CarryDeadband;
+    kArmPoopUpperLimit = SuperStructureConstants.ARM_ZERO_POS + this.CarryDeadband;
+    kArmCarryLowerLimit = SuperStructureConstants.ARM_CARRY_POS - this.CarryDeadband;
+    kArmCarryUpperLimit = SuperStructureConstants.ARM_CARRY_POS + this.CarryDeadband;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,7 +46,7 @@ public class PoopCube extends CommandBase {
   public void execute() 
   {
     m_Superstructure.preparePoop();
-    if (m_Arm.getArmPosition() >= SuperStructureConstants.ARM_ZERO_POS) {
+    if (m_Arm.getArmPosition() >= kArmPoopLowerLimit && m_Arm.getArmPosition() <= kArmPoopUpperLimit) {
       m_Claw.scoreGamePiece();
     }
     if (m_Claw.getLinebreakOne() == true && m_Claw.getLinebreakTwo() == true) {
@@ -65,7 +67,7 @@ public class PoopCube extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (currentArmPosition >= kArmLowerLimit && currentArmPosition >= kArmUpperLimit) {
+    if (currentArmPosition >= kArmCarryLowerLimit && currentArmPosition <= kArmCarryUpperLimit) {
       return true;
     } else{
       return false;
