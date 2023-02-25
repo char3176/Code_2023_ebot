@@ -8,11 +8,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import team3176.robot.commands.intake.*;
-import team3176.robot.commands.claw.ClawInhaleCone;
-import team3176.robot.commands.claw.ClawInhaleCube;
-import team3176.robot.commands.intake.IntakeExtendSpin;
-import team3176.robot.commands.intake.IntakeRetractSpinot;
+import team3176.robot.commands.superstructure.intake.*;
+import team3176.robot.commands.superstructure.intake.claw.ClawInhaleCone;
+import team3176.robot.commands.superstructure.intake.claw.ClawInhaleCube;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
 

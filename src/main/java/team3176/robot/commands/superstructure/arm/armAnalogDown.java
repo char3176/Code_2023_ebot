@@ -2,30 +2,41 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package team3176.robot.commands.intake;
+package team3176.robot.commands.superstructure.arm;
+
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import team3176.robot.subsystems.superstructure.Intake;
+import team3176.robot.subsystems.superstructure.Arm;
 
-public class IntakeRetractSpinot extends CommandBase {
-  /** Creates a new IntakeRetractSpinot. */
-  Intake m_Intake = Intake.getInstance();
-  public IntakeRetractSpinot() {
+public class armAnalogDown  extends CommandBase {
+  /** Creates a new IntakeExtendSpin. */
+  private Arm m_Arm = Arm.getInstance();
+  private DoubleSupplier analogInput;
+  private Double analogInputDeadband;
+
+  public armAnalogDown() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_Intake);
+    addRequirements(m_Arm);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() 
-  {
-    m_Intake.Retract();
-    m_Intake.spinVelocityPercent(0);
+  public void execute() {
+      m_Arm.armAnalogDown();
   }
+   
+    //if ((updatedAnalogInput < (0 + analogInputDeadband)) && (updatedAnalogInput > (0 + analogInputDeadband))) {
+    //  m_Arm.
+    //}
+    
 
   // Called once the command ends or is interrupted.
   @Override
@@ -34,6 +45,6 @@ public class IntakeRetractSpinot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+      return false;
   }
 }

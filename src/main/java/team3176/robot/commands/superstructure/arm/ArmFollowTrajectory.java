@@ -1,4 +1,4 @@
-package team3176.robot.commands.arm;
+package team3176.robot.commands.superstructure.arm;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;

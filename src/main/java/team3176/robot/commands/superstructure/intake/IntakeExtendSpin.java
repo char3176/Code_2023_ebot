@@ -2,44 +2,38 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package team3176.robot.commands.claw;
+package team3176.robot.commands.superstructure.intake;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import team3176.robot.subsystems.superstructure.Claw;
-import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
+import team3176.robot.subsystems.superstructure.Intake;
 
-public class ClawIdle extends CommandBase {
-  /** Creates a new ClawInhale. */
-  Claw m_Claw = Claw.getInstance();
-
-  public ClawIdle() {
+public class IntakeExtendSpin extends CommandBase {
+  /** Creates a new IntakeExtendSpin. */
+  Intake m_Intake = Intake.getInstance();
+  public IntakeExtendSpin() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_Claw);
+    addRequirements(m_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_Claw.idle();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-  
+    m_Intake.Extend();
+    m_Intake.spinVelocityPercent(1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

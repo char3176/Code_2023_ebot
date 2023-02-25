@@ -2,20 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package team3176.robot.commands.arm;
+package team3176.robot.commands.superstructure.arm;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3176.robot.subsystems.superstructure.Arm;
 
-public class armAnalogDown  extends CommandBase {
+public class armAnalogUp  extends CommandBase {
   /** Creates a new IntakeExtendSpin. */
   private Arm m_Arm = Arm.getInstance();
   private DoubleSupplier analogInput;
   private Double analogInputDeadband;
 
-  public armAnalogDown() {
+  public armAnalogUp() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Arm);
 
@@ -30,7 +30,7 @@ public class armAnalogDown  extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      m_Arm.armAnalogDown();
+      m_Arm.armAnalogUp();
   }
    
     //if ((updatedAnalogInput < (0 + analogInputDeadband)) && (updatedAnalogInput > (0 + analogInputDeadband))) {
