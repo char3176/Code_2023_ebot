@@ -21,6 +21,7 @@ import team3176.robot.commands.drivetrain.SwerveDefense;
 import team3176.robot.commands.superstructure.*;
 import team3176.robot.commands.superstructure.arm.*;
 import team3176.robot.commands.superstructure.claw.*;
+import team3176.robot.commands.superstructure.claw.ClawIdle;
 import team3176.robot.commands.superstructure.intake.*;
 import team3176.robot.commands.vision.*;
 import team3176.robot.constants.SuperStructureConstants;
@@ -167,6 +168,7 @@ public class RobotContainer {
     m_Controller.operator.start().whileTrue(new PoopCube());
     m_Controller.operator.start().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.operator.back().whileTrue(m_Superstructure.preparePoop());
+    m_Controller.operator.rightTrigger().onTrue(new ClawIdle()); 
   }
 
   /**

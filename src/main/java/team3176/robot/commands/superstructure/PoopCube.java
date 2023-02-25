@@ -6,6 +6,7 @@ package team3176.robot.commands.superstructure;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.superstructure.Arm;
 import team3176.robot.subsystems.superstructure.Claw;
@@ -35,7 +36,7 @@ public class PoopCube extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("PoopCube Init");
-    m_Intake.extendAndFreeSpin();
+    //m_Intake.extendAndFreeSpin();
     currentArmPosition = m_Arm.getArmPosition();
     kArmPoopLowerLimit = SuperStructureConstants.ARM_ZERO_POS - this.CarryDeadband;
     kArmPoopUpperLimit = SuperStructureConstants.ARM_ZERO_POS + this.CarryDeadband;
@@ -49,13 +50,15 @@ public class PoopCube extends CommandBase {
   public void execute() 
   {
     System.out.println("PoopCube Exec" + kArmPoopLowerLimit + ", " + kArmPoopUpperLimit + ", " + kArmCarryLowerLimit + ", " + kArmCarryUpperLimit);
-    m_Intake.extendAndFreeSpin();
+    //m_Intake.extendAndFreeSpin();
     m_Superstructure.preparePoop();
-    if (m_Arm.getArmPosition() >= kArmPoopLowerLimit && m_Arm.getArmPosition() <= kArmPoopUpperLimit) {
+    new WaitCommand(2);
+    //if (m_Arm.getArmPosition() >= kArmPoopLowerLimit && m_Arm.getArmPosition() <= kArmPoopUpperLimit) {
       m_Claw.scoreGamePiece();
-    }
+    //}
     if (m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false) {
       m_Claw.idle();
+      new WaitCommand(2);
       m_Superstructure.prepareCarry();
     }
     this.currentArmPosition = m_Arm.getArmPosition();
@@ -66,8 +69,8 @@ public class PoopCube extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     System.out.println("PoopCube End");
-    m_Intake.Retract();
-    m_Intake.spinVelocityPercent(0);
+    //m_Intake.Retract();
+    //m_Intake.spinVelocityPercent(0);
   }
 
   // Returns true when the command should end.
