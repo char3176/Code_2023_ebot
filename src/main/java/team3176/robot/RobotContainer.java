@@ -18,6 +18,8 @@ import team3176.robot.commands.arm.*;
 import team3176.robot.commands.arm.manuallyPositionArm;
 import team3176.robot.commands.autons.*;
 import team3176.robot.commands.claw.*;
+import team3176.robot.commands.claw.ClawIdle;
+
 import team3176.robot.commands.claw.ClawInhaleCube;
 import team3176.robot.commands.drivetrain.*;
 import team3176.robot.commands.drivetrain.SwerveDrive;
@@ -142,7 +144,9 @@ public class RobotContainer {
     m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
     m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
     m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
+    m_Controller.operator.y().onFalse(new ClawIdle());
 
+    
     m_Controller.operator.rightBumper().whileTrue(m_Intake.extendAndFreeSpin());
 
     // m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () ->
