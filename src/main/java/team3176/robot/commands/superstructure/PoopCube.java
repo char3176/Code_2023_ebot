@@ -21,7 +21,7 @@ public class PoopCube extends CommandBase {
   Superstructure m_Superstructure = Superstructure.getInstance();
   Double CarryDeadband = 5.0;
   Double currentArmPosition;
-  Double kArmUpperLimit, kLowerLimit;
+  Double kArmUpperLimit, kArmLowerLimit;
 
   public PoopCube() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -35,7 +35,7 @@ public class PoopCube extends CommandBase {
   public void initialize() {
     m_Intake.extendAndFreeSpin();
     currentArmPosition = m_Arm.getArmPosition();
-    kArmUpperLimit = SuperStructureConstants.ARM_ZERO_POS - this.CarryDeadband;
+    kArmLowerLimit = SuperStructureConstants.ARM_ZERO_POS - this.CarryDeadband;
     kArmUpperLimit = SuperStructureConstants.ARM_ZERO_POS + this.CarryDeadband;
   }
 
@@ -48,6 +48,7 @@ public class PoopCube extends CommandBase {
       m_Claw.scoreGamePiece();
     }
     if (m_Claw.getLinebreakOne() == true && m_Claw.getLinebreakTwo() == true) {
+      m_Claw.idle();
       m_Superstructure.prepareCarry();
     }
     this.currentArmPosition = m_Arm.getArmPosition();
@@ -64,7 +65,7 @@ public class PoopCube extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (currentArmPosition <= kArmUpperLimit && currentArmPosition >= kArmUpperLimit) {
+    if (currentArmPosition >= kArmLowerLimit && currentArmPosition >= kArmUpperLimit) {
       return true;
     } else{
       return false;
