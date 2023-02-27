@@ -134,7 +134,7 @@ public class Arm extends SubsystemBase {
             this.armSetpointAngleRaw = angleInDegrees;}, 
             null, 
             null, 
-            () -> isArmAtPosition(), 
+            this::isArmAtPosition, 
             this);
     }
     public Command armSetPositionOnce(double angleInDegrees) {
