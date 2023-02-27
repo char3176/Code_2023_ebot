@@ -265,20 +265,10 @@ public class Drivetrain extends SubsystemBase {
   private void p_drive(double forwardCommand, double strafeCommand, double spinCommand) {
     this.spinCommandInit = spinCommand;
     this.forwardCommand = forwardCommand;
-    this.strafeCommand = strafeCommand; // TODO: The y is inverted because it is backwards for some reason, why?
+    this.strafeCommand = strafeCommand;
     this.spinCommand = spinCommand;
-    // System.out.println("forward: "+ forwardCommand + "strafe: " + strafeCommand +
-    // "spin: " + spinCommand);
-    // if (!isTurboOn) {
-    // this.forwardCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-    // this.strafeCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-    // //this.spinCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-    // this.spinCommand *= DrivetrainConstants.NON_TURBO_PERCENT_OUT_CAP;
-    // } else {
-    // this.spinCommand *= 2;
-    // }
     if (isSpinLocked) {
-      this.spinCommand = spinLockPID.calculate(getSensorYaw().getDegrees(), spinLockAngle.getDegrees());
+      this.spinCommand = spinLockPID.calculate(getPoseYawWrapped().getDegrees(), spinLockAngle.getDegrees());
     }
 
     calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);
@@ -406,7 +396,7 @@ public class Drivetrain extends SubsystemBase {
    * 
    * @return returns the chassis yaw wrapped between -pi and pi
    */
-  public Rotation2d getSensorYawWrapped() {
+  public Rotation2d getPoseYawWrapped() {
     // its ugly but rotation2d is continuos but I imagine most of our applications
     // we want it bounded between -pi and pi
     return Rotation2d
