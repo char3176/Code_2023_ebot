@@ -42,8 +42,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "cube",
-          "print"
+          "scoreHigh"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -69,7 +68,9 @@
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "groundCube"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -120,7 +121,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "cube"
+          "scoreHigh"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",

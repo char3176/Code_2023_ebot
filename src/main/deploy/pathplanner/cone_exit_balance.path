@@ -17,8 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "cube",
-          "print"
+          "scoreHigh"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
