@@ -56,7 +56,8 @@ public class autoScoreConeHigh extends CommandBase {
     m_Claw.idle();
     m_Intake.Retract();
     m_Intake.spinVelocityPercent(0);
-    m_Superstructure.prepareCarry();
+    //this will return a command and not actually run. Use the command composition .andThen() to schedule the command
+    m_Superstructure.prepareCarry().initialize();;
   }
 
   // Returns true when the command should end.
