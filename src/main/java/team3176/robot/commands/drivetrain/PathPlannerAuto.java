@@ -35,7 +35,7 @@ public class PathPlannerAuto {
         // This is just an example event map. It would be better to have a constant, global event map
         // in your code that will be used by all path following commands.
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("autoScoreConeHigh", new autoScoreConeHigh());
+        eventMap.put("autoScoreConeHigh", m_Superstructure.scoreGamePieceAuto());
         eventMap.put("autoBalance", new AutoBalance().andThen(new SwerveDefense()));
         // eventMap.put("intakeDown", new IntakeDown());
         // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.

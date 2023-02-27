@@ -14,6 +14,7 @@ import team3176.robot.subsystems.superstructure.Intake;
 import team3176.robot.subsystems.superstructure.Superstructure;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
+@Deprecated
 public class autoScoreConeHigh extends CommandBase {
   /** Creates a new ClawInhale. */
   Claw m_Claw = Claw.getInstance();
@@ -44,9 +45,9 @@ public class autoScoreConeHigh extends CommandBase {
   @Override
   public void execute() 
   {
-    new WaitCommand(2);
+    //this again is command so would do nothing just to call it. Would want to use command composition
+    //or would want to do m_claw.scoreGamePiece.execute()
     m_Claw.scoreGamePiece();
-  
   }
 
   // Called once the command ends or is interrupted.
@@ -64,10 +65,6 @@ public class autoScoreConeHigh extends CommandBase {
   @Override
   public boolean isFinished() {
     System.out.println("PoopCube IsFinished");
-    if (m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false) {
-      return true;
-    } else{
-      return false;
-    }
+    return m_Claw.isEmpty();
   }
 }
