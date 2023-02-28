@@ -18,7 +18,7 @@ public class Claw extends SubsystemBase {
     private DigitalInput linebreakOne;
     private DigitalInput linebreakTwo;
     private static Claw instance;
-    public GamePiece currentGamePiece = GamePiece.NONE;
+    public GamePiece currentGamePiece = GamePiece.CONE;
     private Claw() {
         claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
         linebreakOne = new DigitalInput(9);

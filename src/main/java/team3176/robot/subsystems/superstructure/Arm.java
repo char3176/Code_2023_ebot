@@ -108,11 +108,14 @@ public class Arm extends SubsystemBase {
         this.armSetpointAngleRaw += delta * 0.5;
         
     }
+    private void nothing() {
+
+    }
     public double getArmPosition() {
         return armEncoder.getAbsolutePosition();
     }
     public boolean isArmAtPosition() {
-        return Math.abs(this.armEncoder.getAbsolutePosition() - this.armSetpointAngleRaw) < SuperStructureConstants.ARM_TOLERANCE;
+        return Math.abs(this.armEncoder.getAbsolutePosition() - this.armSetpointAngleRaw) < 5;
     }
     /**
      * to be used for trajectory following without disrupting other commands
@@ -132,8 +135,8 @@ public class Arm extends SubsystemBase {
         return new FunctionalCommand(() -> {
             this.currentState = States.CLOSED_LOOP;
             this.armSetpointAngleRaw = angleInDegrees;}, 
-            null, 
-            null, 
+            ()-> this.nothing(), 
+            (b) -> this.nothing(), 
             this::isArmAtPosition, 
             this);
     }

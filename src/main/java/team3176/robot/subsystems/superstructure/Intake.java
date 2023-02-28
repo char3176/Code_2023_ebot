@@ -93,7 +93,7 @@ public class Intake extends SubsystemBase {
     });
   }
 
-
+  
   public Command extendAndFreeSpin() {
     return this.startEnd(() ->{
       this.Extend();
