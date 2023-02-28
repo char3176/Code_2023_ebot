@@ -181,7 +181,7 @@ public class RobotContainer {
     // String chosen = m_autonChooser.getSelected();
     String chosen = "cone_xwire_balance";
 
-    PathPlannerAuto PPSwerveauto = new PathPlannerAuto(chosen);
+    PathPlannerAuto PPSwerveauto = new PathPlannerAuto(chosen, m_Superstructure.scoreFirstGamePieceAuto());
     return PPSwerveauto.getauto();
   }
 }

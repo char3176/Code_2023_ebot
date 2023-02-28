@@ -53,10 +53,12 @@ public class Superstructure extends SubsystemBase {
             //May need to add Wait Cmds in the above logic
     }
     */
-    public Command scoreGamePieceAuto() {
-        return m_Intake.extendAndFreeSpin().withTimeout(1.0).alongWith(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(3.0)
+    public Command scoreFirstGamePieceAuto() {
+        return m_Claw.determineGamePiece()
+                .andThen(m_Intake.extendAndFreeSpin().withTimeout(1.0)
+                .alongWith(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(3.0)
                     .andThen(m_Claw.scoreGamePiece())
-                    .andThen(this.prepareCarry()));
+                    .andThen(this.prepareCarry())));
     }
     public Command scoreCubeLow() {
         return m_Arm.armSetPosition(SuperStructureConstants.ARM_ZERO_POS)

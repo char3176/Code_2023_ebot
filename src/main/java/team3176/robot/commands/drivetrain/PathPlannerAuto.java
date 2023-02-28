@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import team3176.robot.commands.superstructure.autoScoreConeHigh;
 import team3176.robot.commands.superstructure.intake.IntakeExtendFreeSpin;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
@@ -26,7 +25,7 @@ import team3176.robot.subsystems.superstructure.Superstructure;
 
 public class PathPlannerAuto {
     Command auto;
-    public PathPlannerAuto(String autoPathName) {
+    public PathPlannerAuto(String autoPathName, Command doBefore) {
         Claw m_Claw = Claw.getInstance();
         Drivetrain driveSubsystem = Drivetrain.getInstance();
         Superstructure m_Superstructure = Superstructure.getInstance();
@@ -50,8 +49,15 @@ public class PathPlannerAuto {
             eventMap,
             true,
             driveSubsystem);
-    
-        auto = autoBuilder.fullAuto(pathGroup);
+        if (doBefore != null){
+            auto = doBefore.andThen(autoBuilder.fullAuto(pathGroup));
+        } else {
+            auto = autoBuilder.fullAuto(pathGroup);
+        }
+        
+    }
+    public PathPlannerAuto(String autoPathName) {
+        this(autoPathName,null);
     }
     public Command getauto(){
         return auto;

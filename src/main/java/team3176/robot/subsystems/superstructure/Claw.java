@@ -108,7 +108,7 @@ public class Claw extends SubsystemBase {
         return this.run(() ->  {score(); this.currentGamePiece = GamePiece.NONE;})
                     .until(() -> this.isEmpty()).
                     andThen(new WaitCommand(0.5))
-                    .andThen(this.runOnce(()->idle()));
+                    .andThen(this.runOnce(()->idle())).withTimeout(2.0);
     }
 
     //more examples of command composition and why its awesome!!
@@ -117,6 +117,15 @@ public class Claw extends SubsystemBase {
     }
     public Command intakeCube() {
         return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreakOne);
+    }
+    public Command determineGamePiece() {
+        return this.runOnce( () -> {
+            if(this.linebreakOne.get()) {
+                this.currentGamePiece = GamePiece.CONE;
+            } else if(this.linebreakTwo.get()) {
+                this.currentGamePiece = GamePiece.CUBE;
+            }
+        });
     }
 
 
