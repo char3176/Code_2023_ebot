@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import team3176.robot.commands.*;
 import team3176.robot.commands.autons.*;
 import team3176.robot.commands.drivetrain.*;
 import team3176.robot.commands.drivetrain.SwerveDrive;
@@ -134,20 +135,20 @@ public class RobotContainer {
     // m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
     // m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
 
-    m_Controller.operator.b().onTrue(m_RobotState.setColorWantStateCommand(1));
+    m_Controller.operator.b().onTrue(new SetColorWantState(1));
     m_Controller.operator.b().whileTrue(m_Superstructure.intakeConeHumanPlayer());
     m_Controller.operator.b().onFalse(m_Superstructure.prepareCarry());
-
-    m_Controller.operator.x().onTrue(m_RobotState.setColorWantStateCommand(2));
+    
+    m_Controller.operator.x().onTrue(new SetColorWantState(0));
     m_Controller.operator.x().whileTrue(m_Superstructure.intakeCubeHumanPlayer());
     m_Controller.operator.x().onFalse(m_Superstructure.prepareCarry());
 
-    //m_Controller.operator.rightBumper().onTrue(m_RobotState.setColorWantStateCommand(0));
+    m_Controller.operator.a().onTrue(new SetColorWantState(2));
     m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
     m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
     m_Controller.operator.a().onFalse(m_Superstructure.prepareCarry());
 
-  
+    m_Controller.operator.y().onTrue(new SetColorWantState(3));
     m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
     m_Controller.operator.y().onFalse(new ClawIdle());
 
