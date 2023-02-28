@@ -507,9 +507,10 @@ public class Drivetrain extends SubsystemBase {
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
    
-    /* 
+    
     for (NetworkTableValue v:  vision_pose.readQueue()){
-      double[] vision_pose_array=v.getDoubleArray();
+      try {
+      double[] vision_pose_array = v.getDoubleArray();
       Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
       if(cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm() < 1.5){
         Transform2d diff = last_pose.minus(odom.getPoseMeters());
@@ -522,7 +523,11 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putNumber("camX",cam_pose.getX());
       SmartDashboard.putNumber("camY",cam_pose.getY());
     }
-    */
+    catch (ClassCastException e) {
+      System.out.println("vision error" + e);
+    }
+    }
+    
     // This method will be called once per scheduler every 500ms
     
     this.arraytrack++;

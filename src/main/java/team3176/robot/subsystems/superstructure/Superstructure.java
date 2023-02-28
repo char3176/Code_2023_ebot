@@ -40,7 +40,7 @@ public class Superstructure extends SubsystemBase {
                                         new IntakeExtendSpin(), 
                                         new ClawInhaleCube())
                     .andThen(new IntakeRetractSpinot())
-                    .alongWith(this.prepareCarry());
+                    .andThen(this.prepareCarry());
     }
 
     /* 
@@ -54,13 +54,13 @@ public class Superstructure extends SubsystemBase {
     }
     */
     public Command scoreGamePieceAuto() {
-        return m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS)
+        return m_Arm.armSetPosition(SuperStructureConstants.ARM_HIGH_POS)
                     .andThen(new WaitCommand(1.0))
                     .andThen(m_Claw.scoreGamePiece()).alongWith(new WaitCommand(1.0))
                     .finallyDo((b) -> this.prepareCarry().initialize());
     }
     public Command scoreCubeLow() {
-        return m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_ZERO_POS)
+        return m_Arm.armSetPosition(SuperStructureConstants.ARM_ZERO_POS)
         .andThen(new WaitCommand(0.5))
         .andThen(m_Claw.scoreGamePiece())
         .andThen(this.prepareCarry());

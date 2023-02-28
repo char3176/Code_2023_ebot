@@ -4,25 +4,23 @@ import team3176.robot.constants.SwervePodHardwareID;
 public class DrivetrainHardwareMap {
     //statics constants for swerve pods 
     public static final SwervePodHardwareID pod001 = 
-    new SwervePodHardwareID(  10,  12,  105.296);
+    new SwervePodHardwareID(  10,  12,  -72.1);
     public static final SwervePodHardwareID pod002 = 
-    new SwervePodHardwareID(  20,  22,  -103.48);
+    new SwervePodHardwareID(  20,  22,  76.3);
     public static final SwervePodHardwareID pod003 = 
-    new SwervePodHardwareID(  30,  32,  101.689);
+    new SwervePodHardwareID(  30,  32,  105.3);
     public static final SwervePodHardwareID pod004 = 
-    new SwervePodHardwareID( 40,  42,  -89.945);
+    new SwervePodHardwareID( 40,  42,  90.7);
     public static final SwervePodHardwareID pod005 = 
-    new SwervePodHardwareID(  13,  14,  105.586);
+    new SwervePodHardwareID(  13,  14,  97.6);
     public static final SwervePodHardwareID pod006 = 
-    new SwervePodHardwareID(  23,  24,  70.547);
+    new SwervePodHardwareID(  23,  24,  31.2);
     public static final SwervePodHardwareID pod007 = 
-    new SwervePodHardwareID(  33,  34,  -35.16);
+    new SwervePodHardwareID(  33,  34,  -123.2);
     public static final SwervePodHardwareID pod008 = 
-    new SwervePodHardwareID(  43,  44,  77.557);
+    new SwervePodHardwareID(  43,  44,  71.2);
    
-    
 
-    
     public static final SwervePodHardwareID FR = pod001;
     public static final SwervePodHardwareID FL = pod002;
     public static final SwervePodHardwareID BL = pod003;
@@ -44,7 +42,7 @@ public class DrivetrainHardwareMap {
     // to counteract the offset caused by the mounting in different positions
     public static final double[] 
     AZIMUTH_ABS_ENCODER_OFFSET_POSITION = 
-    { FR.OFFSET, FL.OFFSET + 270, BL.OFFSET+180, BR.OFFSET+90}; //TODO: I think these offsets are wrong. I would double check the pods by setting them each as if they were FR zero and remeasuring the offsets
+    { FR.OFFSET+180, FL.OFFSET+90, BL.OFFSET, BR.OFFSET-90}; //TODO: I think these offsets are wrong. I would double check the pods by setting them each as if they were FR zero and remeasuring the offsets
     
     
      //CAN IDs static to the frame
