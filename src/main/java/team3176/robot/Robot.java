@@ -82,7 +82,7 @@ public class Robot extends LoggedRobot{
     // continue until interrupted by another command, remove
     // this line or comment it out.
     m_robotContainer.setArmBrake();
-    m_robotContainer.setThrustBrake();
+    m_robotContainer.setThrustCoast();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

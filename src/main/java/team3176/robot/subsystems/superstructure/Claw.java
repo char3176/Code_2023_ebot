@@ -108,7 +108,7 @@ public class Claw extends SubsystemBase {
         return this.run(() ->  {score(); this.currentGamePiece = GamePiece.NONE;})
                     .until(() -> this.isEmpty()).
                     andThen(new WaitCommand(0.5))
-                    .andThen(this.runOnce(()->idle())).withTimeout(2.0);
+                    .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
     }
 
     //more examples of command composition and why its awesome!!

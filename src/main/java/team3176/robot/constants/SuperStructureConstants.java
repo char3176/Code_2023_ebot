@@ -40,7 +40,7 @@ public class SuperStructureConstants {
   public static final double ARM_kP = 0.02;
   public static final double ARM_kI = 0;
   public static final double ARM_kD = 0;
-  public static final double ARM_kg = 0.2;
+  public static final double ARM_kg = 0.3;
   public static final double ARM_TOLERANCE = 3;
 
   public static final double ARM_ZERO_POS = 6.0;

@@ -85,7 +85,7 @@ public class Arm extends SubsystemBase {
         //need to double check these values
         
         this.armEncoderAbsPosition = armEncoder.getAbsolutePosition();
-        double physicsAngle = (this.armEncoderAbsPosition - SuperStructureConstants.ARM_CARRY_POS);
+        double physicsAngle = (desiredAngle - SuperStructureConstants.ARM_CARRY_POS);
         
         //kg is the scalar representing the percent power needed to hold the arm at 90 degrees away from the robot
         double kg = SmartDashboard.getNumber("Arm_Kg", SuperStructureConstants.ARM_kg);
