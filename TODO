@@ -11,14 +11,21 @@ Todo:
   ✔ Confirm LED Code on bot (Code looks correct now) (Chris/Caleb) @done(23-02-27 23:05)
   ☐ CAN connection exception check (Jon/Chris)
   ☐ Reduce bot weight?  Currently 137 w/ bumpers.
-  ☐ Restore autonslector
+  ☐ Restore autonslector (Jon)
 
   ## High Priority
 
   ✔ Debug Pod Swap Code/Procedure (Jon) @done(23-02-27 23:05)
   ☐ Autons Debugged (Chris/Jon + Zack/Custer/Caleb)
+    ☐ center_auto
+    ☐ barrier_cone_exit_balance
+    ☐ wall_cone_xwire_balance
+    ☐ barrier_cone_exit_hpload
+    ☐ 2_cube_balance
+    ☐ speed_cube_3
+    ☐ speed_cube_4
   ☐ Make pit checklist (Nathan)
-  ☐ Handles added to ebot 
+  ☐ Handles added to ebot (Heidegger)
   ✔ Make decision about going to 1741 Wed for Auto Practice / tuning (Ben) @done(23-02-28 19:50)
   ☐ Go to RedAlert and practice autons Wed 4:30 - 9:00
   ☐ Double check / restore SwerveLock (Chris/Jon)
@@ -27,10 +34,10 @@ Todo:
   ✔ Zip tie and tie-down loose wires into bundles (Jay) @done(23-02-27 23:05)
   ☐ Impact Presentation practice (Cate & Elliot)
   ✔ Add pickup LED (flashing red) @done(23-02-27 23:05)
-  ☐ Add auto that traverses charge station exits Comm and then auto balances
+  ✔ Add auto that traverses charge station exits Comm and then auto balances @done(23-02-28 22:43)
   ✔ Fix High Pos so arm reaches all the way up (shortterm: up the constant value, longterm: retune PID Power.) @done(23-02-28 19:54)
   ☐ Increase power (possibly current limit) on cone intake (Chris Tue night)
-  ☐ *3D Print component mounts
+  ☐ 3D Print component mounts
   ☐ Fix Claw so spit works when cone manually inserted (just hardcode in a cmd for now).
   ☐ Put arm in coast mode when disabled, and convert to brake mode when in telopInt or autoInit
 
