@@ -74,18 +74,18 @@ public class RobotContainer {
         () -> m_Controller.getStrafe(),
         () -> m_Controller.getSpin()));
     m_Arm.setDefaultCommand(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY()));
-    /* 
+    m_autonChooser = new SendableChooser<>();
     File paths = new File(Filesystem.getDeployDirectory(), "pathplanner");
     for (File f : paths.listFiles()) {
       if (!f.isDirectory()) {
         String s = f.getName().split(".", 1)[0];
-        // m_autonChooser.addOption(s, s);
+        m_autonChooser.addOption(s, s);
       }
     }
 
-    // m_autonChooser.setDefaultOption("cube_balance", "cube_balance");
-    // SmartDashboard.putData("Auton Choice", m_autonChooser);
-    */
+    m_autonChooser.setDefaultOption("cube_balance", "cube_balance");
+    SmartDashboard.putData("Auton Choice", m_autonChooser);
+    
     configureBindings();
   }
 
@@ -178,10 +178,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    // String chosen = m_autonChooser.getSelected();
-    String chosen = "cone_xwire_balance";
+    //String chosen = m_autonChooser.getSelected();
+    String chosen = "left_cone_xwire_balance";
 
-    PathPlannerAuto PPSwerveauto = new PathPlannerAuto(chosen, m_Superstructure.scoreFirstGamePieceAuto());
+    PathPlannerAuto PPSwerveauto = new PathPlannerAuto(chosen);
     return PPSwerveauto.getauto();
   }
 }

@@ -74,8 +74,9 @@ public class Arm extends SubsystemBase {
      */
     private void setPIDPosition(double desiredAngle) {
         //need to double check these values
-        double physicsAngle = (desiredAngle - SuperStructureConstants.ARM_CATCH_POS);
+        
         this.armEncoderAbsPosition = armEncoder.getAbsolutePosition();
+        double physicsAngle = (this.armEncoderAbsPosition - SuperStructureConstants.ARM_CARRY_POS);
         
         //kg is the scalar representing the percent power needed to hold the arm at 90 degrees away from the robot
         double kg = SmartDashboard.getNumber("Arm_Kg", SuperStructureConstants.ARM_kg);
@@ -84,6 +85,9 @@ public class Arm extends SubsystemBase {
         double kp = SmartDashboard.getNumber("Arm_kp", SuperStructureConstants.ARM_kP);
         m_turningPIDController.setP(kp);
         double feedForward = kg * Math.sin(physicsAngle);
+        if (this.armEncoderAbsPosition < SuperStructureConstants.ARM_MID_POS + 10){
+            feedForward =0.0;
+        }
         double turnOutput = m_turningPIDController.calculate(this.armEncoderAbsPosition, desiredAngle);
         turnOutput = MathUtil.clamp(turnOutput,-0.2,0.2);
         armController.set(turnOutput + feedForward);
@@ -115,7 +119,7 @@ public class Arm extends SubsystemBase {
         return armEncoder.getAbsolutePosition();
     }
     public boolean isArmAtPosition() {
-        return Math.abs(this.armEncoder.getAbsolutePosition() - this.armSetpointAngleRaw) < 5;
+        return Math.abs(this.armEncoder.getAbsolutePosition() - this.armSetpointAngleRaw) < 7;
     }
     /**
      * to be used for trajectory following without disrupting other commands
@@ -160,6 +164,7 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Arm_Position", armEncoder.getAbsolutePosition());
         SmartDashboard.putNumber("Arm_Position_Relative", armEncoder.getAbsolutePosition() - SuperStructureConstants.ARM_ZERO_POS);
+
         // if (counter == 50) {
         //     System.out.println("Arm_Position: " + armEncoder.getAbsolutePosition()); 
         //     counter = 0;
@@ -168,6 +173,7 @@ public class Arm extends SubsystemBase {
         // }
         if(this.currentState == States.CLOSED_LOOP) {
             this.armSetpointAngleRaw = MathUtil.clamp(this.armSetpointAngleRaw, SuperStructureConstants.ARM_ZERO_POS, SuperStructureConstants.ARM_HIGH_POS);
+            SmartDashboard.putNumber("Arm_Error", armEncoder.getAbsolutePosition()-this.armSetpointAngleRaw);
             setPIDPosition(armSetpointAngleRaw);
         }
     }
