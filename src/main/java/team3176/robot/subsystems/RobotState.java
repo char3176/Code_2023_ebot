@@ -38,7 +38,7 @@ public class RobotState extends SubsystemBase {
   private AddressableLEDBuffer m_ledBuffer;
   private int i = 0;
 
-  private int m_flashcounter = 0;
+  private double m_flashcounter = 0;
   private boolean leftfrontlowflash = false;
   private boolean leftfronthighflash = false;
   private boolean crosshighflash = false;
@@ -55,6 +55,11 @@ public class RobotState extends SubsystemBase {
   private Color leftbackcolor = Color.kBlack;
   private Color crosslowcolor = Color.kBlack;
   private Color rightbackcolor = Color.kBlack;
+  private Color allcolor = Color.kBlack;
+  private boolean allflash = false;
+
+  private boolean isSolid;
+  private boolean isFlashing;
 
   private Alliance alliance; 
 
@@ -121,6 +126,8 @@ public class RobotState extends SubsystemBase {
     this.io = io;
     m_Claw = Claw.getInstance();
     wantedLEDState = 0;
+    isSolid = false;
+    isFlashing = false;
 
     m_led = new AddressableLED(0);
     m_ledBuffer = new AddressableLEDBuffer(SignalingConstants.LEDLENGTH);
@@ -130,100 +137,124 @@ public class RobotState extends SubsystemBase {
     m_led.start();
   }
 
-  public void setSegment(int start, int end, int red, int green, int blue)
-    {
-      for (var i=start; i < end; i++)
-      {
-        m_ledBuffer.setRGB(i, red , green, blue);
-      }
-    }
+  // public void setSegment(int start, int end, int red, int green, int blue) {
+  //     for (var i=start; i < end; i++)
+  //     {
+  //       m_ledBuffer.setRGB(i, red , green, blue);
+  //     }
+  // }
 
-    public void setSegment(int start, int end, Color color)
-    {
+  public void setSegment(int start, int end, Color color) {
       for (var i=start; i < end; i++)
       {
         m_ledBuffer.setLED(i, color);
       }
       // m_led.setData(m_ledBuffer);
-    }
+  }
 
-    public void setleftfrontlow(Status s)
-    {
-      leftfrontlowcolor = LookUpColor(s);
-      leftfrontlowflash = LookUpFlash(s);
-      setSegment(SignalingConstants.LEFTFRONTLOWSTART, SignalingConstants.LEFTFRONTLOWSTOP, leftfrontlowcolor);
-      m_led.setData(m_ledBuffer);
-    }
-    public void setleftfronthigh(Status s)
-    {
-      leftfronthighcolor = LookUpColor(s);
-      leftfronthighflash = LookUpFlash(s);
-      setSegment(SignalingConstants.LEFTFRONTHIGHSTART, SignalingConstants.LEFTFRONTHIGHSTOP, leftfronthighcolor);
-      m_led.setData(m_ledBuffer);
-    }
-    public void setcrossbarhigh(Status s)
-    {
-      crosshighcolor = LookUpColor(s);
-      crosshighflash = LookUpFlash(s);
-      setSegment(SignalingConstants.CROSSHIGHSTART, SignalingConstants.CROSSHIGHSTOP, crosshighcolor);
-      m_led.setData(m_ledBuffer);
-    }
+  // public void setleftfrontlow(Status s) {
+  //     leftfrontlowcolor = LookUpColor(s);
+  //     leftfrontlowflash = LookUpFlash(s);
+  //     setSegment(SignalingConstants.LEFTFRONTLOWSTART, SignalingConstants.LEFTFRONTLOWSTOP, leftfrontlowcolor);
+  //     m_led.setData(m_ledBuffer);
+  // }
+  
+  // public void setleftfronthigh(Status s) {
+  //     leftfronthighcolor = LookUpColor(s);
+  //     leftfronthighflash = LookUpFlash(s);
+  //     setSegment(SignalingConstants.LEFTFRONTHIGHSTART, SignalingConstants.LEFTFRONTHIGHSTOP, leftfronthighcolor);
+  //     m_led.setData(m_ledBuffer);
+  // }
+  
+  // public void setcrossbarhigh(Status s) {
+  //     crosshighcolor = LookUpColor(s);
+  //     crosshighflash = LookUpFlash(s);
+  //     setSegment(SignalingConstants.CROSSHIGHSTART, SignalingConstants.CROSSHIGHSTOP, crosshighcolor);
+  //     m_led.setData(m_ledBuffer);
+  // }
 
-    public void setrightfronthigh(Status s)
-    {
-      rightfronthighcolor = LookUpColor(s);
-      rightfronthighflash = LookUpFlash(s);
-      setSegment(SignalingConstants.RIGHTFRONTHIGHSTART, SignalingConstants.RIGHTFRONTHIGHSTOP, rightfronthighcolor);
-      m_led.setData(m_ledBuffer);
-    }
+  // public void setrightfronthigh(Status s) {
+  //     rightfronthighcolor = LookUpColor(s);
+  //     rightfronthighflash = LookUpFlash(s);
+  //     setSegment(SignalingConstants.RIGHTFRONTHIGHSTART, SignalingConstants.RIGHTFRONTHIGHSTOP, rightfronthighcolor);
+  //     m_led.setData(m_ledBuffer);
+  // }
 
-    public void setrightfrontlow(Status s)
-    {
-      rightfrontlowcolor = LookUpColor(s);
-      rightfrontlowflash = LookUpFlash(s);
-      setSegment(SignalingConstants.RIGHTFRONTLOWSTART, SignalingConstants.RIGHTFRONTLOWSTOP, rightfrontlowcolor);
-      m_led.setData(m_ledBuffer);
-    }
+  // public void setrightfrontlow(Status s) {
+  //     rightfrontlowcolor = LookUpColor(s);
+  //     rightfrontlowflash = LookUpFlash(s);
+  //     setSegment(SignalingConstants.RIGHTFRONTLOWSTART, SignalingConstants.RIGHTFRONTLOWSTOP, rightfrontlowcolor);
+  //     m_led.setData(m_ledBuffer);
+  // }
 
-    public void setleftback(Status s)
-    {
-      leftbackcolor = LookUpColor(s);
-      leftbackflash = LookUpFlash(s);
-      setSegment(SignalingConstants.LEFTBACKSTART, SignalingConstants.LEFTBACKSTOP, leftbackcolor);
-      m_led.setData(m_ledBuffer);
-    }
+  // public void setleftback(Status s) {
+  //     leftbackcolor = LookUpColor(s);
+  //     leftbackflash = LookUpFlash(s);
+  //     setSegment(SignalingConstants.LEFTBACKSTART, SignalingConstants.LEFTBACKSTOP, leftbackcolor);
+  //     m_led.setData(m_ledBuffer);
+  // }
 
-    public void setcrossbarlow(Status s)
-    {
-      crosslowcolor = LookUpColor(s);
-      crosslowflash = LookUpFlash(s);
-      setSegment(SignalingConstants.CROSSLOWSTART, SignalingConstants.CROSSLOWSTOP, crosslowcolor);
-      m_led.setData(m_ledBuffer);
-    }
+  // public void setcrossbarlow(Status s) {
+  //     crosslowcolor = LookUpColor(s);
+  //     crosslowflash = LookUpFlash(s);
+  //     setSegment(SignalingConstants.CROSSLOWSTART, SignalingConstants.CROSSLOWSTOP, crosslowcolor);
+  //     m_led.setData(m_ledBuffer);
+  // }
 
-    public void setrightback(Status s)
+  // public void setrightback(Status s) {
+  //     rightbackcolor = LookUpColor(s);
+  //     rightbackflash = LookUpFlash(s);
+  //     setSegment(SignalingConstants.RIGHTBACKSTART, SignalingConstants.RIGHTBACKSTOP, rightbackcolor);
+  //     m_led.setData(m_ledBuffer);
+  // }
+
+  public void setallyellow()
+  {
+    if (isFlashing = true)
     {
-      rightbackcolor = LookUpColor(s);
-      rightbackflash = LookUpFlash(s);
-      setSegment(SignalingConstants.RIGHTBACKSTART, SignalingConstants.RIGHTBACKSTOP, rightbackcolor);
-      m_led.setData(m_ledBuffer);
+      allflash = true;
     }
+    setSegment(0, 73, Color.kOrange);
+    m_led.setData(m_ledBuffer);
+  }
+
+  public void setallpurple()
+  {
+    if (isFlashing = true)
+    {
+      allflash = true;
+    }
+    setSegment(0, 73, Color.kPurple);
+    m_led.setData(m_ledBuffer);
+  }
+
+  public void setallred()
+  {
+    if (isFlashing = true)
+    {
+      allflash = true;
+    }
+    setSegment(0, 73, Color.kRed);
+    m_led.setData(m_ledBuffer);
+  }
+
+  public void setallblack()
+  {
+    setSegment(0, 73, Color.kBlack);
+    m_led.setData(m_ledBuffer);
+  }
+
+  public void setall(Status s)
+  {
+    allcolor = LookUpColor(s);
+    allflash = LookUpFlash(s);
+    setSegment(0, 73, allcolor);
+    m_led.setData(m_ledBuffer);
+  }
 
   private Color LookUpColor(Status s){
     Color c = Color.kBlack;
     switch(s){
-      case STABLE: c = Color.kGreen;
-      break;
-      case OK: c = Color.kDarkRed;
-      break;
-      case OPTIONALCHECK: c = Color.kLightYellow;
-      break;
-      case WARNING: c = Color.kFuchsia;
-      break;
-      case GOOD: c = Color.kLightCoral;
-      break;
-      case ERROR: c = Color.kLime;
-      break;
       case CONE: c = Color.kOrange;
       break;
       case CUBE: c = Color.kPurple;
@@ -237,68 +268,101 @@ public class RobotState extends SubsystemBase {
     }
     return c;
   }
+  
   private Boolean LookUpFlash(Status s){
       return ((s == Status.CUBEFLASH) || (s == Status.CONEFLASH));
   }
 
-  public void FlashColor()
+  // public void FlashColor() {
+  //   m_flashcounter++;
+  //   if (m_flashcounter == 25){
+  //     if (leftfrontlowflash){
+  //       setSegment(SignalingConstants.LEFTFRONTLOWSTART, SignalingConstants.LEFTFRONTLOWSTOP,leftfrontlowcolor);
+  //     }
+  //     if (leftfronthighflash){
+  //       setSegment(SignalingConstants.LEFTFRONTHIGHSTART, SignalingConstants.LEFTFRONTHIGHSTOP,leftfrontlowcolor);
+  //     }
+  //     if (crosshighflash){
+  //       setSegment(SignalingConstants.CROSSHIGHSTART, SignalingConstants.CROSSHIGHSTOP,crosshighcolor);
+  //     }
+  //     if (rightfronthighflash){
+  //       setSegment(SignalingConstants.RIGHTFRONTHIGHSTART, SignalingConstants.RIGHTFRONTHIGHSTOP, rightfronthighcolor);
+  //     }
+  //     if (rightfrontlowflash){
+  //       setSegment(SignalingConstants.RIGHTFRONTLOWSTART, SignalingConstants.RIGHTFRONTLOWSTOP,rightfrontlowcolor);
+  //     }
+  //     if (leftbackflash){
+  //       setSegment(SignalingConstants.LEFTBACKSTART, SignalingConstants.LEFTBACKSTOP,leftbackcolor);
+  //     }
+  //     if (crosslowflash){
+  //       setSegment(SignalingConstants.CROSSLOWSTART, SignalingConstants.CROSSLOWSTOP, crosslowcolor);
+  //     }
+  //     if (rightbackflash){
+  //       setSegment(SignalingConstants.RIGHTBACKSTART, SignalingConstants.RIGHTBACKSTOP,rightbackcolor);
+  //     }
+  //    m_led.setData(m_ledBuffer);
+  //    }
+  //   if (m_flashcounter == 50){
+  //     if (leftfrontlowflash){
+  //       setSegment(SignalingConstants.LEFTFRONTLOWSTART, SignalingConstants.LEFTFRONTLOWSTOP,Color.kBlack);
+  //     }
+  //     if (leftfronthighflash){
+  //       setSegment(SignalingConstants.LEFTFRONTHIGHSTART, SignalingConstants.LEFTFRONTHIGHSTOP,Color.kBlack);
+  //     }
+  //     if (crosshighflash){
+  //       setSegment(SignalingConstants.CROSSHIGHSTART, SignalingConstants.CROSSHIGHSTOP,Color.kBlack);
+  //     }
+  //     if (rightfronthighflash){
+  //       setSegment(SignalingConstants.RIGHTFRONTHIGHSTART, SignalingConstants.RIGHTFRONTHIGHSTOP, Color.kBlack);
+  //     }
+  //     if (rightfrontlowflash){
+  //       setSegment(SignalingConstants.RIGHTFRONTLOWSTART, SignalingConstants.RIGHTFRONTLOWSTOP,Color.kBlack);
+  //     }
+  //     if (leftbackflash){
+  //       setSegment(SignalingConstants.LEFTBACKSTART, SignalingConstants.LEFTBACKSTOP,Color.kBlack);
+  //     }
+  //     if (crosslowflash){
+  //       setSegment(SignalingConstants.CROSSLOWSTART, SignalingConstants.CROSSLOWSTOP, Color.kBlack);
+  //     }
+  //     if (rightbackflash){
+  //       setSegment(SignalingConstants.RIGHTBACKSTART, SignalingConstants.RIGHTBACKSTOP,Color.kBlack);
+  //     }
+  //     m_led.setData(m_ledBuffer);
+  //     m_flashcounter = 0;
+  //   }
+  // }
+
+  public void flashAll()
   {
-    m_flashcounter++;
-    if (m_flashcounter == 25){
-     if (leftfrontlowflash){
-      setSegment(SignalingConstants.LEFTFRONTLOWSTART, SignalingConstants.LEFTFRONTLOWSTOP,leftfrontlowcolor);
-     }
-     if (leftfronthighflash){
-      setSegment(SignalingConstants.LEFTFRONTHIGHSTART, SignalingConstants.LEFTFRONTHIGHSTOP,leftfrontlowcolor);
-     }
-     if (crosshighflash){
-      setSegment(SignalingConstants.CROSSHIGHSTART, SignalingConstants.CROSSHIGHSTART,crosshighcolor);
-     }
-     if (rightfronthighflash){
-      setSegment(SignalingConstants.RIGHTFRONTHIGHSTART, SignalingConstants.RIGHTFRONTHIGHSTOP, rightfronthighcolor);
-     }
-     if (rightfrontlowflash){
-      setSegment(SignalingConstants.RIGHTFRONTLOWSTART, SignalingConstants.RIGHTFRONTLOWSTOP,rightfrontlowcolor);
-     }
-     if (leftbackflash){
-      setSegment(SignalingConstants.LEFTBACKSTART, SignalingConstants.LEFTBACKSTOP,leftbackcolor);
-     }
-     if (crosslowflash){
-      setSegment(SignalingConstants.CROSSLOWSTART, SignalingConstants.CROSSLOWSTOP, crosslowcolor);
-     }
-     if (rightbackflash){
-      setSegment(SignalingConstants.RIGHTBACKSTART, SignalingConstants.RIGHTBACKSTOP,rightbackcolor);
-     }
-     m_led.setData(m_ledBuffer);
-     }
-    if (m_flashcounter == 50){
-      if (leftfrontlowflash){
-        setSegment(SignalingConstants.LEFTFRONTLOWSTART, SignalingConstants.LEFTFRONTLOWSTOP,Color.kBlack);
-       }
-       if (leftfronthighflash){
-        setSegment(SignalingConstants.LEFTFRONTHIGHSTART, SignalingConstants.LEFTFRONTHIGHSTOP,Color.kBlack);
-       }
-       if (crosshighflash){
-        setSegment(SignalingConstants.CROSSHIGHSTART, SignalingConstants.CROSSHIGHSTART,Color.kBlack);
-       }
-       if (rightfronthighflash){
-        setSegment(SignalingConstants.RIGHTFRONTHIGHSTART, SignalingConstants.RIGHTFRONTHIGHSTOP, Color.kBlack);
-       }
-       if (rightfrontlowflash){
-        setSegment(SignalingConstants.RIGHTFRONTLOWSTART, SignalingConstants.RIGHTFRONTLOWSTOP,Color.kBlack);
-       }
-       if (leftbackflash){
-        setSegment(SignalingConstants.LEFTBACKSTART, SignalingConstants.LEFTBACKSTOP,Color.kBlack);
-       }
-       if (crosslowflash){
-        setSegment(SignalingConstants.CROSSLOWSTART, SignalingConstants.CROSSLOWSTOP, Color.kBlack);
-       }
-       if (rightbackflash){
-        setSegment(SignalingConstants.RIGHTBACKSTART, SignalingConstants.RIGHTBACKSTOP,Color.kBlack);
-       }
-       m_led.setData(m_ledBuffer);
+    if (m_flashcounter == 10)
+    {
+      if (allflash = true)
+      {
+        if (wantedLEDState == 1)
+        {
+          setallyellow();
+        }
+        else if (wantedLEDState == 2)
+        {
+          setallpurple();
+        }
+        else if (wantedLEDState == 3)
+        {
+          setallred();
+        }
+      }
+      m_led.setData(m_ledBuffer);
+    }
+    if (m_flashcounter == 20)
+    {
+      if (allflash = true)
+      {
+        setallblack();
+      }
+      m_led.setData(m_ledBuffer);
       m_flashcounter = 0;
-     }
+    }
+    m_flashcounter++;
   }
 
 
@@ -308,50 +372,32 @@ public class RobotState extends SubsystemBase {
     }
   }
 
-  public void setColorWantState(int LEDState)
-  {
+  public void setColorWantState(int LEDState) {
     System.out.println("WAS CALLED");
     wantedLEDState = LEDState;
-    if (wantedLEDState == 0)
-    {
-      setleftfrontlow(Status.NONE);
-      setleftfronthigh(Status.NONE);
-      setcrossbarhigh(Status.NONE);
-      setrightfronthigh(Status.NONE);
-      setrightfrontlow(Status.NONE);
-      setleftback(Status.NONE);
-      setcrossbarlow(Status.NONE);
-      setrightback(Status.NONE);
+    if (wantedLEDState == 0) {
+      isFlashing = false;
+      setallblack();
     }
-    else if (wantedLEDState == 1)
-    {
-      setleftfrontlow(Status.CONEFLASH);
-      setleftfronthigh(Status.CONEFLASH);
-      setcrossbarhigh(Status.CONEFLASH);
-      setrightfronthigh(Status.CONEFLASH);
-      setrightfrontlow(Status.CONEFLASH);
-      setleftback(Status.CONEFLASH);
-      setcrossbarlow(Status.CONEFLASH);
-      setrightback(Status.CONEFLASH);
+    else if (wantedLEDState == 1) {
+      isFlashing = true;
+      setallyellow();
     }
-    else if (wantedLEDState == 2)
-    {
-      setleftfrontlow(Status.CUBEFLASH);
-      setleftfronthigh(Status.CUBEFLASH);
-      setcrossbarhigh(Status.CUBEFLASH);
-      setrightfronthigh(Status.CUBEFLASH);
-      setrightfrontlow(Status.CUBEFLASH);
-      setleftback(Status.CUBEFLASH);
-      setcrossbarlow(Status.CUBEFLASH);
-      setrightback(Status.CUBEFLASH);
+    else if (wantedLEDState == 2) {
+      isFlashing = true;
+      setallpurple();
+    }
+    else if (wantedLEDState == 3) {
+      isFlashing = true;
+      setallred();
     }
   }
 
-  public Command setColorWantStateCommand(int LEDState)
-  {
-    System.out.println("setColorWantStateCommand()");
-    return this.runOnce(() -> setColorWantState(LEDState));
-  }
+  // public Command setColorWantStateCommand(int LEDState)
+  // {
+  //   System.out.println("setColorWantStateCommand()");
+  //   return this.runOnce(() -> setColorWantState(LEDState));
+  // }
 
   public static RobotState getInstance() {
     if(instance == null) {instance = new RobotState(new RobotStateIO() {});}
@@ -363,44 +409,38 @@ public class RobotState extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Intake", inputs);
 
-    FlashColor();
-
-    i++;
-    if ((!m_Claw.getLinebreakOne() || !m_Claw.getLinebreakTwo()) && i == 50)
-    {
-      if (wantedLEDState == 1)
-      {
-        setleftfrontlow(Status.CONE);
-        setleftfronthigh(Status.CONE);
-        setrightfronthigh(Status.CONE);
-        setrightfrontlow(Status.CONE);
-        setleftback(Status.CONE);
-        setcrossbarlow(Status.CONE);
-        setrightback(Status.CONE);
+    //(m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false)
+    if (m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false) {
+      isSolid = true;
+      isFlashing = false;
+      if (wantedLEDState == 1) {
+        setallyellow();
       }
-      else if (wantedLEDState == 2)
-      {
-        setleftfrontlow(Status.CUBE);
-        setleftfronthigh(Status.CUBE);
-        setrightfronthigh(Status.CUBE);
-        setrightfrontlow(Status.CUBE);
-        setleftback(Status.CUBE);
-        setcrossbarlow(Status.CUBE);
-        setrightback(Status.CUBE);
+      else if (wantedLEDState == 2 || wantedLEDState == 3) {
+        setallpurple();
       }
-      i = 0;
     }
-    else if ((m_Claw.getLinebreakOne() || m_Claw.getLinebreakTwo()) && i == 50)
+    else if ((m_Claw.getLinebreakOne() == true && m_Claw.getLinebreakTwo() == true) && isSolid == true)
     {
-      setleftfrontlow(Status.NONE);
-      setleftfronthigh(Status.NONE);
-      setrightfronthigh(Status.NONE);
-      setrightfrontlow(Status.NONE);
-      setleftback(Status.NONE);
-      setcrossbarlow(Status.NONE);
-      setrightback(Status.NONE);
+      setallblack();
       wantedLEDState = 0;
-      i = 0;
+      isSolid = false;
+    }
+    else if (isSolid == false && isFlashing == true){
+      // System.out.println("isSolid == false and isFlashing = true");
+      // if (wantedLEDState == 1)
+      // {
+      //   setallyellow();
+      // }
+      // else if (wantedLEDState == 2)
+      // {
+      //   setallpurple();
+      // }
+      if (wantedLEDState == 0)
+      {
+        allflash = false;
+      }
+      flashAll();
     }
   }
 
