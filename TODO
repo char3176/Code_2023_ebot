@@ -28,6 +28,11 @@ Todo:
   ☐ Handles added to ebot (Heidegger)
   ✔ Make decision about going to 1741 Wed for Auto Practice / tuning (Ben) @done(23-02-28 19:50)
   ☐ Go to RedAlert and practice autons Wed 4:30 - 9:00
+    ☐ Confirm limelight camera coordinates are set correctly for ebot
+    ☐ run Calibration Auto to confirm effective wheel diameter (turn vision off for this run)
+    ☐ test basic scoreHigh Command on Cones and Cubes without moving
+    ☐ test autoBalance command
+    ☐ begin testing full autos above
   ☐ Double check / restore SwerveLock (Chris/Jon)
   ☐ Mount fisheye camera
   ✔ Find fisheye camera cable (USBA Fem to USBA Male) to run from top to LL @done(23-02-28 23:52)
@@ -38,7 +43,7 @@ Todo:
   ✔ Fix High Pos so arm reaches all the way up (shortterm: up the constant value, longterm: retune PID Power.) @done(23-02-28 19:54)
   ✔ Increase power (possibly current limit) on cone intake (Chris Tue night) @done(23-03-01 00:08)
   ☐ 3D Print component mounts
-  ☐ Fix Claw so spit works when cone manually inserted (just hardcode in a cmd for now).
+  ✔ Fix Claw so spit works when cone manually inserted (see Command DetermineGamePiece()). @done(23-03-01 09:40)
   ✔ Put arm in coast mode when disabled, and convert to brake mode when in telopInt or autoInit @done(23-02-28 23:37)
   ✔ Put Thrust motors in coast in disabled, but in brake in auton & teleop. @done(23-02-28 23:51)
 
