@@ -6,9 +6,9 @@ package team3176.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import team3176.robot.subsystems.superstructure.Arm;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -50,7 +50,9 @@ public class Robot extends LoggedRobot{
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.setArmCoast();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -58,6 +60,7 @@ public class Robot extends LoggedRobot{
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.setArmBrake();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -76,6 +79,7 @@ public class Robot extends LoggedRobot{
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    m_robotContainer.setArmBrake();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

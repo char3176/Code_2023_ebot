@@ -175,6 +175,14 @@ public class RobotContainer {
     m_Controller.operator.rightTrigger().onTrue(new ClawIdle()); 
   }
 
+  public void setArmCoast() {
+    m_Arm.setCoastMode();
+  }
+  
+  public void setArmBrake() {
+    m_Arm.setBrakeMode();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

@@ -1,6 +1,7 @@
 package team3176.robot.subsystems.superstructure;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -45,6 +46,14 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm_Kg", SuperStructureConstants.ARM_kg);
         setArmPidPosMode();
     }
+
+    public void setCoastMode() {
+        armController.setIdleMode(IdleMode.kCoast);
+    }
+
+    public void setBrakeMode() {
+        armController.setIdleMode(IdleMode.kBrake);
+    } 
 
     private void setArmPidPosMode() {
         this.armEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
