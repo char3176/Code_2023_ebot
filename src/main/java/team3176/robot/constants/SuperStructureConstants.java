@@ -33,6 +33,7 @@ public class SuperStructureConstants {
    * Percent output for holding
    */
   public static final double CLAW_HOLD_POWER = 0.14;
+  public static final double CLAW_HOLD_CONE_FACTOR = 2;
 
   public static final int ARM_ENCODER_OFFSET = 0; 
 
