@@ -95,7 +95,10 @@ public class RobotContainer {
     m_Controller.getTransStick_Button1().whileTrue(m_Claw.scoreGamePiece());
     //m_Controller.getTransStick_Button1().onFalse(new InstantCommand(() -> m_Drivetrain.setTurbo(false), m_Drivetrain));
     m_Controller.getTransStick_Button2()
-        .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
+        .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
+    m_Controller.getRotStick_Button4()
+        .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+        //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
     m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
     m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry()));
     m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());

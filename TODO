@@ -2,8 +2,8 @@
 Todo:
 ## Top Priority 
 
-  ☐ restore momentary robotCentric button on joys
-  ☐ Loctite & tighten bolts 
+  ✔ restore momentary robotCentric button on joys @done(23-02-28 20:36)
+  ✔ Loctite & tighten bolts @done(23-02-28 19:49)
   ☐ Clean out inside of pods
   ✔ Put tread on new wheels and swap with ebot wheels (Brian?) @done(23-02-27 23:04)
   ☐ Lower poop chute 
@@ -11,25 +11,28 @@ Todo:
   ✔ Confirm LED Code on bot (Code looks correct now) (Chris/Caleb) @done(23-02-27 23:05)
   ☐ CAN connection exception check (Jon/Chris)
   ☐ Reduce bot weight?  Currently 137 w/ bumpers.
+  ☐ Restore autonslector
 
-## High Priority
+  ## High Priority
 
   ✔ Debug Pod Swap Code/Procedure (Jon) @done(23-02-27 23:05)
   ☐ Autons Debugged (Chris/Jon + Zack/Custer/Caleb)
   ☐ Make pit checklist (Nathan)
   ☐ Handles added to ebot 
-  ☐ Make decision about going to 1741 Wed for Auto Practice / tuning (Ben)
+  ✔ Make decision about going to 1741 Wed for Auto Practice / tuning (Ben) @done(23-02-28 19:50)
+  ☐ Go to RedAlert and practice autons Wed 4:30 - 9:00
   ☐ Double check / restore SwerveLock (Chris/Jon)
   ☐ Mount fisheye camera
+  ☐ Find fisheye camera cable (USBA Fem to USBA Male) to run from top to LL 
   ✔ Zip tie and tie-down loose wires into bundles (Jay) @done(23-02-27 23:05)
   ☐ Impact Presentation practice (Cate & Elliot)
   ✔ Add pickup LED (flashing red) @done(23-02-27 23:05)
   ☐ Add auto that traverses charge station exits Comm and then auto balances
-  ☐ Fix High Pos so arm reaches all the way up (shortterm: up the constant value, longterm: retune PID Power.)
-  ☐ Increase power (possibly current limit) on cone intake
+  ✔ Fix High Pos so arm reaches all the way up (shortterm: up the constant value, longterm: retune PID Power.) @done(23-02-28 19:54)
+  ☐ Increase power (possibly current limit) on cone intake (Chris Tue night)
   ☐ *3D Print component mounts
   ☐ Fix Claw so spit works when cone manually inserted (just hardcode in a cmd for now).
-  ☐ Restore momentary button for switching to RobotCentric
+  ☐ Put arm in coast mode when disabled, and convert to brake mode when in telopInt or autoInit
 
 ## Mid Priority
 
@@ -38,13 +41,13 @@ Todo:
   ☐ Fault Accommodation for software (what happens if a line break fails or encoder does our code “fail gracefully” and are there manual backups)
   ☐ Check limelight data and ensure it doesn’t cause a runtime error if unplugged
   ✔ Leds add ground cube state @done(23-02-27 23:06)
-  ☐ Print 3 more LL covers (Chris)
+  ✔ Print 3 more LL covers (Chris) @done(23-02-28 19:55)
 
 ## Low Priority
 
   ☐ Create "Drive off chargeStation safely/(azimumth lock)" (Chris)
   ☐ Implement HAT input to SwerveLock to set cardinal direction of SwerveLock (Jon)
   ☐ Build new drivestation for 2ndary bots
-  ☐ Mount eye-level screen on primary drivestation
+  ✔ Mount eye-level screen on primary drivestation @done(23-02-28 19:55)
 
 
