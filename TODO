@@ -36,7 +36,7 @@ Todo:
   ✔ Add pickup LED (flashing red) @done(23-02-27 23:05)
   ✔ Add auto that traverses charge station exits Comm and then auto balances @done(23-02-28 22:43)
   ✔ Fix High Pos so arm reaches all the way up (shortterm: up the constant value, longterm: retune PID Power.) @done(23-02-28 19:54)
-  ☐ Increase power (possibly current limit) on cone intake (Chris Tue night)
+  ✔ Increase power (possibly current limit) on cone intake (Chris Tue night) @done(23-03-01 00:08)
   ☐ 3D Print component mounts
   ☐ Fix Claw so spit works when cone manually inserted (just hardcode in a cmd for now).
   ✔ Put arm in coast mode when disabled, and convert to brake mode when in telopInt or autoInit @done(23-02-28 23:37)
