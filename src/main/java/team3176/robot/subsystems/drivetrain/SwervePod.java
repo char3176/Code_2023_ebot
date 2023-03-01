@@ -2,6 +2,7 @@ package team3176.robot.subsystems.drivetrain;
 
 import java.util.Map;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 import com.revrobotics.CANSparkMax;
@@ -289,6 +290,14 @@ public class SwervePod {
         this.thrustController.configClosedloopRamp(0.5);   
     }
 
+    public void setThrustCoast() {
+        this.thrustController.setNeutralMode(NeutralMode.Coast);
+    }
+
+
+    public void setThrustBrake() {
+        this.thrustController.setNeutralMode(NeutralMode.Brake);
+    }
 
     public void initializeSmartDashboard() {
 

@@ -39,7 +39,7 @@ Todo:
   ☐ Increase power (possibly current limit) on cone intake (Chris Tue night)
   ☐ 3D Print component mounts
   ☐ Fix Claw so spit works when cone manually inserted (just hardcode in a cmd for now).
-  ☐ Put arm in coast mode when disabled, and convert to brake mode when in telopInt or autoInit
+  ✔ Put arm in coast mode when disabled, and convert to brake mode when in telopInt or autoInit @done(23-02-28 23:37)
 
 ## Mid Priority
 

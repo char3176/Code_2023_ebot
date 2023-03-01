@@ -461,6 +461,18 @@ public class Drivetrain extends SubsystemBase {
     };
   }
 
+  public void setCoastMode() {
+    for (int idx = 0; idx < (pods.size()); idx++) {
+      pods.get(idx).setThrustCoast();
+    }
+  }
+
+  public void setBrakeMode() {
+    for (int idx = 0; idx < (pods.size()); idx++) {
+      pods.get(idx).setThrustBrake();
+    }
+  }
+
   /*
    * public ChassisSpeeds getChassisSpeed() {
    * return DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(podFR.getState(),

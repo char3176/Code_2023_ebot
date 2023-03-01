@@ -52,6 +52,7 @@ public class Robot extends LoggedRobot{
   @Override
   public void disabledInit() {
     m_robotContainer.setArmCoast();
+    m_robotContainer.setThrustCoast();
   }
 
   @Override
@@ -61,6 +62,7 @@ public class Robot extends LoggedRobot{
   @Override
   public void autonomousInit() {
     m_robotContainer.setArmBrake();
+    m_robotContainer.setThrustBrake();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -80,6 +82,7 @@ public class Robot extends LoggedRobot{
     // continue until interrupted by another command, remove
     // this line or comment it out.
     m_robotContainer.setArmBrake();
+    m_robotContainer.setThrustBrake();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

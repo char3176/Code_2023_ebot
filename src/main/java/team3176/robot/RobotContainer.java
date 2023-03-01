@@ -182,6 +182,15 @@ public class RobotContainer {
   public void setArmBrake() {
     m_Arm.setBrakeMode();
   }
+  
+  public void setThrustCoast() {
+    m_Drivetrain.setCoastMode();
+  }
+
+  public void setThrustBrake() {
+    m_Drivetrain.setBrakeMode();
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
