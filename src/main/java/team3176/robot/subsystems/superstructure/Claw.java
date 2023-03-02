@@ -104,7 +104,7 @@ public class Claw extends SubsystemBase {
      *  scores game piece then returns to idle state
      * @return to be called with a whileTrue or onTrue trigger binding
      */
-    public Command scoreGamePiece() {
+    public Command scoreGamePiece() {  
         return this.run(() ->  {score(); this.currentGamePiece = GamePiece.NONE;})
                     .until(() -> this.isEmpty()).
                     andThen(new WaitCommand(0.5))
@@ -122,8 +122,10 @@ public class Claw extends SubsystemBase {
         return this.runOnce( () -> {
             if(this.linebreakOne.get()) {
                 this.currentGamePiece = GamePiece.CONE;
+                hold();
             } else if(this.linebreakTwo.get()) {
                 this.currentGamePiece = GamePiece.CUBE;
+                hold();
             }
         });
     }

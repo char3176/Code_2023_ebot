@@ -190,6 +190,7 @@ public class SwervePod {
      * @param desiredState 
      */
     public void set_module(SwerveModuleState desiredState) {
+        updateAzimuthAbsEncoder();  
         this.azimuthEncoderAbsPosition = azimuthEncoder.getAbsolutePosition();
         SwerveModuleState desired_optimized = SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(this.azimuthEncoderAbsPosition));
         if (desiredState.speedMetersPerSecond > (-Math.pow(10,-10)) && desiredState.speedMetersPerSecond  < (Math.pow(10,-10))) {      
