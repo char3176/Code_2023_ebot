@@ -79,7 +79,7 @@ public class RobotContainer {
     File paths = new File(Filesystem.getDeployDirectory(), "pathplanner");
     for (File f : paths.listFiles()) {
       if (!f.isDirectory()) {
-        String s = f.getName().split(".", 1)[0];
+        String s = f.getName().split("\\.", 0)[0];
         m_autonChooser.addOption(s, s);
       }
     }
