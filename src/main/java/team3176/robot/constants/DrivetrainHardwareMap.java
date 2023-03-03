@@ -18,13 +18,13 @@ public class DrivetrainHardwareMap {
     public static final SwervePodHardwareID pod007 = 
     new SwervePodHardwareID(  33,  34,  -123.2);
     public static final SwervePodHardwareID pod008 = 
-    new SwervePodHardwareID(  43,  44,  71.2);
+    new SwervePodHardwareID(  43,  44,  -200.676 );
    
 
     public static final SwervePodHardwareID FR = pod008;
-    public static final SwervePodHardwareID FL = pod002;
-    public static final SwervePodHardwareID BL = pod003;
-    public static final SwervePodHardwareID BR = pod004;
+    public static final SwervePodHardwareID FL = pod005;
+    public static final SwervePodHardwareID BL = pod006;
+    public static final SwervePodHardwareID BR = pod007;
     
     
     // public static final int THRUST_FR_CID = FR.THRUST_CID;
