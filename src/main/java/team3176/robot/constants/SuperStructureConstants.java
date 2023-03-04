@@ -45,7 +45,7 @@ public class SuperStructureConstants {
 
   public static final double ARM_ZERO_POS = 6.0;
   public static final double ARM_CARRY_POS = 38 + ARM_ZERO_POS;
-  public static final double ARM_CATCH_POS = 55 + ARM_ZERO_POS;
+  public static final double ARM_CATCH_POS = 53 + ARM_ZERO_POS;
   public static final double ARM_MID_POS = 120 + ARM_ZERO_POS;
   public static final double ARM_HIGH_POS = 175 + ARM_ZERO_POS;
 }
