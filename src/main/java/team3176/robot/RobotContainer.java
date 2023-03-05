@@ -101,7 +101,7 @@ public class RobotContainer {
     m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry()));
     m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
     m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarry()));
-     m_Controller.getTransStick_Button10().whileTrue(new SwerveDefense());
+     m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(()->m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
      //m_Controller.getTransStick_Button10()
      //    .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
 
