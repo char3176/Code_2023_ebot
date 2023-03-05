@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.*;
 import team3176.robot.commands.autons.*;
 import team3176.robot.commands.drivetrain.*;
-import team3176.robot.commands.drivetrain.SwerveDrive;
-import team3176.robot.commands.drivetrain.SwerveDefense;
 import team3176.robot.commands.superstructure.*;
 import team3176.robot.commands.superstructure.arm.*;
 import team3176.robot.commands.superstructure.claw.*;
@@ -111,10 +109,21 @@ public class RobotContainer {
     m_Controller.getRotStick_Button1().whileTrue(new TurtleSpeed(
       () -> m_Controller.getForward(),
       () -> m_Controller.getStrafe(),
-      () -> m_Controller.getSpin()));
+      () -> m_Controller.getSpin())
+    );
+   
+    /* 
     m_Controller.getRotStick_Button2().whileTrue(m_Superstructure.groundCube());
     m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
+    */    
+
+    m_Controller.getRotStick_Button2().whileTrue(new AutoBalanceTeleop());
+    //m_Controller.getRotStick_Button2().onFalse(new SwerveDrive(
+    //    () -> m_Controller.getForward(),
+    //    () -> m_Controller.getStrafe(),
+    //    () -> m_Controller.getSpin())
+    //);
 
     m_Controller.getRotStick_Button3().whileTrue(m_Superstructure.intakeConeHumanPlayer());
     m_Controller.getRotStick_Button3().onFalse(m_Superstructure.prepareCarry());
