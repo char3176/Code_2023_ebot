@@ -52,7 +52,6 @@ public class Robot extends LoggedRobot{
   @Override
   public void disabledInit() {
     m_robotContainer.setArmCoast();
-    m_robotContainer.setThrustCoast();
   }
 
   @Override

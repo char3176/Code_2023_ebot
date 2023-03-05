@@ -84,7 +84,7 @@ public class RobotContainer {
       }
     }
 
-    m_autonChooser.setDefaultOption("cube_balance", "cube_balance");
+  
     SmartDashboard.putData("Auton Choice", m_autonChooser);
     
     configureBindings();
@@ -96,17 +96,16 @@ public class RobotContainer {
     //m_Controller.getTransStick_Button1().onFalse(new InstantCommand(() -> m_Drivetrain.setTurbo(false), m_Drivetrain));
     m_Controller.getTransStick_Button2()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    m_Controller.getRotStick_Button4()
+    m_Controller.getTransStick_Button2()
         .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
         //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
     m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
     m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry()));
     m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
     m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarry()));
-    // m_Controller.getTransStick_Button3()
-    //     .whileTrue(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DEFENSE), m_Drivetrain));
-    // m_Controller.getTransStick_Button3()
-    //     .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
+     m_Controller.getTransStick_Button10().whileTrue(new SwerveDefense());
+     //m_Controller.getTransStick_Button10()
+     //    .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
 
     // m_Controller.getRotStick_Button2().whileTrue(new FlipField);
     m_Controller.getRotStick_Button1().whileTrue(new TurtleSpeed(
@@ -199,8 +198,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    //String chosen = m_autonChooser.getSelected();
-    String chosen = "wall_cone_exit_balance";
+    String chosen = m_autonChooser.getSelected();
+    //String chosen = "wall_cone_exit_balance";
 
     PathPlannerAuto PPSwerveauto = new PathPlannerAuto(chosen);
     return PPSwerveauto.getauto();

@@ -35,7 +35,7 @@ public class Claw extends SubsystemBase {
     //states now implemented as functions
     
     public void intake() {
-        System.out.println("m_Claw.intake()");
+        //System.out.println("m_Claw.intake()");
         if(currentGamePiece == GamePiece.CUBE) {
             setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
@@ -45,7 +45,7 @@ public class Claw extends SubsystemBase {
     }
     
     public void hold() {
-        System.out.println("m_Claw.hold()");
+        //System.out.println("m_Claw.hold()");
         if(currentGamePiece == GamePiece.CUBE) {
             setClawMotor(SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
             //idle(); 
@@ -55,7 +55,7 @@ public class Claw extends SubsystemBase {
     }
 
     public void score() {
-        System.out.println("m_Claw.score()");
+        //System.out.println("m_Claw.score()");
         if(currentGamePiece == GamePiece.CUBE) {
             setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
@@ -64,12 +64,12 @@ public class Claw extends SubsystemBase {
         }
     }
     public void idle() {
-        System.out.println("m_Claw.idle()");
+        //System.out.println("m_Claw.idle()");
         setClawMotor(0, 0);
     }
 
     public void setCurrentGamePiece(GamePiece piece) {
-        System.out.println("m_Claw.setCurrentGamePiece() to " + piece);
+        //System.out.println("m_Claw.setCurrentGamePiece() to " + piece);
         this.currentGamePiece = piece;
     }
 
@@ -106,8 +106,8 @@ public class Claw extends SubsystemBase {
      */
     public Command scoreGamePiece() {  
         return this.run(() ->  {score(); this.currentGamePiece = GamePiece.NONE;})
-                    .until(() -> this.isEmpty()).
-                    andThen(new WaitCommand(0.5))
+                    .until(() -> this.isEmpty())
+                    .andThen(new WaitCommand(0.5))
                     .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
     }
 

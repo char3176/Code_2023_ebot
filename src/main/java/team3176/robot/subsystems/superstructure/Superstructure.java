@@ -63,8 +63,8 @@ public class Superstructure extends SubsystemBase {
         return m_Claw.determineGamePiece()
                 .andThen(m_Intake.extendAndFreeSpin().withTimeout(1.0)
                 .alongWith(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(3.0)
-                .andThen(new WaitCommand(1.0))
-                    .andThen(m_Claw.scoreGamePiece())
+                .andThen(new WaitCommand(0.5))
+                    .andThen(m_Claw.scoreGamePiece().withTimeout(1.0))
                     .andThen(this.prepareCarry())));
     }
     public Command scoreCubeLow() {

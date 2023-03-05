@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "scoreHigh"
+          "scoreHighFirst"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -30,8 +30,8 @@
         "y": 4.873519292493131
       },
       "prevControl": {
-        "x": 4.34503933876897,
-        "y": 5.050148662701024
+        "x": 4.269298699599188,
+        "y": 4.918740284707761
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
