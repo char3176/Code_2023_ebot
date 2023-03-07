@@ -35,7 +35,7 @@ public class PoopCube extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("PoopCube Init");
+    //System.out.println("PoopCube Init");
     //m_Intake.extendAndFreeSpin();
     currentArmPosition = m_Arm.getArmPosition();
     kArmPoopLowerLimit = SuperStructureConstants.ARM_ZERO_POS - this.CarryDeadband;
@@ -49,7 +49,7 @@ public class PoopCube extends CommandBase {
   @Override
   public void execute() 
   {
-    System.out.println("PoopCube Exec" + kArmPoopLowerLimit + ", " + kArmPoopUpperLimit + ", " + kArmCarryLowerLimit + ", " + kArmCarryUpperLimit);
+    //System.out.println("PoopCube Exec" + kArmPoopLowerLimit + ", " + kArmPoopUpperLimit + ", " + kArmCarryLowerLimit + ", " + kArmCarryUpperLimit);
     //m_Intake.extendAndFreeSpin();
     m_Superstructure.preparePoop();
     new WaitCommand(2);
@@ -68,7 +68,7 @@ public class PoopCube extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("PoopCube End");
+    //System.out.println("PoopCube End");
     //m_Intake.Retract();
     //m_Intake.spinVelocityPercent(0);
   }
@@ -76,7 +76,7 @@ public class PoopCube extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("PoopCube IsFinished");
+    //System.out.println("PoopCube IsFinished");
     //if (currentArmPosition >= kArmCarryLowerLimit && currentArmPosition <= kArmCarryUpperLimit) {
     //  return true;
     //} else{

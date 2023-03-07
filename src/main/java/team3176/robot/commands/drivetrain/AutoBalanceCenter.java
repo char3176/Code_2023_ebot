@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
 import team3176.robot.subsystems.drivetrain.Drivetrain.driveMode;
 
-public class AutoBalance extends CommandBase {
+public class AutoBalanceCenter extends CommandBase {
     private Drivetrain m_Drivetrain;
     private boolean isDone = false;
     private int num_balanced = 0;
-    public AutoBalance() {
+    public AutoBalanceCenter() {
         m_Drivetrain = Drivetrain.getInstance();
         addRequirements(m_Drivetrain);
     }
@@ -29,9 +29,9 @@ public class AutoBalance extends CommandBase {
         double deadbandDegrees = 8;
         SmartDashboard.putNumber("pitch", m_Drivetrain.getChassisPitch());
         if(m_Drivetrain.getChassisPitch() > 0 + deadbandDegrees) {
-            forward = 0.37 * Math.pow(.96,num_balanced);
+            forward = 0.42 * Math.pow(.93,num_balanced);
         } else if(m_Drivetrain.getChassisPitch() < 0 - deadbandDegrees) {
-            forward = -0.37 * Math.pow(.96,num_balanced);
+            forward = -0.42 * Math.pow(.93,num_balanced);
         } else if(Math.abs(m_Drivetrain.getChassisPitch()) < 2){
             num_balanced ++;
         }

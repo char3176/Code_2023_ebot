@@ -53,7 +53,7 @@ public class autoScoreConeHigh extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("PoopCube End");
+    //System.out.println("PoopCube End");
     m_Claw.idle();
     m_Intake.Retract();
     m_Intake.spinVelocityPercent(0);
@@ -64,7 +64,7 @@ public class autoScoreConeHigh extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("PoopCube IsFinished");
+    //System.out.println("PoopCube IsFinished");
     return m_Claw.isEmpty();
   }
 }

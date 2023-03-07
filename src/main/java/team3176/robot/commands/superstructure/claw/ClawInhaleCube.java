@@ -30,9 +30,8 @@ public class ClawInhaleCube extends CommandBase {
   {
     m_Claw.intake();
     if(m_Claw.getLinebreakOne()) {
-      continueRunningTimer.restart();
+    continueRunningTimer.restart();
     }
-    System.out.println("ClawInhaleCube");
   }
 
   // Called once the command ends or is interrupted.

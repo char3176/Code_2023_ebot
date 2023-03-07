@@ -110,9 +110,9 @@ public class Arm extends SubsystemBase {
     public void armAnalogDown() {
         this.currentState = States.OPEN_LOOP;
         armController.set(-SuperStructureConstants.ARM_OUTPUT_POWER);
-        System.out.println("Arm Analog Down"); 
-        System.out.println("Arm_Abs_Position: " + armEncoder.getAbsolutePosition()); 
-        System.out.println("Arm_Rel_Position: " + armEncoder.getPosition());
+        //System.out.println("Arm Analog Down"); 
+        //System.out.println("Arm_Abs_Position: " + armEncoder.getAbsolutePosition()); 
+        //System.out.println("Arm_Rel_Position: " + armEncoder.getPosition());
     }
     public void idle() {
         armController.set(0.0);

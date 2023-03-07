@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.*;
 import team3176.robot.commands.autons.*;
 import team3176.robot.commands.drivetrain.*;
-import team3176.robot.commands.drivetrain.SwerveDrive;
-import team3176.robot.commands.drivetrain.SwerveDefense;
 import team3176.robot.commands.superstructure.*;
 import team3176.robot.commands.superstructure.arm.*;
 import team3176.robot.commands.superstructure.claw.*;
@@ -84,7 +82,7 @@ public class RobotContainer {
       }
     }
 
-    m_autonChooser.setDefaultOption("cube_balance", "cube_balance");
+  
     SmartDashboard.putData("Auton Choice", m_autonChooser);
     
     configureBindings();
@@ -96,26 +94,36 @@ public class RobotContainer {
     //m_Controller.getTransStick_Button1().onFalse(new InstantCommand(() -> m_Drivetrain.setTurbo(false), m_Drivetrain));
     m_Controller.getTransStick_Button2()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    m_Controller.getRotStick_Button4()
+    m_Controller.getTransStick_Button2()
         .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
         //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
     m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
     m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry()));
     m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
     m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarry()));
-    // m_Controller.getTransStick_Button3()
-    //     .whileTrue(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DEFENSE), m_Drivetrain));
-    // m_Controller.getTransStick_Button3()
-    //     .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
+     m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(()->m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
+     //m_Controller.getTransStick_Button10()
+     //    .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
 
     // m_Controller.getRotStick_Button2().whileTrue(new FlipField);
     m_Controller.getRotStick_Button1().whileTrue(new TurtleSpeed(
       () -> m_Controller.getForward(),
       () -> m_Controller.getStrafe(),
-      () -> m_Controller.getSpin()));
+      () -> m_Controller.getSpin())
+    );
+   
+    /* 
     m_Controller.getRotStick_Button2().whileTrue(m_Superstructure.groundCube());
     m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
+    */    
+
+    m_Controller.getRotStick_Button2().whileTrue(new AutoBalanceTeleop());
+    //m_Controller.getRotStick_Button2().onFalse(new SwerveDrive(
+    //    () -> m_Controller.getForward(),
+    //    () -> m_Controller.getStrafe(),
+    //    () -> m_Controller.getSpin())
+    //);
 
     m_Controller.getRotStick_Button3().whileTrue(m_Superstructure.intakeConeHumanPlayer());
     m_Controller.getRotStick_Button3().onFalse(m_Superstructure.prepareCarry());
@@ -199,8 +207,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    //String chosen = m_autonChooser.getSelected();
-    String chosen = "wall_cone_exit_balance";
+    String chosen = m_autonChooser.getSelected();
+    //String chosen = "wall_cone_exit_balance";
 
     PathPlannerAuto PPSwerveauto = new PathPlannerAuto(chosen);
     return PPSwerveauto.getauto();
