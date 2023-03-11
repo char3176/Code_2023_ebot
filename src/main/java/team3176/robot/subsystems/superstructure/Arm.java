@@ -23,10 +23,16 @@ import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
 
+import team3176.robot.subsystems.superstructure.ArmIO;
+import team3176.robot.subsystems.superstructure.ArmIO.ArmIOInputs;
+import org.littletonrobotics.junction.Logger;
+
 public class Arm extends SubsystemBase {
     private static final double MAX_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_HIGH_POS;
     private static final double MIN_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_ZERO_POS;
     private static Arm instance;
+    private final ArmIO io;
+    private final ArmIOInputs inputs = new ArmIOInputs();
     private CANSparkMax armController;
     private CANCoder armEncoder;
     private double armEncoderAbsPosition;    
@@ -37,7 +43,8 @@ public class Arm extends SubsystemBase {
     private States currentState = States.OPEN_LOOP;
     private double armSetpointAngleRaw = SuperStructureConstants.ARM_ZERO_POS;
 
-    private Arm() {
+    private Arm(ArmIO io) {
+        this.io = io;
         armController = new CANSparkMax(Hardwaremap.arm_CID, MotorType.kBrushless);
         armController.setSmartCurrentLimit(SuperStructureConstants.ARM_CURRENT_LIMIT_A);
         armEncoder = new CANCoder(Hardwaremap.armEncoder_CID);
@@ -73,7 +80,7 @@ public class Arm extends SubsystemBase {
     }
 
     public static Arm getInstance() {
-        if (instance == null){instance = new Arm();}
+        if (instance == null){instance = new Arm(new ArmIO() {});}
         return instance;
     }
     
@@ -172,6 +179,11 @@ public class Arm extends SubsystemBase {
     
     @Override
     public void periodic() {
+        io.updateInputs(inputs);
+        Logger.getInstance().processInputs("Arm", inputs);
+        Logger.getInstance().recordOutput("Arm/Velocity", getVelocity());
+        Logger.getInstance().recordOutput("Arm/Position", getPosition());
+
         SmartDashboard.putNumber("Arm_Position", armEncoder.getAbsolutePosition());
         SmartDashboard.putNumber("Arm_Position_Relative", armEncoder.getAbsolutePosition() - SuperStructureConstants.ARM_ZERO_POS);
 
@@ -186,5 +198,30 @@ public class Arm extends SubsystemBase {
             SmartDashboard.putNumber("Arm_Error", armEncoder.getAbsolutePosition()-this.armSetpointAngleRaw);
             setPIDPosition(armSetpointAngleRaw);
         }
+    }
+
+    public double getVelocity()
+    {
+        return inputs.velocity;
+    }
+
+    public double getPosition()
+    {
+        return inputs.position;
+    }
+
+    public void runVoltage(double volts)
+    {
+        io.setVoltage(volts);
+    }
+
+    public void setVelocity(double velocity)
+    {
+        io.setVelocity(velocity);
+    }
+
+    public void setPosition(double position)
+    {
+        io.setPosition(position);
     }
 }

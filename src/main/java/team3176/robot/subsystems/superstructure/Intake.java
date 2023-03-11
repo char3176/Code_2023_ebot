@@ -16,6 +16,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import team3176.robot.subsystems.superstructure.IntakeIO;
+import team3176.robot.subsystems.superstructure.IntakeIO.IntakeIOInputs;
+import org.littletonrobotics.junction.Logger;
+
 import team3176.robot.constants.Hardwaremap;
 
 public class Intake extends SubsystemBase {
@@ -28,8 +32,11 @@ public class Intake extends SubsystemBase {
   private boolean isExtended;
   private boolean isInIntake;
   private static Intake instance;
-  public Intake() 
+  private final IntakeIO io;
+  private final IntakeIOInputs inputs = new IntakeIOInputs();
+  public Intake(IntakeIO io) 
   {
+    this.io = io;
     pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 6);
     //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
     linebreak = new DigitalInput(8);
@@ -69,18 +76,48 @@ public class Intake extends SubsystemBase {
 
   public static Intake getInstance(){
     if ( instance == null ) {
-      instance = new Intake();
+      instance = new Intake(new IntakeIO() {});
     }
     return instance;
   }
 
   @Override
   public void periodic() {
+    io.updateInputs(inputs);
+    Logger.getInstance().processInputs("Intake", inputs);
+    Logger.getInstance().recordOutput("Intake/Velocity", getVelocity());
+    Logger.getInstance().recordOutput("Intake/Linebreak", getIsLinebreakLogger());
+    Logger.getInstance().recordOutput("Intake/Extended", getIsExtended());
     // This method will be called once per scheduler run
     // Code stating if something is in the Intake
     // SmartDashboard.putBoolean("isInIntake", isInIntake);
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
+   }
+
+   public double getVelocity()
+   {
+    return inputs.velocity;
+   }
+
+   public boolean getIsLinebreakLogger()
+   {
+    return inputs.isLinebreak;
+   }
+
+   public boolean getIsExtended()
+   {
+    return inputs.isextended;
+   }
+
+   public void runVoltage(double volts)
+   {
+    io.setVoltage(volts);
+   }
+
+   public void setVelocity(double velocity)
+   {
+    io.setVelocity(velocity);
    }
 
   public Command extendAndSpin() {

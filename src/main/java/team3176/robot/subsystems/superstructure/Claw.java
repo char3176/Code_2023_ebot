@@ -13,13 +13,20 @@ import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
+import team3176.robot.subsystems.superstructure.ClawIO;
+import team3176.robot.subsystems.superstructure.ClawIO.ClawIOInputs;
+import org.littletonrobotics.junction.Logger;
+
 public class Claw extends SubsystemBase {
     private CANSparkMax claw;
     private DigitalInput linebreakOne;
     private DigitalInput linebreakTwo;
     private static Claw instance;
+    private final ClawIO io;
+    private final ClawIOInputs inputs = new ClawIOInputs();
     public GamePiece currentGamePiece = GamePiece.CONE;
-    private Claw() {
+    private Claw(ClawIO io) {
+        this.io = io;
         claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
         linebreakOne = new DigitalInput(9);
         linebreakTwo = new DigitalInput(7);
@@ -89,7 +96,7 @@ public class Claw extends SubsystemBase {
     public static Claw getInstance()
     {
         if (instance == null ) {
-            instance = new Claw();
+            instance = new Claw(new ClawIO() {});
           }
         return instance;
     }
@@ -135,10 +142,40 @@ public class Claw extends SubsystemBase {
     @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.getInstance().processInputs("Claw", inputs);
+    Logger.getInstance().recordOutput("Claw/Velocity", getVelocity());
+    Logger.getInstance().recordOutput("Claw/LinebreakOne", getIsLinebreakOne());
+    Logger.getInstance().recordOutput("Claw/LinebreakTwo", getIsLinebreakTwo());
     // Code stating if something is in the Intake
     SmartDashboard.putBoolean("linebreakOne",linebreakOne.get());
     SmartDashboard.putBoolean("linebreakTwo",linebreakTwo.get());
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
+   }
+
+   public double getVelocity()
+   {
+    return inputs.velocity;
+   }
+
+   public boolean getIsLinebreakOne()
+   {
+    return inputs.isLinebreakOne;
+   }
+
+   public boolean getIsLinebreakTwo()
+   {
+    return inputs.isLinebreakTwo;
+   }
+
+   public void runVoltage(double volts)
+   {
+    io.setVoltage(volts);
+   }
+
+   public void setVelocity(double velocity)
+   {
+    io.setVelocity(velocity);
    }
 }
