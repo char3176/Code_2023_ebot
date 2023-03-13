@@ -11,9 +11,9 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 /** Template hardware interface for a closed loop subsystem. */
-public interface IntakeIO{
+public interface IntakeConeIO{
   /** Contains all of the input data received from hardware. */
-  public static class IntakeIOInputs implements LoggableInputs {
+  public static class IntakeConeIOInputs implements LoggableInputs {
     public double velocity = 0.0;
     public double appliedVolts = 0.0;
     public boolean isLinebreak = true;
@@ -45,7 +45,7 @@ public interface IntakeIO{
 
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(IntakeIOInputs inputs) {}
+  public default void updateInputs(IntakeConeIOInputs inputs) {}
 
   /** Run open loop at the specified voltage. */
   public default void setVoltage(double volts) {}

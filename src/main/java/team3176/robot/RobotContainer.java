@@ -21,7 +21,7 @@ import team3176.robot.commands.superstructure.*;
 import team3176.robot.commands.superstructure.arm.*;
 import team3176.robot.commands.superstructure.claw.*;
 import team3176.robot.commands.superstructure.claw.ClawIdle;
-import team3176.robot.commands.superstructure.intake.*;
+import team3176.robot.commands.superstructure.intakecube.*;
 import team3176.robot.commands.vision.*;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.controller.Controller;
@@ -31,7 +31,7 @@ import team3176.robot.subsystems.drivetrain.Drivetrain.driveMode;
 import team3176.robot.subsystems.RobotState;
 import team3176.robot.subsystems.superstructure.Arm;
 import team3176.robot.subsystems.superstructure.Claw;
-import team3176.robot.subsystems.superstructure.Intake;
+import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.superstructure.Superstructure;
 
 /**
@@ -49,7 +49,7 @@ public class RobotContainer {
   private final Arm m_Arm;
   private final Controller m_Controller;
   private final Claw m_Claw;
-  private final Intake m_Intake;
+  private final IntakeCube m_IntakeCube;
   // private final Compressor m_Compressor;
   private final Drivetrain m_Drivetrain;
   private final RobotState m_RobotState;
@@ -65,7 +65,7 @@ public class RobotContainer {
     m_Controller = Controller.getInstance();
     m_Claw = Claw.getInstance();
     m_Drivetrain = Drivetrain.getInstance();
-    m_Intake = Intake.getInstance();
+    m_IntakeCube = IntakeCube.getInstance();
     m_RobotState = RobotState.getInstance();
     m_Superstructure = Superstructure.getInstance();
     m_Drivetrain.setDefaultCommand(new SwerveDrive(
@@ -164,7 +164,7 @@ public class RobotContainer {
     m_Controller.operator.y().onFalse(new ClawIdle());
 
     
-    m_Controller.operator.rightBumper().whileTrue(m_Intake.extendAndFreeSpin());
+    m_Controller.operator.rightBumper().whileTrue(m_IntakeCube.extendAndFreeSpin());
 
     // m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () ->
     //m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());

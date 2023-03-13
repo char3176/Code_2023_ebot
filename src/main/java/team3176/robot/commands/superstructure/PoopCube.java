@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.superstructure.Arm;
 import team3176.robot.subsystems.superstructure.Claw;
-import team3176.robot.subsystems.superstructure.Intake;
+import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.superstructure.Superstructure;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
@@ -18,7 +18,7 @@ public class PoopCube extends CommandBase {
   /** Creates a new ClawInhale. */
   Claw m_Claw = Claw.getInstance();
   Arm m_Arm = Arm.getInstance();
-  Intake m_Intake = Intake.getInstance();
+  IntakeCube m_IntakeCube = IntakeCube.getInstance();
   Superstructure m_Superstructure = Superstructure.getInstance();
   Double CarryDeadband = 5.0;
   Double currentArmPosition;
@@ -27,7 +27,7 @@ public class PoopCube extends CommandBase {
   public PoopCube() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Claw);
-    addRequirements(m_Intake);
+    addRequirements(m_IntakeCube);
     addRequirements(m_Arm);
     addRequirements(m_Superstructure);
   }

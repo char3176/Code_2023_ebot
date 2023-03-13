@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.superstructure.arm.armAnalogDown;
 import team3176.robot.commands.superstructure.claw.ClawInhaleCone;
 import team3176.robot.commands.superstructure.claw.ClawInhaleCube;
-import team3176.robot.commands.superstructure.intake.*;
+import team3176.robot.commands.superstructure.intakecube.*;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
 
@@ -19,11 +19,11 @@ public class Superstructure extends SubsystemBase {
     private static Superstructure instance;
     private Arm m_Arm;
     private Claw m_Claw;
-    private Intake m_Intake;
+    private IntakeCube m_IntakeCube;
     public Superstructure() {
         m_Arm = Arm.getInstance();
         m_Claw = Claw.getInstance();
-        m_Intake = Intake.getInstance();
+        m_IntakeCube = IntakeCube.getInstance();
     }
     public static Superstructure getInstance() {
         if (instance == null){instance = new Superstructure();}
@@ -61,7 +61,7 @@ public class Superstructure extends SubsystemBase {
     }
     public Command scoreFirstGamePieceAuto() {
         return m_Claw.determineGamePiece()
-                .andThen(m_Intake.extendAndFreeSpin().withTimeout(1.0)
+                .andThen(m_IntakeCube.extendAndFreeSpin().withTimeout(1.0)
                 .alongWith(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(3.0)
                 .andThen(new WaitCommand(0.5))
                     .andThen(m_Claw.scoreGamePiece().withTimeout(1.0))

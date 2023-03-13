@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.superstructure.Arm;
 import team3176.robot.subsystems.superstructure.Claw;
-import team3176.robot.subsystems.superstructure.Intake;
+import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.superstructure.Superstructure;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
@@ -19,7 +19,7 @@ public class autoScoreConeHigh extends CommandBase {
   /** Creates a new ClawInhale. */
   Claw m_Claw = Claw.getInstance();
   Arm m_Arm = Arm.getInstance();
-  Intake m_Intake = Intake.getInstance();
+  IntakeCube m_IntakeCube = IntakeCube.getInstance();
   Superstructure m_Superstructure = Superstructure.getInstance();
   Double CarryDeadband = 5.0;
   Double currentArmPosition;
@@ -28,7 +28,7 @@ public class autoScoreConeHigh extends CommandBase {
   public autoScoreConeHigh() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Claw);
-    addRequirements(m_Intake);
+    addRequirements(m_IntakeCube);
     addRequirements(m_Arm);
     addRequirements(m_Superstructure);
   }
@@ -36,7 +36,7 @@ public class autoScoreConeHigh extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Intake.extendAndFreeSpin();
+    m_IntakeCube.extendAndFreeSpin();
     m_Superstructure.prepareScoreHigh();
     
   }
@@ -55,8 +55,8 @@ public class autoScoreConeHigh extends CommandBase {
   public void end(boolean interrupted) {
     //System.out.println("PoopCube End");
     m_Claw.idle();
-    m_Intake.Retract();
-    m_Intake.spinVelocityPercent(0);
+    m_IntakeCube.Retract();
+    m_IntakeCube.spinVelocityPercent(0);
     //this will return a command and not actually run. Use the command composition .andThen() to schedule the command
     m_Superstructure.prepareCarry().initialize();;
   }

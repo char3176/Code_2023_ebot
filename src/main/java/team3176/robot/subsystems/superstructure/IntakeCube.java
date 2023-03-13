@@ -16,14 +16,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import team3176.robot.subsystems.superstructure.IntakeIO;
-import team3176.robot.subsystems.superstructure.IntakeIO.IntakeIOInputs;
+import team3176.robot.subsystems.superstructure.IntakeCubeIO;
+import team3176.robot.subsystems.superstructure.IntakeCubeIO.IntakeCubeIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 import team3176.robot.constants.Hardwaremap;
 
-public class Intake extends SubsystemBase {
-  /** Creates a new Intake. */
+public class IntakeCube extends SubsystemBase {
+  /** Creates a new IntakeCube. */
   private TalonFX rollermotor = new TalonFX(Hardwaremap.intake_CID);
   private DoubleSolenoid pistonOne;
   private DoubleSolenoid pistonTwo;
@@ -31,10 +31,10 @@ public class Intake extends SubsystemBase {
 
   private boolean isExtended;
   private boolean isInIntake;
-  private static Intake instance;
-  private final IntakeIO io;
-  private final IntakeIOInputs inputs = new IntakeIOInputs();
-  public Intake(IntakeIO io) 
+  private static IntakeCube instance;
+  private final IntakeCubeIO io;
+  private final IntakeCubeIOInputs inputs = new IntakeCubeIOInputs();
+  public IntakeCube(IntakeCubeIO io) 
   {
     this.io = io;
     pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 6);
@@ -74,9 +74,9 @@ public class Intake extends SubsystemBase {
     return linebreak.get();
   }
 
-  public static Intake getInstance(){
+  public static IntakeCube getInstance(){
     if ( instance == null ) {
-      instance = new Intake(new IntakeIO() {});
+      instance = new IntakeCube(new IntakeCubeIO() {});
     }
     return instance;
   }
@@ -84,10 +84,10 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Intake", inputs);
-    Logger.getInstance().recordOutput("Intake/Velocity", getVelocity());
-    Logger.getInstance().recordOutput("Intake/Linebreak", getIsLinebreakLogger());
-    Logger.getInstance().recordOutput("Intake/Extended", getIsExtended());
+    Logger.getInstance().processInputs("IntakeCube", inputs);
+    Logger.getInstance().recordOutput("IntakeCube/Velocity", getVelocity());
+    Logger.getInstance().recordOutput("IntakeCube/Linebreak", getIsLinebreakLogger());
+    Logger.getInstance().recordOutput("IntakeCube/Extended", getIsExtended());
     // This method will be called once per scheduler run
     // Code stating if something is in the Intake
     // SmartDashboard.putBoolean("isInIntake", isInIntake);
