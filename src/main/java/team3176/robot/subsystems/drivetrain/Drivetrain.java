@@ -38,6 +38,7 @@ import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.MatBuilder;
@@ -520,25 +521,28 @@ public class Drivetrain extends SubsystemBase {
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
    
     
-    // for (NetworkTableValue v:  vision_pose.readQueue()){
-    //   try {
-    //   double[] vision_pose_array = v.getDoubleArray();
-    //   Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
-    //   if(cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm() < 1.5){
-    //     Transform2d diff = last_pose.minus(odom.getPoseMeters());
-    //     double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
-    //     if(norm > .01 && !(getPose().getX() > 4.8 && getPose().getX() < 11.5)){
-    //       poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - (15.0/100.0));
-    //     }
-    //   }
-    //   System.out.println("cam_pose"+cam_pose.getX());
-    //   SmartDashboard.putNumber("camX",cam_pose.getX());
-    //   SmartDashboard.putNumber("camY",cam_pose.getY());
-    // }
-    // catch (ClassCastException e) {
-    //   System.out.println("vision error" + e);
-    // }
-    // }
+    for (NetworkTableValue v:  vision_pose.readQueue()){
+      try {
+      double[] vision_pose_array = v.getDoubleArray();
+      Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
+      if(cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm() < 1.5){
+        Transform2d diff = last_pose.minus(odom.getPoseMeters());
+        double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
+        if(norm > .01 && !(getPose().getX() > 4.8 && getPose().getX() < 11.5)){
+          poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - (15.0/100.0));
+        }
+      }
+      System.out.println("cam_pose"+cam_pose.getX());
+      SmartDashboard.putNumber("camX",cam_pose.getX());
+      SmartDashboard.putNumber("camY",cam_pose.getY());
+    }
+    catch (ClassCastException e) {
+      System.out.println("vision error" + e);
+    }
+    }
+    Field2d field = new Field2d();
+    field.setRobotPose(getPose());
+    SmartDashboard.putData(field);
     
     // This method will be called once per scheduler every 500ms
     
