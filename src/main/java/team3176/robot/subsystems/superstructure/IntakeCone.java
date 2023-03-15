@@ -17,11 +17,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import team3176.robot.subsystems.superstructure.IntakeConeIO;
 import team3176.robot.subsystems.superstructure.IntakeConeIO.IntakeConeIOInputs;
 import org.littletonrobotics.junction.Logger;
+
+import team3176.robot.subsystems.superstructure.Claw;
 
 import team3176.robot.constants.Hardwaremap;
 
@@ -34,6 +37,7 @@ public class IntakeCone extends SubsystemBase {
   private boolean isExtended;
   private boolean isInIntake;
   private static IntakeCone instance;
+  private Claw m_Claw;
   private final IntakeConeIO io;
   private final IntakeConeIOInputs inputs = new IntakeConeIOInputs();
   public IntakeCone(IntakeConeIO io) 
@@ -43,6 +47,8 @@ public class IntakeCone extends SubsystemBase {
     //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
     linebreak = new DigitalInput(8);
 
+    m_Claw = Claw.getInstance();
+
   }
 
   public void spinVelocityPercent(double pct, int amps) {
@@ -50,10 +56,16 @@ public class IntakeCone extends SubsystemBase {
     rollermotor.setSmartCurrentLimit(amps);
   }
 
-  public void Hold()
+  public void spit() 
   {
-
+    //System.out.println("m_Claw.score()");
+    spinVelocityPercent(1, 20);
   }
+
+  public void idle() {
+    //System.out.println("m_Claw.idle()");
+    spinVelocityPercent(0, 0);
+}
 
   public void setCoastMode() {
     rollermotor.setIdleMode(IdleMode.kCoast);
@@ -100,6 +112,13 @@ public class IntakeCone extends SubsystemBase {
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
    }
+
+   public Command scoreGamePiece() {  
+    return this.run(() ->  {spit();})
+                .until(() -> this.m_Claw.getLinebreakThree() == false)
+                .andThen(new WaitCommand(0.5))
+                .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
+}
 
    public double getVelocity()
    {

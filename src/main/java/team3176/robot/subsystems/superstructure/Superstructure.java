@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.superstructure.arm.armAnalogDown;
 import team3176.robot.commands.superstructure.claw.ClawInhaleCone;
 import team3176.robot.commands.superstructure.claw.ClawInhaleCube;
+import team3176.robot.commands.superstructure.intakecone.IntakeConeExtendSpin;
 import team3176.robot.commands.superstructure.intakecube.*;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
@@ -41,6 +42,13 @@ public class Superstructure extends SubsystemBase {
                                         new ClawInhaleCube())
                     .andThen(new IntakeRetractSpinot())
                     .andThen(this.prepareCarry());
+    }
+
+    public Command groundCone()
+    {
+        return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS), 
+                                        new IntakeConeExtendSpin(), 
+                                        new ClawInhaleCone());
     }
 
     /* 

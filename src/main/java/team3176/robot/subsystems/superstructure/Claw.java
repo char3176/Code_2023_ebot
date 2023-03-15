@@ -21,6 +21,7 @@ public class Claw extends SubsystemBase {
     private CANSparkMax claw;
     private DigitalInput linebreakOne;
     private DigitalInput linebreakTwo;
+    private DigitalInput linebreakThree;
     private static Claw instance;
     private final ClawIO io;
     private final ClawIOInputs inputs = new ClawIOInputs();
@@ -30,6 +31,7 @@ public class Claw extends SubsystemBase {
         claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
         linebreakOne = new DigitalInput(9);
         linebreakTwo = new DigitalInput(7);
+        linebreakThree = new DigitalInput(5);
     }
     public void setClawMotor(double percent, double amps) {
         claw.set(percent);
@@ -89,6 +91,12 @@ public class Claw extends SubsystemBase {
     {
         return linebreakTwo.get();
     }
+
+    public boolean getLinebreakThree()
+    {
+        return linebreakThree.get();
+    }
+
     public boolean isEmpty() {
         return getLinebreakOne() || getLinebreakTwo();
     }

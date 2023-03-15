@@ -7,16 +7,19 @@ package team3176.robot.commands.superstructure.intakecone;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3176.robot.subsystems.superstructure.IntakeCone;
+import team3176.robot.subsystems.superstructure.Claw;
 
 public class IntakeConeExtendSpin extends CommandBase {
   /** Creates a new IntakeConeExtend. */
   IntakeCone m_IntakeCone;
+  Claw m_Claw;
   Timer continueRunningTimer;
   public IntakeConeExtendSpin() {
     // Use addRequirements() here to declare subsystem dependencies.
     m_IntakeCone = IntakeCone.getInstance();
+    m_Claw = Claw.getInstance();
     continueRunningTimer = new Timer();
-    addRequirements(m_IntakeCone);
+    addRequirements(m_IntakeCone, m_Claw);
   }
 
   // Called when the command is initially scheduled.
@@ -39,7 +42,11 @@ public class IntakeConeExtendSpin extends CommandBase {
   @Override
   public void end(boolean interrupted) 
   {
-    m_IntakeCone.spinVelocityPercent(-.14 * 2, 5);
+    while (m_Claw.getLinebreakThree() == true)
+    {
+      m_IntakeCone.spinVelocityPercent(-.14 * 2, 5);
+    }
+    m_IntakeCone.spinVelocityPercent(1, 20);
   }
 
   // Returns true when the command should end.
