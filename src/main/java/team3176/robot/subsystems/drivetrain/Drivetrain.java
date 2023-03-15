@@ -143,6 +143,8 @@ public class Drivetrain extends SubsystemBase {
   Pose2d last_pose = new Pose2d();
   double lastVisionTimeStamp = 0.0;
   private final DrivetrainIO io;
+  Field2d field;
+  
   // private final DrivetrainIOInputs inputs = new DrivetrainIOInputs();
 
   private Drivetrain(DrivetrainIO io) {
@@ -153,6 +155,7 @@ public class Drivetrain extends SubsystemBase {
 
     dblPub = dblTopic.publish();
 
+    field = new Field2d();
     this.io = io;
 
     // check for duplicates
@@ -473,7 +476,9 @@ public class Drivetrain extends SubsystemBase {
       pods.get(idx).setThrustBrake();
     }
   }
-
+  public double getCurrentChassisSpeed(){
+    return Math.sqrt(Math.pow(this.forwardCommand,2) +  Math.pow(this.strafeCommand,2));
+  }
   /*
    * public ChassisSpeeds getChassisSpeed() {
    * return DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(podFR.getState(),
@@ -528,19 +533,21 @@ public class Drivetrain extends SubsystemBase {
       if(cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm() < 1.5){
         Transform2d diff = last_pose.minus(odom.getPoseMeters());
         double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
-        if(norm > .01 && !(getPose().getX() > 4.8 && getPose().getX() < 11.5)){
+        if(norm > .01 && !(getPose().getX() > 4.8 && getPose().getX() < 11.5) && cam_pose.getX() != 0.0){
           poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - (15.0/100.0));
+          SmartDashboard.putNumber("camX",cam_pose.getX());
+          SmartDashboard.putNumber("camY",cam_pose.getY());
         }
       }
-      System.out.println("cam_pose"+cam_pose.getX());
-      SmartDashboard.putNumber("camX",cam_pose.getX());
-      SmartDashboard.putNumber("camY",cam_pose.getY());
+      //System.out.println("cam_pose"+cam_pose.getX());
+      //SmartDashboard.putNumber("camX",cam_pose.getX());
+      //SmartDashboard.putNumber("camY",cam_pose.getY());
     }
     catch (ClassCastException e) {
       System.out.println("vision error" + e);
     }
     }
-    Field2d field = new Field2d();
+    
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);
     

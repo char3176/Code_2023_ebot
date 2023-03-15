@@ -39,8 +39,8 @@ public class teleopPath extends CommandBase{
         //System.out.println("pose" + xposition + "," + yposition);
         traj1 = PathPlanner.generatePath(
           new PathConstraints(1, 1), 
-          new PathPoint(new Translation2d(xposition, yposition),new Rotation2d(0), pose.getRotation()), // position, heading
-          new PathPoint(new Translation2d(xposition + 1,yposition),new Rotation2d(0), pose.getRotation()) // position, heading
+          new PathPoint(new Translation2d(xposition, yposition), pose.getRotation(), pose.getRotation(), m_Drivetrain.getCurrentChassisSpeed()), // position, heading
+          new PathPoint(new Translation2d( 0.8, 6.74),Rotation2d.fromDegrees(180), Rotation2d.fromDegrees(180)) // position, heading
         );
         //System.out.println("traj" + traj1.getTotalTimeSeconds());
         swerveCommand = new PPSwerveControllerCommand(traj1, m_Drivetrain::getPose, DrivetrainConstants.DRIVE_KINEMATICS, // SwerveDriveKinematics
