@@ -44,6 +44,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -534,6 +535,10 @@ public class Drivetrain extends SubsystemBase {
         Transform2d diff = last_pose.minus(odom.getPoseMeters());
         double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
         if(norm > .01 && !(getPose().getX() > 4.8 && getPose().getX() < 11.5) && cam_pose.getX() != 0.0){
+          double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
+          double translation_cov = MathUtil.clamp(distanceToGrid/3.0, 0.4, 1.6);
+          double rotation_cov = 1.0;
+          poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, rotation_cov));
           poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - (15.0/100.0));
           SmartDashboard.putNumber("camX",cam_pose.getX());
           SmartDashboard.putNumber("camY",cam_pose.getY());
