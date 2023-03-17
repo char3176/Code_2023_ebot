@@ -12,9 +12,9 @@ public class FeederPID extends CommandBase{
     PIDController xController = new PIDController(1.0,0.0,0.0);
     PIDController yController = new PIDController(1.0,0.0,0.0);;
     PIDController wController = new PIDController(1.0,0.0,0.0);;
-    double tx = 0.0;
-    double ty = 0.0;
-    double ta = 0.0;
+    double tx = 0;
+    double ty = 0;
+    double ta = 0;
     NetworkTable vision;
     public FeederPID() {
         m_Drivetrain = Drivetrain.getInstance();
@@ -26,9 +26,9 @@ public class FeederPID extends CommandBase{
     }
     @Override
     public void execute() {
-        ta = vision.getEntry("ta").getDouble(0.0);
-        ty = vision.getEntry("ty").getDouble(0.0);
-        tx = vision.getEntry("tx").getDouble(0.0);
+        ta =-1 * vision.getEntry("ta").getDouble(0.0);
+        ty =-1 * vision.getEntry("ty").getDouble(0.0);
+        tx =-1 * vision.getEntry("tx").getDouble(0.0);
         
         m_Drivetrain.drive(xController.calculate(ta,30),
                             yController.calculate(tx,0),
