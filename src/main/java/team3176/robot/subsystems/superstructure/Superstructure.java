@@ -12,7 +12,9 @@ import team3176.robot.commands.superstructure.arm.armAnalogDown;
 import team3176.robot.commands.superstructure.claw.ClawInhaleCone;
 import team3176.robot.commands.superstructure.claw.ClawInhaleCube;
 import team3176.robot.commands.superstructure.intakecone.IntakeConeExtendSpin;
+import team3176.robot.commands.superstructure.intakecone.IntakeConeRetractSpinot;
 import team3176.robot.commands.superstructure.intakecube.*;
+import team3176.robot.subsystems.superstructure.IntakeCone;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
 
@@ -21,10 +23,12 @@ public class Superstructure extends SubsystemBase {
     private Arm m_Arm;
     private Claw m_Claw;
     private IntakeCube m_IntakeCube;
+    private IntakeCone m_IntakeCone;
     public Superstructure() {
         m_Arm = Arm.getInstance();
         m_Claw = Claw.getInstance();
         m_IntakeCube = IntakeCube.getInstance();
+        m_IntakeCone = IntakeCone.getInstance();
     }
     public static Superstructure getInstance() {
         if (instance == null){instance = new Superstructure();}
@@ -47,8 +51,12 @@ public class Superstructure extends SubsystemBase {
     public Command groundCone()
     {
         return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS), 
-                                        new IntakeConeExtendSpin(), 
-                                        new ClawInhaleCone());
+                                        new IntakeConeExtendSpin(),
+                                        new ClawInhaleCone())
+                    .until(() -> this.m_Claw.getLinebreakThree() == false)
+                    .andThen(m_IntakeCone.coneToClaw())
+                    .andThen(new IntakeConeRetractSpinot())
+                    .andThen(this.prepareCarry());
     }
 
     /* 

@@ -32,7 +32,7 @@ public class IntakeConeExtendSpin extends CommandBase {
   {
     m_IntakeCone.Extend();
     m_IntakeCone.spinVelocityPercent(.85, 25);
-    if (m_IntakeCone.getLinebreak())
+    if (m_IntakeCone.getLinebreak() == true)
     {
       continueRunningTimer.restart();
     }
@@ -42,11 +42,7 @@ public class IntakeConeExtendSpin extends CommandBase {
   @Override
   public void end(boolean interrupted) 
   {
-    while (m_Claw.getLinebreakThree() == true)
-    {
-      m_IntakeCone.spinVelocityPercent(-.14 * 2, 5);
-    }
-    m_IntakeCone.spinVelocityPercent(1, 20);
+    m_IntakeCone.spinVelocityPercent(-.14 * 2, 5);
   }
 
   // Returns true when the command should end.

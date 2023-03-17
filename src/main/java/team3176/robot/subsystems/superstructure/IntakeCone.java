@@ -43,9 +43,9 @@ public class IntakeCone extends SubsystemBase {
   public IntakeCone(IntakeConeIO io) 
   {
     this.io = io;
-    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 6);
+    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 5, 7);
     //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
-    linebreak = new DigitalInput(8);
+    linebreak = new DigitalInput(6);
 
     m_Claw = Claw.getInstance();
 
@@ -113,9 +113,9 @@ public class IntakeCone extends SubsystemBase {
 
    }
 
-   public Command scoreGamePiece() {  
+   public Command coneToClaw() {  
     return this.run(() ->  {spit();})
-                .until(() -> this.m_Claw.getLinebreakThree() == false)
+                .until(() -> this.m_Claw.getLinebreakTwo() == false)
                 .andThen(new WaitCommand(0.5))
                 .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
 }
