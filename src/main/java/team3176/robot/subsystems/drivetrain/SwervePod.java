@@ -202,7 +202,7 @@ public class SwervePod {
     
         //azimuthController.set();
         
-        azimuthController.set(MathUtil.clamp(this.turnOutput, -0.2, 0.2));
+        azimuthController.set(MathUtil.clamp(this.turnOutput, -0.4, 0.4));
         this.velTicsPer100ms = Units3176.mps2ums(desired_optimized.speedMetersPerSecond);
         thrustController.set(TalonFXControlMode.Velocity, velTicsPer100ms);
         // if(this.id == 0) {

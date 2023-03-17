@@ -525,8 +525,10 @@ public class Drivetrain extends SubsystemBase {
     // update encoders
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
-   
     
+    // time offset variable to expirment with
+    double time_delay = (30.0/1000.0);
+
     for (NetworkTableValue v:  vision_pose.readQueue()){
       try {
       double[] vision_pose_array = v.getDoubleArray();
@@ -539,7 +541,7 @@ public class Drivetrain extends SubsystemBase {
           double translation_cov = MathUtil.clamp(distanceToGrid/3.0, 0.9, 1.6);
           double rotation_cov = 1.0;
           poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, rotation_cov));
-          poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - (30.0/1000.0));
+          poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - time_delay);
         }
       }
       SmartDashboard.putNumber("camX",cam_pose.getX());
