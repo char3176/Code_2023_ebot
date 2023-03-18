@@ -190,7 +190,7 @@ public class Drivetrain extends SubsystemBase {
     // TODO: update covariance matrix for vision
     // poseEstimator.setVisionMeasurementStdDevs(new MatBuilder<>(Nat.N3(),
     // Nat.N1()).fill(0.1,0.1,0.01));
-    spinLockPID = new PIDController(0.15, 0.0, 0.0);
+    spinLockPID = new PIDController(0.1, 0.0, 0.0);
     // set for max and min of degrees for Rotation2D
     spinLockPID.enableContinuousInput(-180, 180);
 
@@ -274,6 +274,7 @@ public class Drivetrain extends SubsystemBase {
     this.spinCommand = spinCommand;
     if (isSpinLocked) {
       this.spinCommand = spinLockPID.calculate(getPoseYawWrapped().getDegrees(), spinLockAngle.getDegrees());
+      SmartDashboard.putNumber("SpinLockYaw",getPoseYawWrapped().getDegrees());
     }
 
     calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);
@@ -395,8 +396,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void setSpinLockAngle() {
     this.spinLockAngle = getSensorYaw();
-    
   }
+
   public void setSpinLockAngle(double angle) {
     this.spinLockAngle = Rotation2d. fromDegrees(angle);
   }
