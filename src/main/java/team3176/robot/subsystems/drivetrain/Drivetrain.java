@@ -395,8 +395,11 @@ public class Drivetrain extends SubsystemBase {
 
   public void setSpinLockAngle() {
     this.spinLockAngle = getSensorYaw();
+    
   }
-
+  public void setSpinLockAngle(double angle) {
+    this.spinLockAngle = Rotation2d. fromDegrees(angle);
+  }
   /**
    * 
    * @return returns the chassis yaw wrapped between -pi and pi
