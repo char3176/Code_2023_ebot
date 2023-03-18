@@ -30,8 +30,8 @@ public class FeederPID extends CommandBase{
         ty =-1 * vision.getEntry("ty").getDouble(0.0);
         tx =-1 * vision.getEntry("tx").getDouble(0.0);
         
-        m_Drivetrain.drive(xController.calculate(ta,30),
-                            yController.calculate(tx,0),
+        m_Drivetrain.drive(-xController.calculate(ta, 0),
+                            -yController.calculate(tx,0),
                             0.0);
     }
     @Override
