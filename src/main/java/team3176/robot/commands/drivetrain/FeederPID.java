@@ -21,38 +21,30 @@ public class FeederPID extends CommandBase{
     double ty = 0;
     double ta = 0;
     NetworkTable vision;
-    InterpolatingTreeMap<Double,Double> offsetTree = new InterpolatingTreeMap<Double,Double>();
-    InterpolatingTreeMap<Double,Double> blueLeft = new InterpolatingTreeMap<Double,Double>();
+    InterpolatingTreeMap<Double,Double> offsetTreeR = new InterpolatingTreeMap<Double,Double>();
+    InterpolatingTreeMap<Double,Double> offsetTreeL = new InterpolatingTreeMap<Double,Double>();
+    InterpolatingTreeMap<Double,Double> offsetTree;
     Alliance alliance;
     public FeederPID(String side) {
         alliance = DriverStation.getAlliance();
         m_Drivetrain = Drivetrain.getInstance();
         addRequirements(m_Drivetrain);
         vision = NetworkTableInstance.getDefault().getTable("limelight");
-        if (side == "right") { 
-            if (alliance == Alliance.Blue) {
-                offsetTree.put(1.8,-20.0);
-                offsetTree.put(0.33,-5.9);
-                offsetTree.put(0.11,-0.8);
-                offsetTree.put(0.0,0.0);
-            } else if (alliance == Alliance.Red) {
-                offsetTree.put(1.8,-20.0);
-                offsetTree.put(0.33,-5.9);
-                offsetTree.put(0.11,-0.8);
-                offsetTree.put(0.0,0.0);
-            }
-        } else if (side == "left") {
-            if (alliance == Alliance.Blue) {
-                offsetTree.put(1.6,28.0);
-                offsetTree.put(0.46,18.1);
-                offsetTree.put(0.19,13.0);
-                offsetTree.put(0.08,7.4);
-            } else if (alliance == Alliance.Red) {
-                offsetTree.put(1.6,24.0);
-                offsetTree.put(0.46,18.1);
-                offsetTree.put(0.19,13.0);
-                offsetTree.put(0.08,7.4);
-            }
+        
+        offsetTreeR.put(1.8,-20.0);
+        offsetTreeR.put(0.33,-5.9);
+        offsetTreeR.put(0.11,-0.8);
+        offsetTreeR.put(0.0,0.0);
+
+        offsetTreeL.put(1.6,22.0);
+        offsetTreeL.put(0.46,7.1);
+        offsetTreeL.put(0.19,2.0);
+        offsetTreeL.put(0.0,0.0);
+        
+        if(side == "right") {
+            offsetTree = offsetTreeR;
+        } else {
+            offsetTree = offsetTreeL;
         }
     }
     @Override
