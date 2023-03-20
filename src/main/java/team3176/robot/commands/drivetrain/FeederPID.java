@@ -57,9 +57,8 @@ public class FeederPID extends CommandBase{
         ta = vision.getEntry("ta").getDouble(0.0);
         ty = vision.getEntry("ty").getDouble(0.0);
         tx = vision.getEntry("tx").getDouble(0.0);
-       
-        if (m_Drivetrain.getPoseYawWrapped().getDegrees() >= -5.0 &&
-                m_Drivetrain.getPoseYawWrapped().getDegrees() <= 5.0) {
+        double tv = vision.getEntry("tv").getDouble(0.0);
+        if (Math.abs(m_Drivetrain.getPoseYawWrapped().getDegrees()) < 5.0 && tv != 0.0) {
             m_Drivetrain.drive (MathUtil.clamp(xController.calculate(ta, 1.5),-2.0,2.0),
                             (MathUtil.clamp(yController.calculate(tx,offsetTree.get(ta)),-2.0,2.0)),
                             0.0);
