@@ -158,6 +158,7 @@ public class Claw extends SubsystemBase {
     // Code stating if something is in the Intake
     SmartDashboard.putBoolean("linebreakOne",linebreakOne.get());
     SmartDashboard.putBoolean("linebreakTwo",linebreakTwo.get());
+    SmartDashboard.putBoolean("linebreakThree", linebreakThree.get());
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
    }

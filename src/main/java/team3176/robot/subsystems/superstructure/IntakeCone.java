@@ -30,7 +30,7 @@ import team3176.robot.constants.Hardwaremap;
 
 public class IntakeCone extends SubsystemBase {
   /** Creates a new IntakeCone. */
-  private CANSparkMax rollermotor = new CANSparkMax(0, MotorType.kBrushless);
+  private CANSparkMax rollermotor = new CANSparkMax(8, MotorType.kBrushless);
   private DoubleSolenoid pistonOne;
   private DigitalInput linebreak;
 
@@ -43,7 +43,7 @@ public class IntakeCone extends SubsystemBase {
   public IntakeCone(IntakeConeIO io) 
   {
     this.io = io;
-    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 5, 7);
+    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 6, 7);
     //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
     linebreak = new DigitalInput(6);
 
@@ -109,6 +109,7 @@ public class IntakeCone extends SubsystemBase {
     // This method will be called once per scheduler run
     // Code stating if something is in the Intake
     // SmartDashboard.putBoolean("isInIntake", isInIntake);
+    SmartDashboard.putBoolean("ConeLinebreak", getLinebreak());
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
    }

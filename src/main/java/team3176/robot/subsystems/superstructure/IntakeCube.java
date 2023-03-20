@@ -26,7 +26,7 @@ import team3176.robot.constants.Hardwaremap;
 public class IntakeCube extends SubsystemBase {
   /** Creates a new IntakeCube. */
   private TalonFX rollermotor = new TalonFX(Hardwaremap.intake_CID);
-  private TalonSRX conveyor = new TalonSRX(0);
+  private TalonSRX conveyor = new TalonSRX(61); //TODO: Add to HArdwareMap
   private DoubleSolenoid pistonOne;
   private DoubleSolenoid pistonTwo;
   private DigitalInput linebreak;
@@ -39,7 +39,7 @@ public class IntakeCube extends SubsystemBase {
   public IntakeCube(IntakeCubeIO io) 
   {
     this.io = io;
-    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 6);
+    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 5);
     //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
     linebreak = new DigitalInput(8);
   }
@@ -95,6 +95,7 @@ public class IntakeCube extends SubsystemBase {
     Logger.getInstance().recordOutput("IntakeCube/Extended", getIsExtended());
     // This method will be called once per scheduler run
     // Code stating if something is in the Intake
+    SmartDashboard.putBoolean("CubeLinebreak", getLinebreak());
     // SmartDashboard.putBoolean("isInIntake", isInIntake);
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
