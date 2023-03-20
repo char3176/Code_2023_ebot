@@ -42,9 +42,8 @@ public class Superstructure extends SubsystemBase {
 
     public Command groundCube() {
         return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS),
-                                        new IntakeExtendSpin(), 
+                                        new IntakeExtendSpin(),
                                         new ClawInhaleCube())
-                    .andThen(new IntakeRetractSpinot())
                     .andThen(this.prepareCarry());
     }
 

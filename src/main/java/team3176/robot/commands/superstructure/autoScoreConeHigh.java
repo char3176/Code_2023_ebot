@@ -56,7 +56,7 @@ public class autoScoreConeHigh extends CommandBase {
     //System.out.println("PoopCube End");
     m_Claw.idle();
     m_IntakeCube.Retract();
-    m_IntakeCube.spinVelocityPercent(0);
+    m_IntakeCube.spinIntake(0);
     //this will return a command and not actually run. Use the command composition .andThen() to schedule the command
     m_Superstructure.prepareCarry().initialize();;
   }

@@ -7,11 +7,13 @@ package team3176.robot.commands.superstructure.claw;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3176.robot.subsystems.superstructure.Claw;
+import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
 public class ClawInhaleCube extends CommandBase {
   /** Creates a new ClawInhale. */
   Claw m_Claw = Claw.getInstance();
+  IntakeCube m_IntakeCube = IntakeCube.getInstance();
   Timer continueRunningTimer = new Timer();
   public ClawInhaleCube() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -38,6 +40,7 @@ public class ClawInhaleCube extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_Claw.hold();
+    m_IntakeCube.spinConveyor(0);
   }
 
   // Returns true when the command should end.

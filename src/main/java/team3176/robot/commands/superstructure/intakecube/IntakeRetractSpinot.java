@@ -24,7 +24,7 @@ public class IntakeRetractSpinot extends CommandBase {
   public void execute() 
   {
     m_IntakeCube.Retract();
-    m_IntakeCube.spinVelocityPercent(0);
+    m_IntakeCube.spinIntake(0);
   }
 
   // Called once the command ends or is interrupted.

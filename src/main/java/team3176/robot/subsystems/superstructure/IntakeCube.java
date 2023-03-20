@@ -5,6 +5,7 @@
 package team3176.robot.subsystems.superstructure;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -25,6 +26,7 @@ import team3176.robot.constants.Hardwaremap;
 public class IntakeCube extends SubsystemBase {
   /** Creates a new IntakeCube. */
   private TalonFX rollermotor = new TalonFX(Hardwaremap.intake_CID);
+  private TalonSRX conveyor = new TalonSRX(0);
   private DoubleSolenoid pistonOne;
   private DoubleSolenoid pistonTwo;
   private DigitalInput linebreak;
@@ -40,13 +42,16 @@ public class IntakeCube extends SubsystemBase {
     pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 6);
     //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
     linebreak = new DigitalInput(8);
-
   }
 
-  public void spinVelocityPercent(double pct) {
+  public void spinIntake(double pct) {
     rollermotor.configPeakOutputReverse(-pct);
     rollermotor.set(ControlMode.PercentOutput, -pct);
-    
+  }
+
+  public void spinConveyor(double pct) {
+    conveyor.configPeakOutputForward(pct);
+    conveyor.set(ControlMode.PercentOutput, pct);
   }
 
   public void setCoastMode() {
@@ -123,10 +128,10 @@ public class IntakeCube extends SubsystemBase {
   public Command extendAndSpin() {
     return this.startEnd(() ->{
       this.Extend();
-      this.spinVelocityPercent(.1);
+      this.spinIntake(.1);
     }, () -> {
       this.Retract();
-      this.spinVelocityPercent(0.0);
+      this.spinIntake(0.0);
     });
   }
 
