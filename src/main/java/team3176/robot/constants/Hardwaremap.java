@@ -17,7 +17,7 @@ public class Hardwaremap {
      * Drivetrain CIDs
      */
     public static final SwervePodHardwareID pod001 = 
-    new SwervePodHardwareID(  10,  12,  105.296);
+    new SwervePodHardwareID(  10,  12,  0.216);
     public static final SwervePodHardwareID pod002 = 
     new SwervePodHardwareID(  20,  22,  -103.48);
     public static final SwervePodHardwareID pod003 = 
