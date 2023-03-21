@@ -143,6 +143,7 @@ public class Drivetrain extends SubsystemBase {
   NetworkTableEntry vision_pose;
   Pose2d last_pose = new Pose2d();
   double lastVisionTimeStamp = 0.0;
+  double lastVisionX = 0.0;
   private final DrivetrainIO io;
   Field2d field;
   
@@ -529,23 +530,25 @@ public class Drivetrain extends SubsystemBase {
     // update encoders
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
-    
-    // time offset variable to expirment with
-    double time_delay = (30.0/1000.0);
 
-    for (NetworkTableValue v:  vision_pose.readQueue()){
-      try {
-      double[] vision_pose_array = v.getDoubleArray();
+    double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
+    try {
+      double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);
       Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
-      if(cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm() < 1.0){
+      //store x value to check if its the same data as before
+      
+      double camera_inovation_error = cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm(); 
+      SmartDashboard.putNumber("camInovationError",camera_inovation_error);
+      if(camera_inovation_error < 1.0 && lastVisionX != cam_pose.getX() && cam_pose.getX() != 0.0){
+        lastVisionX = cam_pose.getX();
         Transform2d diff = last_pose.minus(odom.getPoseMeters());
         double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
-        if(norm > .01 && !(getPose().getX() > 3.5 && getPose().getX() < 10.5) && cam_pose.getX() != 0.0){
+        if(!(getPose().getX() > 3.5 && getPose().getX() < 10.5)){
           double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
           double translation_cov = MathUtil.clamp(distanceToGrid/2.0, 0.9, 3.0);
-          double rotation_cov = 1.0;
+          SmartDashboard.putNumber("camTransCov",translation_cov);
           //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, translation_cov));
-          poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0);
+          poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0, VecBuilder.fill(translation_cov, translation_cov, translation_cov));
         }
       }
       SmartDashboard.putNumber("camX",cam_pose.getX());
@@ -558,7 +561,7 @@ public class Drivetrain extends SubsystemBase {
     catch (ClassCastException e) {
       System.out.println("vision error" + e);
     }
-    }
+    
     
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);
