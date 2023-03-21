@@ -540,12 +540,12 @@ public class Drivetrain extends SubsystemBase {
       if(cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm() < 1.0){
         Transform2d diff = last_pose.minus(odom.getPoseMeters());
         double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
-        if(norm > .01 && !(getPose().getX() > 4.8 && getPose().getX() < 11.5) && cam_pose.getX() != 0.0){
+        if(norm > .01 && !(getPose().getX() > 3.5 && getPose().getX() < 10.5) && cam_pose.getX() != 0.0){
           double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
-          double translation_cov = MathUtil.clamp(distanceToGrid/3.0, 0.9, 1.6);
+          double translation_cov = MathUtil.clamp(distanceToGrid/2.0, 0.9, 3.0);
           double rotation_cov = 1.0;
-          poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, rotation_cov));
-          poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - time_delay);
+          //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, translation_cov));
+          poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0);
         }
       }
       SmartDashboard.putNumber("camX",cam_pose.getX());

@@ -106,7 +106,7 @@ public class SwervePod {
         kF_Thrust = .045; // SwervePodConstants.THRUST_PID[3][id];
 
 
-        this.kP_Azimuth = 0.005;
+        this.kP_Azimuth = 0.006;
         this.kI_Azimuth = 0.0;
         this.kD_Azimuth = 0.0;
 
