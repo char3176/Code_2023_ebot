@@ -15,8 +15,8 @@ import team3176.robot.subsystems.drivetrain.Drivetrain;
 
 public class FeederPID extends CommandBase{
     Drivetrain m_Drivetrain;
-    PIDController xController = new PIDController(0.5,0.0,0.0);
-    PIDController yController = new PIDController(0.1,0.0,0.0);;
+    PIDController xController = new PIDController(2.0,0.0,0.0);
+    PIDController yController = new PIDController(0.06,0.0,0.0);;
     double tx = 0;
     double ty = 0;
     double ta = 0;
@@ -51,6 +51,7 @@ public class FeederPID extends CommandBase{
     public void initialize(){
         m_Drivetrain.setSpinLock(true);
         m_Drivetrain.setSpinLockAngle(0.0);
+        xController.setP(1.5); 
     }
     @Override
     public void execute() {
@@ -58,6 +59,7 @@ public class FeederPID extends CommandBase{
         ty = vision.getEntry("ty").getDouble(0.0);
         tx = vision.getEntry("tx").getDouble(0.0);
         double tv = vision.getEntry("tv").getDouble(0.0);
+        if (ta > 0.6 )xController.setP(0.6);
         if (Math.abs(m_Drivetrain.getPoseYawWrapped().getDegrees()) < 5.0 && tv != 0.0) {
             m_Drivetrain.drive (MathUtil.clamp(xController.calculate(ta, 1.5),-2.0,2.0),
                             (MathUtil.clamp(yController.calculate(tx,offsetTree.get(ta)),-2.0,2.0)),
