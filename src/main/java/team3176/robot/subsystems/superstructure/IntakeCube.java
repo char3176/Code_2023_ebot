@@ -39,9 +39,9 @@ public class IntakeCube extends SubsystemBase {
   public IntakeCube(IntakeCubeIO io) 
   {
     this.io = io;
-    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 5);
+    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 6);
     //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
-    linebreak = new DigitalInput(8);
+    linebreak = new DigitalInput(4);
   }
 
   public void spinIntake(double pct) {

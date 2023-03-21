@@ -43,9 +43,9 @@ public class IntakeCone extends SubsystemBase {
   public IntakeCone(IntakeConeIO io) 
   {
     this.io = io;
-    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 6, 7);
+    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 5, 3);
     //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
-    linebreak = new DigitalInput(6);
+    linebreak = new DigitalInput(3);
 
     m_Claw = Claw.getInstance();
 

@@ -32,6 +32,8 @@ import team3176.robot.subsystems.RobotState;
 import team3176.robot.subsystems.superstructure.Arm;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.subsystems.superstructure.IntakeCube;
+import team3176.robot.subsystems.superstructure.IntakeCone;
+
 import team3176.robot.subsystems.superstructure.Superstructure;
 
 /**
@@ -50,6 +52,8 @@ public class RobotContainer {
   private final Controller m_Controller;
   private final Claw m_Claw;
   private final IntakeCube m_IntakeCube;
+  private final IntakeCone m_IntakeCone;
+
   // private final Compressor m_Compressor;
   private final Drivetrain m_Drivetrain;
   private final RobotState m_RobotState;
@@ -66,6 +70,8 @@ public class RobotContainer {
     m_Claw = Claw.getInstance();
     m_Drivetrain = Drivetrain.getInstance();
     m_IntakeCube = IntakeCube.getInstance();
+    m_IntakeCone = IntakeCone.getInstance();
+
     m_RobotState = RobotState.getInstance();
     m_Superstructure = Superstructure.getInstance();
     m_Drivetrain.setDefaultCommand(new SwerveDrive(
@@ -168,6 +174,8 @@ public class RobotContainer {
 
     
     m_Controller.operator.rightBumper().whileTrue(m_IntakeCube.extendAndFreeSpin());
+    //m_Controller.operator.rightBumper().whileTrue(m_IntakeCone.extendAndFreeSpin());
+
 
     // m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () ->
     //m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());
@@ -177,7 +185,7 @@ public class RobotContainer {
     //m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
 
     
-    //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
+    m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(200).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(new ArmFollowTrajectory(SuperStructureConstants.ARM_MID_POS));
     m_Controller.operator.start().whileTrue(new PoopCube());

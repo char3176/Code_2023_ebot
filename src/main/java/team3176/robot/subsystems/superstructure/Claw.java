@@ -29,9 +29,9 @@ public class Claw extends SubsystemBase {
     private Claw(ClawIO io) {
         this.io = io;
         claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
-        linebreakOne = new DigitalInput(9);
-        linebreakTwo = new DigitalInput(7);
-        linebreakThree = new DigitalInput(5);
+        linebreakOne = new DigitalInput(0);
+        linebreakTwo = new DigitalInput(2);
+        linebreakThree = new DigitalInput(1);
     }
     public void setClawMotor(double percent, double amps) {
         claw.set(percent);
