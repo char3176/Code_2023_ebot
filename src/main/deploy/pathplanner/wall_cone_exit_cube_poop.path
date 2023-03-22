@@ -1,0 +1,105 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.9251860876603113,
+        "y": 0.5027143613609277
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.929831367475235,
+        "y": 0.48582558102616324
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "scoreHighFirst"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 10.0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.514311171275695,
+        "y": 0.8233529733821224
+      },
+      "prevControl": {
+        "x": 5.050843823539037,
+        "y": 0.6970796229146817
+      },
+      "nextControl": {
+        "x": 6.051163985837092,
+        "y": 0.9696204589635696
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": 1.0,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.53206693003971,
+        "y": 0.9034011791276062
+      },
+      "prevControl": {
+        "x": 6.092541892014698,
+        "y": 0.8800031542734119
+      },
+      "nextControl": {
+        "x": 6.971591968064721,
+        "y": 0.9267992039818005
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "groundCube"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.388521133675648,
+        "y": 1.0291912167276542
+      },
+      "prevControl": {
+        "x": 6.500249373852122,
+        "y": 0.8693583597001422
+      },
+      "nextControl": null,
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "poopCube"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": []
+}

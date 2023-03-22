@@ -545,7 +545,7 @@ public class Drivetrain extends SubsystemBase {
         double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
         if(!(getPose().getX() > 3.5 && getPose().getX() < 10.5)){
           double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
-          double translation_cov = MathUtil.clamp(distanceToGrid, 0.9, 3.0);
+          double translation_cov = MathUtil.clamp(distanceToGrid, 0.9, 3.0); 
           SmartDashboard.putNumber("camTransCov",translation_cov);
           //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, translation_cov));
           poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0, VecBuilder.fill(translation_cov, translation_cov, translation_cov));
