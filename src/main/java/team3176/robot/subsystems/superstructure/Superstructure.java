@@ -45,10 +45,6 @@ public class Superstructure extends SubsystemBase {
         return new IntakeGroundCube().andThen(this.prepareCarry());
     }
 
-    public Command scoreCubeHigh() {
-        return new InstantCommand(() -> m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS));
-    }
-
     public Command groundCone()
     {
         return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS), 
@@ -102,6 +98,14 @@ public class Superstructure extends SubsystemBase {
         .andThen(new WaitCommand(0.5))
         .andThen(m_Claw.scoreGamePiece())
         .andThen(this.prepareCarry());
+    }
+    public Command scoreGamePieceLowAuto()
+    {
+        return m_Claw.determineGamePiece()
+                .andThen(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_CATCH_POS).withTimeout(3.0))
+                .andThen(new WaitCommand(0.5))
+                .andThen(m_Claw.scoreGamePiece().withTimeout(1.0))
+                .andThen(this.prepareCarry());
     }
     public Command intakeCubeHumanPlayer() {
         return new ParallelCommandGroup(new ClawInhaleCube(), m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS))
