@@ -26,7 +26,7 @@ public class SuperStructureConstants {
   /**
    * Percent output for inhaling
    */
-  public static final double CLAW_OUTPUT_POWER_CUBE = .6;
+  public static final double CLAW_OUTPUT_POWER_CUBE = .8;
   public static final double CLAW_OUTPUT_POWER_CONE = 1.0;
 
   /**

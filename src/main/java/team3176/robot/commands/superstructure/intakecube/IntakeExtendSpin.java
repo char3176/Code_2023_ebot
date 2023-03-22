@@ -44,11 +44,12 @@ public class IntakeExtendSpin extends CommandBase {
       m_IntakeCube.Retract();
     }
     m_Claw.intake();
-    m_IntakeCube.spinConveyor(-0.4);
+    m_IntakeCube.spinConveyor(-0.6);
     m_IntakeCube.spinIntake(-.85);
     if (!m_Claw.getIsLinebreakOne())
     {
       m_Arm.armSetPosition(SuperStructureConstants.ARM_CARRY_POS);
+    } else {m_Arm.armSetPosition(SuperStructureConstants.ARM_CATCH_POS);
     }
   }
 
