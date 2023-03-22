@@ -28,8 +28,8 @@ import team3176.robot.subsystems.superstructure.ArmIO.ArmIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
-    private static final double MAX_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_ZERO_POS;
-    private static final double MIN_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_HIGH_POS;
+    private static final double MAX_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_HIGH_POS;
+    private static final double MIN_ENCODER_ANGLE_VALUE = SuperStructureConstants.ARM_ZERO_POS;
     private static Arm instance;
     private final ArmIO io;
     private final ArmIOInputs inputs = new ArmIOInputs();
@@ -65,7 +65,7 @@ public class Arm extends SubsystemBase {
     private void setArmPidPosMode() {
         this.armEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
         this.armEncoder.configMagnetOffset(SuperStructureConstants.ARM_ENCODER_OFFSET);
-        this.armEncoder.configSensorDirection(false,100);
+        this.armEncoder.configSensorDirection(true,100);
 
         this.m_turningPIDController.setTolerance(SuperStructureConstants.ARM_TOLERANCE);
         //this.m_turningPIDController.enableContinuousInput() 
@@ -105,7 +105,7 @@ public class Arm extends SubsystemBase {
             feedForward =0.0;
         }
         double turnOutput = m_turningPIDController.calculate(this.armEncoderAbsPosition, desiredAngle);
-        turnOutput = MathUtil.clamp(turnOutput,-0.2,0.2);
+        turnOutput = MathUtil.clamp(turnOutput,-0.4,0.4);
         armController.set(turnOutput + feedForward);
         SmartDashboard.putNumber("Arm_Output", turnOutput + feedForward);
         SmartDashboard.putNumber("Arm Feed Forward", feedForward);
@@ -195,7 +195,7 @@ public class Arm extends SubsystemBase {
         //     counter = counter++;
         // }
         if(this.currentState == States.CLOSED_LOOP) {
-            this.armSetpointAngleRaw = MathUtil.clamp(this.armSetpointAngleRaw, SuperStructureConstants.ARM_HIGH_POS, SuperStructureConstants.ARM_ZERO_POS);
+            this.armSetpointAngleRaw = MathUtil.clamp(this.armSetpointAngleRaw, SuperStructureConstants.ARM_ZERO_POS, SuperStructureConstants.ARM_HIGH_POS);
             SmartDashboard.putNumber("Arm_Error", armEncoder.getAbsolutePosition()-this.armSetpointAngleRaw);
             setPIDPosition(armSetpointAngleRaw);
         }

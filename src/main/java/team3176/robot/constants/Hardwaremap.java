@@ -9,7 +9,7 @@ public class Hardwaremap {
      */
     public static int arm_CID = 3;
     public static int claw_CID = 6;
-    public static int intake_CID = 8;
+    public static int intake_CID = 7;
     public static int armEncoder_CID = 2;
     //public static int armEncoder_CID = 9;
 

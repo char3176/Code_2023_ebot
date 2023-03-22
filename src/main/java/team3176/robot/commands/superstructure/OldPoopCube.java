@@ -14,7 +14,7 @@ import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.superstructure.Superstructure;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
-public class PoopCube extends CommandBase {
+public class OldPoopCube extends CommandBase {
   /** Creates a new ClawInhale. */
   Claw m_Claw = Claw.getInstance();
   Arm m_Arm = Arm.getInstance();
@@ -24,7 +24,7 @@ public class PoopCube extends CommandBase {
   Double currentArmPosition;
   Double kArmPoopUpperLimit, kArmPoopLowerLimit, kArmCarryUpperLimit, kArmCarryLowerLimit;
 
-  public PoopCube() {
+  public OldPoopCube() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_Claw);
     addRequirements(m_IntakeCube);

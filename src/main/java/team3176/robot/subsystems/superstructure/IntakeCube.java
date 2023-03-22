@@ -45,11 +45,13 @@ public class IntakeCube extends SubsystemBase {
   }
 
   public void spinIntake(double pct) {
-    rollermotor.configPeakOutputReverse(-pct);
-    rollermotor.set(ControlMode.PercentOutput, -pct);
+    rollermotor.configPeakOutputReverse(pct);
+    rollermotor.configPeakOutputForward(pct);
+    rollermotor.set(ControlMode.PercentOutput, pct);
   }
 
   public void spinConveyor(double pct) {
+    conveyor.configPeakOutputReverse(pct);
     conveyor.configPeakOutputForward(pct);
     conveyor.set(ControlMode.PercentOutput, pct);
   }
