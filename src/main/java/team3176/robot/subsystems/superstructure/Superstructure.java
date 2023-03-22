@@ -42,7 +42,7 @@ public class Superstructure extends SubsystemBase {
     
 
     public Command groundCube() {
-        return new IntakeExtendSpin().andThen(this.prepareCarry());
+        return new IntakeGroundCube().andThen(this.prepareCarry());
     }
 
     public Command groundCone()

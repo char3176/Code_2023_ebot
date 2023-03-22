@@ -13,12 +13,12 @@ import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.superstructure.Arm;
 
-public class IntakeExtendSpin extends CommandBase {
+public class IntakeGroundCube extends CommandBase {
   /** Creates a new IntakeExtendSpin. */
   IntakeCube m_IntakeCube = IntakeCube.getInstance();
   Claw m_Claw = Claw.getInstance();
   Arm m_Arm = Arm.getInstance();
-  public IntakeExtendSpin() {
+  public IntakeGroundCube() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_IntakeCube, m_Claw, m_Arm);
   }
@@ -28,7 +28,7 @@ public class IntakeExtendSpin extends CommandBase {
   public void initialize() 
   {
     m_Claw.setCurrentGamePiece(GamePiece.CUBE);
-    m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_ZERO_POS);
+    m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_ZERO_POS);
     m_IntakeCube.Extend();
     m_IntakeCube.spinIntake(-.85);
     m_Claw.intake();

@@ -107,7 +107,7 @@ public class RobotContainer {
     m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry()));
     m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
     m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarry()));
-     m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(()->m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
+    m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(()->m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
      //m_Controller.getTransStick_Button10()
      //    .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
 
@@ -174,9 +174,9 @@ public class RobotContainer {
 
     
     //m_Controller.operator.rightBumper().whileTrue(m_IntakeCube.extendAndFreeSpin());
-    m_Controller.operator.rightBumper().whileTrue(new InstantCommand( () -> m_IntakeCone.spinVelocityPercent(-80,20)));
-    m_Controller.operator.rightBumper().onFalse(new InstantCommand( () -> m_IntakeCone.spinVelocityPercent(0, 20))); 
-
+    //m_Controller.operator.rightBumper().whileTrue(new InstantCommand( () -> m_IntakeCone.spinVelocityPercent(-80,20)));
+    //m_Controller.operator.rightBumper().onFalse(new InstantCommand( () -> m_IntakeCone.spinVelocityPercent(0, 20))); 
+//    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).whileTrue((m_Superstructure.groundCube()));
 
     // m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () ->
     //m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());
