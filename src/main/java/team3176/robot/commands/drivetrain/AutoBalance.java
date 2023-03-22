@@ -1,5 +1,6 @@
 package team3176.robot.commands.drivetrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -28,13 +29,22 @@ public class AutoBalance extends CommandBase {
         double forward = 0.0;
         double deadbandDegrees = 8;
         SmartDashboard.putNumber("pitch", m_Drivetrain.getChassisPitch());
+        // if(m_Drivetrain.getChassisPitch() > 0 + deadbandDegrees) {
+        //     forward = 0.37 * Math.pow(.96,num_balanced);
+        // } else if(m_Drivetrain.getChassisPitch() < 0 - deadbandDegrees) {
+        //     forward = -0.37 * Math.pow(.96,num_balanced);
+        // } else if(Math.abs(m_Drivetrain.getChassisPitch()) < 2){
+        //     num_balanced ++;
+        // }
+        //P loop option
         if(m_Drivetrain.getChassisPitch() > 0 + deadbandDegrees) {
-            forward = 0.37 * Math.pow(.96,num_balanced);
-        } else if(m_Drivetrain.getChassisPitch() < 0 - deadbandDegrees) {
-            forward = -0.37 * Math.pow(.96,num_balanced);
-        } else if(Math.abs(m_Drivetrain.getChassisPitch()) < 2){
-            num_balanced ++;
+            forward = 0.03 * m_Drivetrain.getChassisPitch();
+            forward = MathUtil.clamp(forward, -0.4, 0.4);
         }
+        else {
+            forward = 0.0;
+        }
+
         m_Drivetrain.drive(forward, 0, 0, Drivetrain.coordType.ROBOT_CENTRIC);
     }
     @Override
