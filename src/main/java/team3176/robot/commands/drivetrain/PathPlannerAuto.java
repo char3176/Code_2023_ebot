@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.superstructure.intakecube.IntakeExtendFreeSpin;
+import team3176.robot.commands.superstructure.intakecube.PoopCube;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
 import team3176.robot.subsystems.drivetrain.Drivetrain.driveMode;
@@ -42,6 +43,7 @@ public class PathPlannerAuto {
             driveSubsystem.drive(0.0,0.0,0.0);
         }));
         eventMap.put("groundCube",m_Superstructure.groundCube());
+        eventMap.put("poopCube",new PoopCube());
         // eventMap.put("intakeDown", new IntakeDown());
         // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
         SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
