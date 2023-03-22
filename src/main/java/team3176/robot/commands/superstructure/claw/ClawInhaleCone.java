@@ -45,6 +45,6 @@ public class ClawInhaleCone extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return continueRunningTimer.get() > 0.5;
+    return continueRunningTimer.get() > 1.0;
   }
 }

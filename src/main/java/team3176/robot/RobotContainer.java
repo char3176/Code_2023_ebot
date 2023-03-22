@@ -189,8 +189,9 @@ public class RobotContainer {
     m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(200).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(new ArmFollowTrajectory(SuperStructureConstants.ARM_MID_POS));
-    m_Controller.operator.start().whileTrue(new OldPoopCube());
-    m_Controller.operator.start().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
+    //m_Controller.operator.start().whileTrue(new OldPoopCube());
+    m_Controller.operator.start().whileTrue(new InstantCommand( () -> m_IntakeCone.spit()));
+    //m_Controller.operator.start().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.operator.back().whileTrue(m_Superstructure.preparePoop());
     m_Controller.operator.rightTrigger().onTrue(new ClawIdle()); 
     m_Controller.operator.leftTrigger().whileTrue(new PoopCube());
