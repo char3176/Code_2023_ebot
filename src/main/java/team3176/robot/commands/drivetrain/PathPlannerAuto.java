@@ -36,6 +36,7 @@ public class PathPlannerAuto {
         // in your code that will be used by all path following commands.
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("scoreHighFirst", m_Superstructure.scoreFirstGamePieceAuto());
+        eventMap.put("scoreHigh", m_Superstructure.scoreGamePieceAuto());
         eventMap.put("autoBalance", new AutoBalance().andThen(new SwerveDefense()).finallyDo((b) -> {
             driveSubsystem.setDriveMode(driveMode.DEFENSE);
             driveSubsystem.drive(0.0,0.0,0.0);
