@@ -58,34 +58,46 @@
         "x": 4.32589419724294,
         "y": 4.682222273535458
       },
-      "nextControl": null,
+      "nextControl": {
+        "x": 2.8501743367123096,
+        "y": 4.700441037245711
+      },
       "holonomicAngle": -8.652541791114675,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "poopCube"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "minimum",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.5212552243286295,
+        "y": 3.361361904541991
+      },
+      "prevControl": {
+        "x": 6.020239222296626,
+        "y": 5.1194726025815696
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "poopCube"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.0,
-      "names": [
-        "event"
-      ]
-    },
-    {
-      "position": 0.6909090909090909,
-      "names": [
-        "groundCube"
-      ]
-    }
-  ]
+  "markers": []
 }

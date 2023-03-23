@@ -59,7 +59,7 @@ public class IntakeCone extends SubsystemBase {
   public void spit() 
   {
     //System.out.println("m_Claw.score()");
-    spinVelocityPercent(1, 20);
+    spinVelocityPercent(-1, 20);
   }
 
   public void idle() {

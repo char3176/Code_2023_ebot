@@ -57,8 +57,8 @@ public class IntakeGroundCube extends CommandBase {
   @Override
   public void end(boolean interrupted) 
   {
-    //m_IntakeCube.Retract();
-    //new WaitCommand(0.1);
+    m_IntakeCube.Retract();
+    new WaitCommand(0.1);
     m_IntakeCube.spinIntake(0);
     m_IntakeCube.spinConveyor(0);
     m_Claw.hold();
