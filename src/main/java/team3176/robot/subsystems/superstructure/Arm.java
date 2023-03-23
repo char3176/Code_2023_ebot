@@ -88,7 +88,7 @@ public class Arm extends SubsystemBase {
      * 
      * @param desiredAngle in degrees in Encoder Frame
      */
-    private void setPIDPosition(double desiredAngle) {
+    public void setPIDPosition(double desiredAngle) {
         //need to double check these values
         
         this.armEncoderAbsPosition = armEncoder.getAbsolutePosition();
