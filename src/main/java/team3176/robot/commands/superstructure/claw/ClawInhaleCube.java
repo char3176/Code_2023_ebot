@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.subsystems.superstructure.IntakeCube;
-import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
+import team3176.robot.subsystems.RobotState.GamePiece;
 
 public class ClawInhaleCube extends CommandBase {
   /** Creates a new ClawInhale. */
@@ -23,7 +23,6 @@ public class ClawInhaleCube extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Claw.setCurrentGamePiece(GamePiece.CUBE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,6 +33,7 @@ public class ClawInhaleCube extends CommandBase {
     if(m_Claw.getLinebreakOne()) {
     continueRunningTimer.restart();
     }
+    m_Claw.determineGamePiece();
   }
 
   // Called once the command ends or is interrupted.

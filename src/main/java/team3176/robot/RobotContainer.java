@@ -82,7 +82,7 @@ public class RobotContainer {
         () -> m_Controller.getStrafe(),
         () -> m_Controller.getSpin()));
     //m_Arm.setDefaultCommand(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY()));
-    //m_Arm.setDefaultCommand(m_Superstructure.prepareCarry());
+    m_Arm.setDefaultCommand(m_Superstructure.prepareCarry());
     m_autonChooser = new SendableChooser<>();
     File paths = new File(Filesystem.getDeployDirectory(), "pathplanner");
     for (File f : paths.listFiles()) {
@@ -202,7 +202,7 @@ public class RobotContainer {
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     //m_Controller.operator.leftBumper().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     
-    m_Controller.operator.leftTrigger().onTrue(m_Arm.armSetPositionOnce(200).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
+    m_Controller.operator.leftTrigger().onTrue(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     m_Controller.operator.rightTrigger().whileTrue(m_Superstructure.preparePoop());
     m_Controller.operator.back().whileTrue(m_Superstructure.preparePoop());
     //m_Controller.operator.rightTrigger().onTrue(new ClawIdle()); 

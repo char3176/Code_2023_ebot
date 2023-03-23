@@ -18,6 +18,8 @@ import team3176.robot.commands.superstructure.intakecube.*;
 import team3176.robot.subsystems.superstructure.IntakeCone;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
+import team3176.robot.subsystems.RobotState;
+import team3176.robot.subsystems.RobotState.GamePiece;
 
 public class Superstructure extends SubsystemBase {
     private static Superstructure instance;
@@ -38,8 +40,6 @@ public class Superstructure extends SubsystemBase {
     
     
 
-    public static enum GamePiece {CUBE, CONE, NONE};
-    
 
     public Command groundCube() {
         return new IntakeGroundCube().andThen(this.prepareCarry());
@@ -94,7 +94,7 @@ public class Superstructure extends SubsystemBase {
                 .andThen(this.prepareCarry());
     }
     public Command scoreCubeLow() {
-        return m_Arm.armSetPosition(SuperStructureConstants.ARM_ZERO_POS)
+        return m_Arm.armSetPosition(SuperStructureConstants.ARM_CATCH_POS)
         .andThen(new WaitCommand(0.5))
         .andThen(m_Claw.scoreGamePiece())
         .andThen(this.prepareCarry());

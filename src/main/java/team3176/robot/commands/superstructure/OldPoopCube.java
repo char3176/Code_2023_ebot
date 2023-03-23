@@ -12,7 +12,7 @@ import team3176.robot.subsystems.superstructure.Arm;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.superstructure.Superstructure;
-import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
+import team3176.robot.subsystems.RobotState.GamePiece;
 
 public class OldPoopCube extends CommandBase {
   /** Creates a new ClawInhale. */

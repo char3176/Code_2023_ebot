@@ -121,6 +121,12 @@ public class RobotState extends SubsystemBase {
     NONE
   }
 
+  public static enum GamePiece {CUBE, CONE, NONE};
+
+  private GamePiece currentGamePiece = GamePiece.NONE;
+
+  private String gamePieceLastSetBy = "NONE";
+
 
   private RobotState(RobotStateIO io) {
     this.io = io;
@@ -446,4 +452,20 @@ public class RobotState extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {}
+
+
+  public void setCurrentGamePiece(GamePiece piece) {
+    //System.out.println("m_Claw.setCurrentGamePiece() to " + piece);
+    this.currentGamePiece = piece;
+  }
+
+  public void setCurrentGamePiece(GamePiece piece, String reportingSubsystem) {
+    this.currentGamePiece = piece;
+    this.gamePieceLastSetBy = reportingSubsystem;
+  }
+
+  public GamePiece getRobotState(){
+    return this.currentGamePiece;
+  }
+
 }
