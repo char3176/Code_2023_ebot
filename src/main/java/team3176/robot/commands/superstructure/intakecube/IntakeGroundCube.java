@@ -57,6 +57,7 @@ public class IntakeGroundCube extends CommandBase {
   @Override
   public void end(boolean interrupted) 
   {
+    m_Arm.setPIDPosition(SuperStructureConstants.ARM_CARRY_POS);
     m_IntakeCube.Retract();
     new WaitCommand(0.1);
     m_IntakeCube.spinIntake(0);

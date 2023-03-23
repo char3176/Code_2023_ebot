@@ -31,7 +31,7 @@ public class IntakeConeExtendSpin extends CommandBase {
   public void execute() 
   {
     m_IntakeCone.Extend();
-    m_IntakeCone.spinVelocityPercent(.85, 25);
+    m_IntakeCone.spinVelocityPercent(-.85, 25);
     if (m_IntakeCone.getLinebreak() == true)
     {
       continueRunningTimer.restart();
