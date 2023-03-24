@@ -68,6 +68,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the trigger bindings
+    m_RobotState = RobotState.getInstance();
     m_Arm = Arm.getInstance();
     m_Controller = Controller.getInstance();
     m_Claw = Claw.getInstance();
@@ -75,7 +76,9 @@ public class RobotContainer {
     m_IntakeCube = IntakeCube.getInstance();
     m_IntakeCone = IntakeCone.getInstance();
 
-    m_RobotState = RobotState.getInstance();
+    //prevents circular dependency of singletons
+    m_Claw.setRobotStateInstance(m_RobotState);
+
     m_Superstructure = Superstructure.getInstance();
     m_Drivetrain.setDefaultCommand(new SwerveDrive(
         () -> m_Controller.getForward(),

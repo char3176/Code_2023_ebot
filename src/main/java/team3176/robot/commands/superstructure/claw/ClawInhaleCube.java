@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.RobotState.GamePiece;
-
+import team3176.robot.subsystems.RobotState;
 public class ClawInhaleCube extends CommandBase {
   /** Creates a new ClawInhale. */
   Claw m_Claw = Claw.getInstance();
@@ -23,6 +23,7 @@ public class ClawInhaleCube extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    RobotState.getInstance().setWantedGamePiece(GamePiece.CUBE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,7 +31,7 @@ public class ClawInhaleCube extends CommandBase {
   public void execute() 
   {
     m_Claw.intake();
-    if(m_Claw.getLinebreakOne()) {
+    if(m_Claw.getLinebreakCube()) {
     continueRunningTimer.restart();
     }
     m_Claw.determineGamePiece();

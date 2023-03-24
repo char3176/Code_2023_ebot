@@ -21,19 +21,21 @@ import org.littletonrobotics.junction.Logger;
 public class Claw extends SubsystemBase {
     private RobotState m_RobotState; 
     private CANSparkMax claw;
-    private DigitalInput linebreakOne;
-    private DigitalInput linebreakTwo;
+    private DigitalInput linebreakCube;
+    private DigitalInput linebreakCone;
     private DigitalInput linebreakThree;
     private static Claw instance;
     private final ClawIO io;
     private final ClawIOInputs inputs = new ClawIOInputs();
     private Claw(ClawIO io) {
         this.io = io;
-        m_RobotState = RobotState.getInstance();
         claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
-        linebreakOne = new DigitalInput(0);
-        linebreakTwo = new DigitalInput(2);
+        linebreakCube = new DigitalInput(0);
+        linebreakCone = new DigitalInput(2);
         linebreakThree = new DigitalInput(1);
+    }
+    public void setRobotStateInstance(RobotState st) {
+        m_RobotState = st;
     }
     public void setClawMotor(double percent, double amps) {
         claw.set(percent);
@@ -47,10 +49,10 @@ public class Claw extends SubsystemBase {
     
     public void intake() {
         //System.out.println("m_Claw.intake()");
-        if(m_RobotState.getRobotState() == GamePiece.CUBE) {
+        if(m_RobotState.getWantedGamePiece() == GamePiece.CUBE) {
             setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
-         else if(m_RobotState.getRobotState() == GamePiece.CONE) {
+         else if(m_RobotState.getWantedGamePiece() == GamePiece.CONE) {
              setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
     }
@@ -81,14 +83,14 @@ public class Claw extends SubsystemBase {
 
     
 
-    public boolean getLinebreakOne() //Cube
+    public boolean getLinebreakCube() //Cube
     {
-        return linebreakOne.get();
+        return linebreakCube.get();
     }
     
-    public boolean getLinebreakTwo()  //Cone (Upper)
+    public boolean getLinebreakCone()  //Cone (Upper)
     {
-        return linebreakTwo.get();
+        return linebreakCone.get();
     }
 
     public boolean getLinebreakThree()
@@ -97,7 +99,7 @@ public class Claw extends SubsystemBase {
     }
 
     public boolean isEmpty() {
-        return getLinebreakOne() || getLinebreakTwo();
+        return getLinebreakCube() || getLinebreakCone();
     }
 
     public static Claw getInstance()
@@ -127,20 +129,20 @@ public class Claw extends SubsystemBase {
 
     //more examples of command composition and why its awesome!!
     public Command intakeCone() {
-        return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreakTwo);
+        return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreakCone);
     }
     public Command intakeCube() {
-        return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreakOne);
+        return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreakCube);
     }
     public Command determineGamePiece() {
         return this.runOnce( () -> {
-            if(this.linebreakOne.get()) {
+            if(this.linebreakCube.get()) {
                 m_RobotState.setCurrentGamePiece(GamePiece.CUBE);
                 hold();
-            } else if(this.linebreakTwo.get()) {
+            } else if(this.linebreakCone.get()) {
                 m_RobotState.setCurrentGamePiece(GamePiece.CONE);
                 hold();
-            } else if (this.linebreakOne.get() && this.linebreakTwo.get()) {
+            } else if (this.linebreakCube.get() && this.linebreakCone.get()) {
                 m_RobotState.setCurrentGamePiece(GamePiece.NONE);
             }
         });
@@ -154,11 +156,11 @@ public class Claw extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Claw", inputs);
     Logger.getInstance().recordOutput("Claw/Velocity", getVelocity());
-    Logger.getInstance().recordOutput("Claw/LinebreakOne", getIsLinebreakOne());
-    Logger.getInstance().recordOutput("Claw/LinebreakTwo", getIsLinebreakTwo());
+    Logger.getInstance().recordOutput("Claw/LinebreakCube", getIsLinebreakOne());
+    Logger.getInstance().recordOutput("Claw/LinebreakCone", getIsLinebreakTwo());
     // Code stating if something is in the Intake
-    SmartDashboard.putBoolean("linebreakOne",linebreakOne.get());
-    SmartDashboard.putBoolean("linebreakTwo",linebreakTwo.get());
+    SmartDashboard.putBoolean("linebreakCube",linebreakCube.get());
+    SmartDashboard.putBoolean("linebreakCone",linebreakCone.get());
     SmartDashboard.putBoolean("linebreakThree", linebreakThree.get());
     determineGamePiece();
     /* 

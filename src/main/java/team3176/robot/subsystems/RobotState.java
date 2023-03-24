@@ -124,7 +124,7 @@ public class RobotState extends SubsystemBase {
   public static enum GamePiece {CUBE, CONE, NONE};
 
   private GamePiece currentGamePiece = GamePiece.NONE;
-
+  private GamePiece wantedGamePiece = GamePiece.NONE;
   private String gamePieceLastSetBy = "NONE";
 
 
@@ -416,7 +416,7 @@ public class RobotState extends SubsystemBase {
     Logger.getInstance().processInputs("Intake", inputs);
 
     //(m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false)
-    if (m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false) {
+    if (m_Claw.getLinebreakCube() == false || m_Claw.getLinebreakCone() == false) {
       isSolid = true;
       isFlashing = false;
       if (wantedLEDState == 1) {
@@ -426,7 +426,7 @@ public class RobotState extends SubsystemBase {
         setallpurple();
       }
     }
-    else if ((m_Claw.getLinebreakOne() == true && m_Claw.getLinebreakTwo() == true) && isSolid == true)
+    else if ((m_Claw.getLinebreakCube() == true && m_Claw.getLinebreakCone() == true) && isSolid == true)
     {
       setallblack();
       wantedLEDState = 0;
@@ -453,7 +453,12 @@ public class RobotState extends SubsystemBase {
   @Override
   public void simulationPeriodic() {}
 
-
+  public void setWantedGamePiece(GamePiece piece) {
+    this.wantedGamePiece = piece;
+  }
+  public GamePiece getWantedGamePiece() {
+    return this.wantedGamePiece;
+  }
   public void setCurrentGamePiece(GamePiece piece) {
     //System.out.println("m_Claw.setCurrentGamePiece() to " + piece);
     this.currentGamePiece = piece;
