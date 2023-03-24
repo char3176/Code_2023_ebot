@@ -6,6 +6,7 @@ package team3176.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -447,6 +448,9 @@ public class RobotState extends SubsystemBase {
         allflash = false;
       }
       flashAll();
+      if (currentGamePiece == GamePiece.CONE) {SmartDashboard.putString("RobotState.GamePiece", "CONE");}
+      if (currentGamePiece == GamePiece.CUBE) {SmartDashboard.putString("RobotState.GamePiece", "CUBE");}
+      if (currentGamePiece == GamePiece.NONE) {SmartDashboard.putString("RobotState.GamePiece", "NONE");}
     }
   }
 

@@ -42,12 +42,12 @@ public class Superstructure extends SubsystemBase {
 
 
     public Command groundCube() {
-        return new IntakeGroundCube().andThen(this.prepareCarry());
+        return new IntakeGroundCube().andThen(this.preparePoop());
     }
 
     public Command groundCone()
     {
-        return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS), 
+        return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_ZERO_POS), 
                                         new IntakeConeExtendSpin(),
                                         new ClawInhaleCone())
                     .until(() -> this.m_Claw.getLinebreakThree() == false)
@@ -75,7 +75,7 @@ public class Superstructure extends SubsystemBase {
         return m_Claw.determineGamePiece()
                 .andThen(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(1.5)
                     .andThen(m_Claw.scoreGamePiece())
-                    .andThen(this.prepareCarry()));
+                    .andThen(this.preparePoop()));
     }
     public Command scoreFirstGamePieceAuto() {
         return m_Claw.determineGamePiece()
@@ -83,7 +83,7 @@ public class Superstructure extends SubsystemBase {
                 .alongWith(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(3.0)
                 .andThen(new WaitCommand(0.5))
                     .andThen(m_Claw.scoreGamePiece().withTimeout(1.0))
-                    .andThen(this.prepareCarry())));
+                    .andThen(this.preparePoop())));
     }
     public Command scoreGamePieceHigh()
     {
@@ -91,13 +91,13 @@ public class Superstructure extends SubsystemBase {
                 .andThen(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(3.0))
                 .andThen(new WaitCommand(0.5))
                 .andThen(m_Claw.scoreGamePiece().withTimeout(1.0))
-                .andThen(this.prepareCarry());
+                .andThen(this.preparePoop());
     }
     public Command scoreCubeLow() {
         return m_Arm.armSetPosition(SuperStructureConstants.ARM_CATCH_POS)
         .andThen(new WaitCommand(0.5))
         .andThen(m_Claw.scoreGamePiece())
-        .andThen(this.prepareCarry());
+        .andThen(this.preparePoop());
     }
     public Command scoreGamePieceLowAuto()
     {
@@ -105,32 +105,47 @@ public class Superstructure extends SubsystemBase {
                 .andThen(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_CATCH_POS).withTimeout(3.0))
                 .andThen(new WaitCommand(0.5))
                 .andThen(m_Claw.scoreGamePiece().withTimeout(1.0))
-                .andThen(this.prepareCarry());
+                .andThen(this.preparePoop());
     }
     public Command intakeCubeHumanPlayer() {
         return new ParallelCommandGroup(new ClawInhaleCube(), m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS))
-        .andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
+        .andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_ZERO_POS));
     }
 
     public Command intakeConeHumanPlayer() {
         return new ParallelCommandGroup(new ClawInhaleCone(), m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS))
-        .andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS));
+        .andThen(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_ZERO_POS));
     }
     
     public Command preparePoop() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_ZERO_POS);
     }
+    public Command preparePoopContinue() {
+        return m_Arm.armSetPosition(SuperStructureConstants.ARM_ZERO_POS);
+    }
     public Command prepareCarry() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS);
+    }
+    public Command prepareCarryContinue() {
+        return m_Arm.armSetPosition(SuperStructureConstants.ARM_CARRY_POS);
     }
     public Command prepareCatch() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS);
     }
+    public Command prepareCatchContinue() {
+        return m_Arm.armSetPosition(SuperStructureConstants.ARM_CATCH_POS);
+    }
     public Command prepareScoreMid() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_MID_POS);
     }
+    public Command prepareScoreMidContinue() {
+        return m_Arm.armSetPosition(SuperStructureConstants.ARM_MID_POS);
+    }
     public Command prepareScoreHigh() {
         return m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_HIGH_POS);
+    }
+    public Command prepareScoreHighContinue() {
+        return m_Arm.armSetPosition(SuperStructureConstants.ARM_HIGH_POS);
     }
     
 }

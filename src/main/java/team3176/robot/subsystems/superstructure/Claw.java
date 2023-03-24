@@ -46,7 +46,15 @@ public class Claw extends SubsystemBase {
     }
 
     //states now implemented as functions
-    
+   
+    public void intake(GamePiece gamepiece){
+        if(gamepiece == GamePiece.CUBE) {
+            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+         }
+         else if(gamepiece == GamePiece.CONE) {
+             setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+         }
+    }
     public void intake() {
         //System.out.println("m_Claw.intake()");
         if(m_RobotState.getWantedGamePiece() == GamePiece.CUBE) {
@@ -57,9 +65,9 @@ public class Claw extends SubsystemBase {
          }
     }
     
-    public void hold() {
+    public void hold(GamePiece gamepiece) {
         //System.out.println("m_Claw.hold()");
-        if(m_RobotState.getRobotState() == GamePiece.CUBE) {
+        if(gamepiece == GamePiece.CUBE) {
             setClawMotor(SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
             //idle(); 
         } else {
@@ -67,12 +75,32 @@ public class Claw extends SubsystemBase {
         }
     }
 
-    public void score() {
+    public void hold() {
+        //System.out.println("m_Claw.hold()");
+        if(m_RobotState.getWantedGamePiece() == GamePiece.CUBE) {
+            setClawMotor(SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
+            //idle(); 
+        } else {
+            setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER * SuperStructureConstants.CLAW_HOLD_CONE_FACTOR,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
+        }
+    }
+
+    public void score(GamePiece gamepiece) {
         //System.out.println("m_Claw.score()");
-        if(m_RobotState.getRobotState() == GamePiece.CUBE) {
+        if(gamepiece == GamePiece.CUBE) {
             setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
-        else if(m_RobotState.getRobotState() == GamePiece.CONE) {
+        else 
+        if(gamepiece == GamePiece.CONE) {
+            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+        }
+    }
+    public void score() {
+        //System.out.println("m_Claw.score()");
+        if(m_RobotState.getWantedGamePiece() == GamePiece.CUBE) {
+            setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+        }
+        else if(m_RobotState.getWantedGamePiece() == GamePiece.CONE) {
             setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
     }
@@ -123,7 +151,7 @@ public class Claw extends SubsystemBase {
     public Command scoreGamePiece() {  
         return this.run(() ->  {score(); })
                     .until(() -> this.isEmpty())
-                    .andThen(new WaitCommand(0.5))
+                    .andThen(new WaitCommand(2.0))
                     .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
     }
 
@@ -136,12 +164,10 @@ public class Claw extends SubsystemBase {
     }
     public Command determineGamePiece() {
         return this.runOnce( () -> {
-            if(this.linebreakCube.get()) {
+            if(!this.linebreakCube.get()) {
                 m_RobotState.setCurrentGamePiece(GamePiece.CUBE);
-                hold();
-            } else if(this.linebreakCone.get()) {
+            } else if(!this.linebreakCone.get()) {
                 m_RobotState.setCurrentGamePiece(GamePiece.CONE);
-                hold();
             } else if (this.linebreakCube.get() && this.linebreakCone.get()) {
                 m_RobotState.setCurrentGamePiece(GamePiece.NONE);
             }
@@ -162,7 +188,14 @@ public class Claw extends SubsystemBase {
     SmartDashboard.putBoolean("linebreakCube",linebreakCube.get());
     SmartDashboard.putBoolean("linebreakCone",linebreakCone.get());
     SmartDashboard.putBoolean("linebreakThree", linebreakThree.get());
-    determineGamePiece();
+    System.out.print("Robot State = " + m_RobotState.getRobotState());
+    if(!this.linebreakCube.get()) {
+        m_RobotState.setCurrentGamePiece(GamePiece.CUBE);
+    } else if(!this.linebreakCone.get()) {
+        m_RobotState.setCurrentGamePiece(GamePiece.CONE);
+    //} else if (this.linebreakCube.get() && this.linebreakCone.get()) {
+    //    m_RobotState.setCurrentGamePiece(GamePiece.NONE);
+    }
     /* 
     if (!linebreakOne.get()) {
         setCurrentGamePiece(GamePiece.CUBE);

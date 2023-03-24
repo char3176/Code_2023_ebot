@@ -85,7 +85,7 @@ public class RobotContainer {
         () -> m_Controller.getStrafe(),
         () -> m_Controller.getSpin()));
     //m_Arm.setDefaultCommand(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY()));
-    m_Arm.setDefaultCommand(m_Superstructure.prepareCarry());
+    //m_Arm.setDefaultCommand(m_Superstructure.preparePoop());
     m_autonChooser = new SendableChooser<>();
     File paths = new File(Filesystem.getDeployDirectory(), "pathplanner");
     for (File f : paths.listFiles()) {
@@ -110,10 +110,10 @@ public class RobotContainer {
     m_Controller.getTransStick_Button2()
         .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
         //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
-    m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
-    m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry()));
-    m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
-    m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarry()));
+    m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMidContinue());
+    m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarryContinue()));
+    m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHighContinue());
+    m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarryContinue()));
     m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(()->m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
      //m_Controller.getTransStick_Button10()
      //    .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
@@ -126,8 +126,8 @@ public class RobotContainer {
     );
    
     m_Controller.getRotStick_Button2().whileTrue(m_Superstructure.groundCube());
-    m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
-    m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
+    m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarryContinue()));
+    m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarryContinue());
 
 //    m_Controller.getRotStick_Button2().whileTrue(new teleopPath());
     //m_Controller.getRotStick_Button2().whileTrue(new FeederPID("left"));
@@ -152,10 +152,10 @@ public class RobotContainer {
     m_Controller.getTransStick_Button8()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 
-    m_Controller.operator.povUp().whileTrue(m_Superstructure.prepareScoreHigh());
-    m_Controller.operator.povRight().whileTrue(m_Superstructure.prepareCarry());
-    m_Controller.operator.povDown().whileTrue(m_Superstructure.prepareCatch());
-    m_Controller.operator.povLeft().whileTrue(m_Superstructure.prepareScoreMid());
+    m_Controller.operator.povUp().onTrue(m_Superstructure.prepareScoreHighContinue());
+    m_Controller.operator.povRight().onTrue(m_Superstructure.prepareCarryContinue());
+    m_Controller.operator.povDown().onTrue(m_Superstructure.prepareCatchContinue());
+    m_Controller.operator.povLeft().onTrue(m_Superstructure.prepareScoreMidContinue());
 
     // m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
     // m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
@@ -207,7 +207,8 @@ public class RobotContainer {
     
     m_Controller.operator.leftTrigger().onTrue(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CARRY_POS).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));
     m_Controller.operator.rightTrigger().whileTrue(m_Superstructure.preparePoop());
-    m_Controller.operator.back().whileTrue(m_Superstructure.preparePoop());
+    m_Controller.operator.start().whileTrue(m_Superstructure.preparePoop());
+    m_Controller.operator.back().whileTrue(m_Superstructure.preparePoopContinue());
     //m_Controller.operator.rightTrigger().onTrue(new ClawIdle()); 
     //m_Controller.operator.rightTrigger().onTrue(new ClawIdle()); 
   }
