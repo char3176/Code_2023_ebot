@@ -7,6 +7,7 @@ package team3176.robot.commands.superstructure.claw;
 
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
@@ -39,6 +40,7 @@ public class ClawInhaleCone extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    new WaitCommand(5.0);
     m_Claw.hold();
   }
 

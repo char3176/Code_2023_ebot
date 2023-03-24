@@ -15,8 +15,8 @@ public class SuperStructureConstants {
   /**
    * How many amps the claw can use while picking up
    */
-  public static final int CLAW_CURRENT_LIMIT_A = 20;
-  public static final int CLAW_AMPS = 25;
+  public static final int CLAW_CURRENT_LIMIT_A = 30;
+  public static final int CLAW_AMPS = 30;
 
   /**
    * How many amps the claw can use while holding

@@ -122,7 +122,7 @@ public class Claw extends SubsystemBase {
     public Command scoreGamePiece() {  
         return this.run(() ->  {score(); this.currentGamePiece = GamePiece.NONE;})
                     .until(() -> this.isEmpty())
-                    .andThen(new WaitCommand(0.5))
+                    .andThen(new WaitCommand(1.5))
                     .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
     }
 
