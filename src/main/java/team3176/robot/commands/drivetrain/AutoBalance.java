@@ -37,9 +37,9 @@ public class AutoBalance extends CommandBase {
         //     num_balanced ++;
         // }
         //P loop option
-        if(m_Drivetrain.getChassisPitch() > 0 + deadbandDegrees) {
+        if(Math.abs(m_Drivetrain.getChassisPitch()) > 0 + deadbandDegrees) {
             forward = 0.03 * m_Drivetrain.getChassisPitch();
-            forward = MathUtil.clamp(forward, -0.4, 0.4);
+            forward = MathUtil.clamp(forward, -0.5, 0.5);
         }
         else {
             forward = 0.0;
@@ -53,7 +53,7 @@ public class AutoBalance extends CommandBase {
     }
     @Override
     public boolean isFinished() {
-        return Timer.getMatchTime() < 0.5 || num_balanced>10;
+        return Timer.getMatchTime() < 0.5;
     }
 
 }

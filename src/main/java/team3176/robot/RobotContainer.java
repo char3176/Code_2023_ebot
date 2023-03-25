@@ -201,7 +201,8 @@ public class RobotContainer {
     m_Controller.operator.start().onFalse(new InstantCommand( () -> m_IntakeCone.idle()));
     //m_Controller.operator.start().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.operator.back().whileTrue(m_Superstructure.preparePoop());
-    m_Controller.operator.rightTrigger().onTrue(new PoopCube()); 
+    //m_Controller.operator.leftTrigger().whileTrue(new PoopCube()); 
+    m_Controller.operator.rightTrigger().whileTrue(m_Superstructure.preparePoop());
   }
 
   public void setArmCoast() {
