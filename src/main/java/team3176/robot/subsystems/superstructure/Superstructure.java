@@ -73,7 +73,7 @@ public class Superstructure extends SubsystemBase {
     */
     public Command scoreGamePieceAuto() {
         return m_Claw.determineGamePiece()
-                .andThen(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(1.5)
+                .andThen(m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_HIGH_POS).withTimeout(2.5)
                     .andThen(m_Claw.scoreGamePiece())
                     .andThen(this.prepareCarry()));
     }
