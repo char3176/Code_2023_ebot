@@ -118,16 +118,14 @@ public class RobotContainer {
       () -> m_Controller.getSpin())
     );
    
-    /* 
-    m_Controller.getRotStick_Button2().whileTrue(m_Superstructure.groundCube());
+    m_Controller.getRotStick_Button2().whileTrue(new IntakeGroundCube());
     m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
-    */    
 
-    m_Controller.getRotStick_Button2().whileTrue(new teleopPath());
+    //m_Controller.getRotStick_Button2().whileTrue(new teleopPath());
     //m_Controller.getRotStick_Button2().whileTrue(new FeederPID("left"));
-    m_Controller.getRotStick_HAT_270().whileTrue(new FeederPID("left"));
-    m_Controller.getRotStick_HAT_90().whileTrue(new FeederPID("right"));
+    //m_Controller.getRotStick_HAT_270().whileTrue(new FeederPID("left"));
+    //m_Controller.getRotStick_HAT_90().whileTrue(new FeederPID("right"));
     //m_Controller.getRotStick_Button2().onFalse(new SwerveDrive(
     //    () -> m_Controller.getForward(),
     //    () -> m_Controller.getStrafe(),
@@ -184,6 +182,15 @@ public class RobotContainer {
 
     //m_Controller.operator.rightBumper().whileTrue(new armAnalogUp());
     //m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
+
+    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).onTrue(new SetColorWantState(3));
+    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).whileTrue(new IntakeGroundCube());
+    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).onFalse(new IntakeRetractSpinot());
+    //m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).onFalse(m_Superstructure.prepareCarry());
+    
+    m_Controller.operator.leftBumper().and(m_Controller.operator.rightBumper()).whileTrue((new PoopCube()));
+//    m_Controller.operator.leftBumper().and(m_Controller.operator.rightBumper()).onFalse(new InstantCommand( () -> m_IntakeCone.idle())); 
+    
 
     
     m_Controller.operator.leftTrigger().onTrue(m_Arm.armSetPositionOnce(140).andThen(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY())));

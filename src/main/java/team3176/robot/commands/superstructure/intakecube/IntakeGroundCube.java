@@ -48,8 +48,8 @@ public class IntakeGroundCube extends CommandBase {
     m_IntakeCube.spinIntake(-.85);
     if (!m_Claw.getIsLinebreakOne())
     {
-      m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_CARRY_POS);
-    } else {m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_CATCH_POS);
+      m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_ZERO_POS);
+    } else {m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_ZERO_POS);
     }
   }
 
@@ -62,6 +62,7 @@ public class IntakeGroundCube extends CommandBase {
     m_IntakeCube.spinIntake(0);
     m_IntakeCube.spinConveyor(0);
     m_Claw.hold();
+    m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_ZERO_POS);
   }
 
   // Returns true when the command should end.
