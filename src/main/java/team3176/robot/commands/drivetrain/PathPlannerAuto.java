@@ -54,8 +54,7 @@ public class PathPlannerAuto {
             new PIDConstants(1.5,0.0,0.0),
             driveSubsystem::setModuleStates,
             eventMap,
-            true,
-            driveSubsystem);
+            true, driveSubsystem);
         if (doBefore != null){
             auto = doBefore.andThen(autoBuilder.fullAuto(pathGroup));
         } else {
