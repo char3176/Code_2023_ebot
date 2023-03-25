@@ -28,7 +28,7 @@ public class IntakeGroundCube extends CommandBase {
   public void initialize() 
   {
     m_Claw.setCurrentGamePiece(GamePiece.CUBE);
-    m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_ZERO_POS);
+    m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_ZERO_POS);
     m_IntakeCube.Extend();
     m_IntakeCube.spinIntake(-.85);
     m_Claw.intake();
@@ -48,8 +48,8 @@ public class IntakeGroundCube extends CommandBase {
     m_IntakeCube.spinIntake(-.85);
     if (!m_Claw.getIsLinebreakOne())
     {
-      m_Arm.armSetPosition(SuperStructureConstants.ARM_CARRY_POS);
-    } else {m_Arm.armSetPosition(SuperStructureConstants.ARM_CATCH_POS);
+      m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_CARRY_POS);
+    } else {m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_CATCH_POS);
     }
   }
 
