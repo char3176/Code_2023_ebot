@@ -37,7 +37,7 @@ public class SuperStructureConstants {
 
   public static final int ARM_ENCODER_OFFSET = 0; 
 
-  public static final double ARM_kP = 0.015;
+  public static final double ARM_kP = 0.006;
   public static final double ARM_kI = 0; //.0025
   public static final double ARM_kD = 0; //.001
   public static final double ARM_kg = 0.2;
@@ -45,7 +45,7 @@ public class SuperStructureConstants {
 
   public static final double ARM_ZERO_POS = 180;
   public static final double ARM_CARRY_POS = 15 + ARM_ZERO_POS;
-  public static final double ARM_CATCH_POS = 50 + ARM_ZERO_POS;
-  public static final double ARM_MID_POS =  100 + ARM_ZERO_POS;
+  public static final double ARM_CATCH_POS = 45 + ARM_ZERO_POS;
+  public static final double ARM_MID_POS =  95 + ARM_ZERO_POS;
   public static final double ARM_HIGH_POS = 170 + ARM_ZERO_POS;
 }
