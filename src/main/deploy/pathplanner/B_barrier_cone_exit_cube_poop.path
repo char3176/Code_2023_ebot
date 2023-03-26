@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 2.0595968535687073,
-        "y": 2.7087517065659146
+        "x": 1.8601197846402857,
+        "y": 4.933080635392041
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.059596853568708,
-        "y": 2.7087517065659146
+        "x": 2.2473218161167283,
+        "y": 4.928134296657719
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -21,27 +21,27 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 10.0
       }
     },
     {
       "anchorPoint": {
-        "x": 6.626595440690881,
-        "y": 2.7309618681737375
+        "x": 6.922263576190838,
+        "y": 4.703635024443574
       },
       "prevControl": {
-        "x": 6.028994753302006,
-        "y": 2.7030763827152664
+        "x": 6.104863587186925,
+        "y": 5.47801396139465
       },
       "nextControl": {
-        "x": 6.028994753302006,
-        "y": 2.7030763827152664
+        "x": 6.104863587186925,
+        "y": 5.47801396139465
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 164.2913621709842,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -51,22 +51,22 @@
     },
     {
       "anchorPoint": {
-        "x": 3.9057142176784354,
-        "y": 2.703240093980189
+        "x": 3.588034266977625,
+        "y": 4.691331655390584
       },
       "prevControl": {
-        "x": 4.682251317627635,
-        "y": 2.6831581788163588
+        "x": 4.32589419724294,
+        "y": 4.682222273535458
       },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": -0.23585365165106506,
       "isReversal": false,
-      "velOverride": 1.0,
+      "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "autoBalance"
+          "poopCube"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -74,5 +74,18 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "event"
+      ]
+    },
+    {
+      "position": 0.6909090909090909,
+      "names": [
+        "groundCube"
+      ]
+    }
+  ]
 }

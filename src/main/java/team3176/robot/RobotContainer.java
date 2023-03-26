@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -23,6 +25,7 @@ import team3176.robot.commands.superstructure.claw.*;
 import team3176.robot.commands.superstructure.claw.ClawIdle;
 import team3176.robot.commands.superstructure.intakecube.*;
 import team3176.robot.commands.vision.*;
+import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.controller.Controller;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
@@ -53,6 +56,8 @@ public class RobotContainer {
   private final Claw m_Claw;
   private final IntakeCube m_IntakeCube;
   private final IntakeCone m_IntakeCone;
+  //private PowerDistribution PDH = new PowerDistribution(Hardwaremap.PDH_CID, ModuleType.kRev);
+
 
   // private final Compressor m_Compressor;
   private final Drivetrain m_Drivetrain;
@@ -145,11 +150,15 @@ public class RobotContainer {
     m_Controller.getTransStick_Button8()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 
+    double conveyorBumpTime = .1;  //In units of seconds
     m_Controller.operator.povUp().whileTrue(m_Superstructure.prepareScoreHigh());
-    //m_Controller.operator.povUp().onTrue(new InstantComamnd(() -> m_IntakeCube.spinConveyor(-0.85))).))
+    m_Controller.operator.povUp().onTrue(m_IntakeCube.bumpConveyor().withTimeout(conveyorBumpTime));
     m_Controller.operator.povRight().whileTrue(m_Superstructure.prepareCarry());
+    m_Controller.operator.povRight().onTrue(m_IntakeCube.bumpConveyor().withTimeout(conveyorBumpTime));
     m_Controller.operator.povDown().whileTrue(m_Superstructure.prepareCatch());
+    m_Controller.operator.povDown().onTrue(m_IntakeCube.bumpConveyor().withTimeout(conveyorBumpTime));
     m_Controller.operator.povLeft().whileTrue(m_Superstructure.prepareScoreMid());
+    m_Controller.operator.povLeft().onTrue(m_IntakeCube.bumpConveyor().withTimeout(conveyorBumpTime));
 
     // m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
     // m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
@@ -222,6 +231,9 @@ public class RobotContainer {
     m_Drivetrain.setBrakeMode();
   }
 
+ // public void clearCanFaults(){
+//    PDH.clearStickyFaults();
+//  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

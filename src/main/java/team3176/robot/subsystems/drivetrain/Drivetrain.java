@@ -91,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public coordType currentCoordType = coordType.FIELD_CENTRIC;
-  // private PowerDistribution PDP = new
+  //private PowerDistribution PDH = new PowerDistribution();
   // PowerDistribution(PowerManagementConstants.PDP_CAN_ID, ModuleType.kCTRE);
 
   private ArrayList<SwervePod> pods;
