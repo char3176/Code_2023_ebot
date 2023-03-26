@@ -146,6 +146,7 @@ public class RobotContainer {
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 
     m_Controller.operator.povUp().whileTrue(m_Superstructure.prepareScoreHigh());
+    //m_Controller.operator.povUp().onTrue(new InstantComamnd(() -> m_IntakeCube.spinConveyor(-0.85))).))
     m_Controller.operator.povRight().whileTrue(m_Superstructure.prepareCarry());
     m_Controller.operator.povDown().whileTrue(m_Superstructure.prepareCatch());
     m_Controller.operator.povLeft().whileTrue(m_Superstructure.prepareScoreMid());
