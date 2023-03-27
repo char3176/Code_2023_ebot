@@ -18,6 +18,9 @@ public class FeederPID3D extends CommandBase{
     Drivetrain m_Drivetrain;
     PIDController xController = new PIDController(2.0,0.0,0.0);
     PIDController yController = new PIDController(2.0,0.0,0.0);
+    /*these are all within the botpose_wpiblue coordinate frame.
+    * blue should work fine but red needs to be double checked with what origin you would like to pick
+    */
     Pose2d RedRight = new Pose2d(1.17, 7.44, Rotation2d.fromDegrees(180));
     Pose2d RedLeft = new Pose2d(1.17, 6.17, Rotation2d.fromDegrees(180));
     Pose2d BlueRight = new Pose2d(15.44, 6.17, Rotation2d.fromDegrees(0.0));
@@ -53,12 +56,16 @@ public class FeederPID3D extends CommandBase{
     }
     @Override
     public void execute() {
+        //duplicate code that could be replaced if a vision class is created
         double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
         double[] vision_pose_array = vision.getEntry("botpose_wpiblue").getDoubleArray(default_pose);
         Pose2d cam_pose = new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
         double tv = vision.getEntry("tv").getDouble(0.0);
         double reverseAxis = DriverStation.getAlliance() == Alliance.Red ? -1.0 : 1.0;
+        //check we have a valid tag in our view
         if (tv != 0.0) {
+            //control loop simply tries to acheive the target position with the reverseAxis if for Red. Will need to double check
+            // when we decide on the red coordinate system or to keep a universal coordinate system and translate pathplanner
             m_Drivetrain.drive(MathUtil.clamp(reverseAxis*xController.calculate(cam_pose.getX(), targetPose.getX()),-1.5,1.5),
                             (MathUtil.clamp(reverseAxis*yController.calculate(cam_pose.getY(),targetPose.getY()),-1.5,1.5)),
                             0.0);

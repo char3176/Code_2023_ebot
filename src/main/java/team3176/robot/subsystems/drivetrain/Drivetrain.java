@@ -11,6 +11,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.*;
@@ -501,7 +502,12 @@ public class Drivetrain extends SubsystemBase {
      * Also we have been using botpose_wpiblue which lines up with pathplanners native coordinate system
      * we need to check where botpose_wpired is originated because path planner mirrors with the following operation
      * redX = blueX, redY = blueY - FieldWidth putting the origin on the HP load side of the red field diagonol from the blue origin
+     * read PathPlannerTrajectory.transformStateForAlliance() 
+     * There are many assumptions through the code that we are dealing with botpose_blue all the time. an easy way to find them is to
+     * check for anytime the code querys if it is red and then has to modify a value. That might need to be stripped out
      */
+    
+    
     vision_pose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose_wpiblue");
 
     //testing new limelight command
