@@ -495,23 +495,14 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     dblPub.set(3.0);
-    
+    /*
+     * an important note when going to 2 limelights we will need to change the default table within 
+     * the limelight web interface to be limelight1 and lightlight2 (or two unique values)
+     * Also we have been using botpose_wpiblue which lines up with pathplanners native coordinate system
+     * we need to check where botpose_wpired is originated because path planner mirrors with the following operation
+     * redX = blueX, redY = blueY - FieldWidth putting the origin on the HP load side of the red field diagonol from the blue origin
+     */
     vision_pose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose_wpiblue");
-    // double[] vision_pose_array=vision_pose.getDoubleArray(new double[6]);
-    // //System.out.println(vision_pose_array[0]);
-    // Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
-    // //poseEstimator.addVisionMeasurement(cam_pose,  Timer.getFPGATimestamp() - (15) / 1000);
-    
-    //commenting out because I believe we should update the limelight apriltag map
-
-    // double xoffset = Units.inchesToMeters(285.16+ 40.45);
-    // double yoffset = Units.inchesToMeters(115.59 + 42.49);
-    // cam_pose = cam_pose.transformBy(new Transform2d(new Translation2d(xoffset,yoffset),new Rotation2d()));
-    
-    //update the pose estimator with correct timestamped values
-    
-
-    
 
     //testing new limelight command
     //LimelightHelpers.LimelightResults r = LimelightHelpers.getLatestResults("limelight");
@@ -528,26 +519,38 @@ public class Drivetrain extends SubsystemBase {
     last_pose = odom.getPoseMeters();
       
     // update encoders
+    //this must be called every loop. without vision updates poseEstimator performs identical to normal odom
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
-
+    
     double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
     try {
       double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);
+      //this takes the x,y and yaw rotation and converts to a Pose2D
       Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
-      //store x value to check if its the same data as before
       
+      //the poseEstimator recommends only adding measurment within 1 meter of current estimate 
       double camera_inovation_error = cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm(); 
       SmartDashboard.putNumber("camInovationError",camera_inovation_error);
+      //this checks we are within 1 meter, it is a new frame, and we see a tag (x is nonzero)
       if(camera_inovation_error < 1.0 && lastVisionX != cam_pose.getX() && cam_pose.getX() != 0.0){
         lastVisionX = cam_pose.getX();
+        //an option within controls is to only apply the vision update if we are moving to prevent collapse of odometry data to be only vision
         Transform2d diff = last_pose.minus(odom.getPoseMeters());
+        //the norm is unused currently but represents if the robot has moved either translationally or rotationally
         double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
+
+        //vision measurments started to get really noisy when far away from the grid. We only wanted to use them when within ~3 meters of a tag
         if(!(getPose().getX() > 3.5 && getPose().getX() < 10.5)){
+          
           double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
+          //distanceToGrid could be used as a covariance term we have experimented with this but didn't find it super impactful 
           double translation_cov = MathUtil.clamp(distanceToGrid, 0.9, 3.0); 
           SmartDashboard.putNumber("camTransCov",translation_cov);
-          //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, translation_cov));
+          /*
+          the following line is the line that actaully incoperates the vision innovation. 
+          the final value in vision_pose_array is the latency in milliseconds that the limelight reports.
+          */
           //poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0, VecBuilder.fill(translation_cov, translation_cov, translation_cov));
         }
       }
@@ -562,7 +565,7 @@ public class Drivetrain extends SubsystemBase {
       System.out.println("vision error" + e);
     }
     
-    
+
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);
     
@@ -575,8 +578,6 @@ public class Drivetrain extends SubsystemBase {
     
     SmartDashboard.putNumber("odomx", getPose().getX());
     SmartDashboard.putNumber("odomy", getPose().getY());
-    SmartDashboard.putNumber("v_odomx", poseEstimator.getEstimatedPosition().getX());
-    SmartDashboard.putNumber("v_odomy", poseEstimator.getEstimatedPosition().getY());
     SmartDashboard.putBoolean("Turbo", isTurboOn);
     // SmartDashboard.putBoolean("Defense", currentDriveMode == driveMode.DEFENSE);
   }
