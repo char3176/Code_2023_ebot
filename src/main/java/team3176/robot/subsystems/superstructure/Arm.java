@@ -107,7 +107,7 @@ public class Arm extends SubsystemBase {
             feedForward = -.2;
         }
         double turnOutput = m_turningPIDController.calculate(this.armEncoderAbsPosition, desiredAngle);
-        turnOutput = MathUtil.clamp(turnOutput,-0.4,0.4);
+        turnOutput = MathUtil.clamp(turnOutput,-1,1);
         armController.set(turnOutput + feedForward);
         SmartDashboard.putNumber("Arm_Output", turnOutput + feedForward);
         SmartDashboard.putNumber("Arm Feed Forward", feedForward);
