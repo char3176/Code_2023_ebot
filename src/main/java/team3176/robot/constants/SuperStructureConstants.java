@@ -10,7 +10,7 @@ public class SuperStructureConstants {
   /**
    * Percent output to run the arm up/down at
    */
-  public static final double ARM_OUTPUT_POWER = .4;
+  public static final double ARM_OUTPUT_POWER = .8;
 
   /**
    * How many amps the claw can use while picking up
@@ -47,5 +47,5 @@ public class SuperStructureConstants {
   public static final double ARM_CARRY_POS = ARM_ZERO_POS;
   public static final double ARM_CATCH_POS = 45 + ARM_ZERO_POS;
   public static final double ARM_MID_POS =  90 + ARM_ZERO_POS;
-  public static final double ARM_HIGH_POS = 170 + ARM_ZERO_POS;
+  public static final double ARM_HIGH_POS = 180 + ARM_ZERO_POS;
 }
