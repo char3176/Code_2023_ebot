@@ -4,21 +4,21 @@ import team3176.robot.constants.SwervePodHardwareID;
 public class DrivetrainHardwareMap {
     //statics constants for swerve pods 
     public static final SwervePodHardwareID pod001 = 
-    new SwervePodHardwareID(  10,  12,  -162.135);
+    new SwervePodHardwareID(  10,  12,  -172.135);
     public static final SwervePodHardwareID pod002 = 
     new SwervePodHardwareID(  20,  22,  -130.912);
     public static final SwervePodHardwareID pod003 = 
-    new SwervePodHardwareID(  30,  32, -22);
+    new SwervePodHardwareID(  30,  32, -34);
     public static final SwervePodHardwareID pod004 = 
     new SwervePodHardwareID( 40,  42,  140.463);  //120.5
     public static final SwervePodHardwareID pod005 = 
     new SwervePodHardwareID(  13,  14,  -124.324);
     public static final SwervePodHardwareID pod006 = 
-    new SwervePodHardwareID(  23,  24,  -131.307);
+    new SwervePodHardwareID(  23,  24,  -141.307);
     public static final SwervePodHardwareID pod007 = 
     new SwervePodHardwareID(  33,  34,  -123.2);
     public static final SwervePodHardwareID pod008 = 
-    new SwervePodHardwareID(  43,  44,  -163);
+    new SwervePodHardwareID(  43,  44,  -173);
     public static final SwervePodHardwareID pod009 = 
     new SwervePodHardwareID(  15,  16,  -231.328);
    
