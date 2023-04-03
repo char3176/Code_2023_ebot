@@ -137,8 +137,8 @@ public class RobotContainer {
 
     //m_Controller.getRotStick_Button2().whileTrue(new teleopPath());
     //m_Controller.getRotStick_Button2().whileTrue(new FeederPID("left"));
-    //m_Controller.getRotStick_HAT_270().whileTrue(new FeederPID("left"));
-    //m_Controller.getRotStick_HAT_90().whileTrue(new FeederPID("right"));
+    m_Controller.getRotStick_HAT_270().whileTrue(new FeederPID("left"));
+    m_Controller.getRotStick_HAT_90().whileTrue(new FeederPID("right"));
     //m_Controller.getRotStick_Button2().onFalse(new SwerveDrive(
     //    () -> m_Controller.getForward(),
     //    () -> m_Controller.getStrafe(),
