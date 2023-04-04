@@ -154,7 +154,8 @@ public class RobotContainer {
     //     .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
     // m_Controller.getRotStick_Button4()
     //     .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
-    // m_Controller.getRotStick_Button4().whileTrue(new SpinLock());
+    m_Controller.getRotStick_Button11().whileTrue(new InstantCommand( () -> m_Drivetrain.setSpinLock(true)));
+    m_Controller.getRotStick_Button11().onFalse(new InstantCommand( () -> m_Drivetrain.setSpinLock(false)));
     m_Controller.getTransStick_Button8()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 

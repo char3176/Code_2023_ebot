@@ -532,7 +532,7 @@ public class Drivetrain extends SubsystemBase {
     // update encoders
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
-    SmartDashboard.putNumber("NavX.Yaw",getPoseYawWrapped().getDegrees());
+    SmartDashboard.putNumber("NavYaw",getPoseYawWrapped().getDegrees());
 
     // double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
     // try {
