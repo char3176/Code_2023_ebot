@@ -14,14 +14,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import team3176.robot.subsystems.drivetrain.Drivetrain;
 import team3176.robot.subsystems.drivetrain.Drivetrain.coordType;
+import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
 public class FeederPID extends CommandBase{
     Drivetrain m_Drivetrain;
     PIDController xController = new PIDController(2.0,0.0,0.0);
-    PIDController yController = new PIDController(.5,0.0,0.0);;
+    PIDController yController = new PIDController(.5,0.0,0.0);
+    PIDController wController = new PIDController(.5,0.0,0.0);
     double ltx, rtx, lty, rty, lta, rta, ltv, rtv, tx, ty, ta, tv = 0;
     int numLimelights = 2;
-    double deadband, txSetpoint;
+    double deadband, txSetpoint, wSetpoint;
     NetworkTable vision, limelight_lfov, limelight_rfov;
     InterpolatingTreeMap<Double,Double> offsetTreeR = new InterpolatingTreeMap<Double,Double>();
     InterpolatingTreeMap<Double,Double> offsetTreeL = new InterpolatingTreeMap<Double,Double>();
@@ -55,10 +57,9 @@ public class FeederPID extends CommandBase{
     }
     @Override
     public void initialize(){
-        m_Drivetrain.setSpinLock(true);
-        m_Drivetrain.setSpinLockAngle(0.0);
-        xController.setP(2.0); 
+        //xController.setP(2.0); 
         deadband = 1;
+        
         txSetpoint = 0.0;
         if (ta > 1.1 );{
             if(side == "right") {
@@ -67,7 +68,15 @@ public class FeederPID extends CommandBase{
                 txSetpoint = 0 ; //20;
             }
         }
-        
+
+        m_Drivetrain.setSpinLock(true);
+        if (alliance == Alliance.Red) {
+            wSetpoint = 0;
+            m_Drivetrain.setSpinLockAngle(wSetpoint);
+        } else { 
+            wSetpoint = 0;
+            m_Drivetrain.setSpinLockAngle(wSetpoint);
+        };  
         
     }
     @Override
@@ -106,19 +115,20 @@ public class FeederPID extends CommandBase{
         SmartDashboard.putNumber("ty", ty);
         SmartDashboard.putNumber("ta", ta);
         SmartDashboard.putNumber("tv", tv);
+        SmartDashboard.putNumber("yawWrapped", m_Drivetrain.getPoseYawWrapped().getDegrees());
         
-        if (Math.abs(m_Drivetrain.getPoseYawWrapped().getDegrees()) > 0 && tv != 0.0) {
+        //if (Math.abs(m_Drivetrain.getPoseYawWrapped().getDegrees()) > 0 && tv != 0.0) {
         //    m_Drivetrain.drive (MathUtil.clamp(xController.calculate(ta, 1.5),-1.5,1.5),
         //                    (MathUtil.clamp(yController.calculate(tx,txSetpoint),-1.5,1.5)),
         //                    0.0, coordType.ROBOT_CENTRIC);
             if ((tx < (txSetpoint-deadband) || (tx > (txSetpoint+deadband)))) {
                 m_Drivetrain.drive(0,
                     (MathUtil.clamp(-1 * yController.calculate(tx,txSetpoint), -1.5, 1.5)),
-                    0);
+                    (MathUtil.clamp(-1 * wController.calculate(m_Drivetrain.getPoseYawWrapped().getDegrees(), wSetpoint), -1.5, 1.5)));
             }
-        } else m_Drivetrain.drive (Math.pow(10,-7),Math.pow(10,-7),Math.pow(10,-7));
-        SmartDashboard.putNumber("yawWrapped", m_Drivetrain.getPoseYawWrapped().getDegrees());
+        //} else m_Drivetrain.drive (Math.pow(10,-7),Math.pow(10,-7),Math.pow(10,-7));
     }
+
     @Override
     public boolean isFinished() {
         if ((tx > (txSetpoint-deadband) && (tx < (txSetpoint+deadband)))) {
