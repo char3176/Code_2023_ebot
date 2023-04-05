@@ -129,16 +129,21 @@ public class RobotContainer {
       () -> m_Controller.getStrafe(),
       () -> m_Controller.getSpin())
     );
-  
-    m_Controller.getRotStick_Button2()
-        .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    m_Controller.getRotStick_Button2()
-        .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+ 
+    m_Controller.getRotStick_Button2().whileTrue(new SpinLockDrive(
+      () -> m_Controller.getForward(),
+      () -> m_Controller.getStrafe())
+    ); 
+    
+    //m_Controller.getRotStick_Button2()
+    //    .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
+    //m_Controller.getRotStick_Button2()
+    //    .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
 
     //m_Controller.getRotStick_Button2().whileTrue(new teleopPath());
     //m_Controller.getRotStick_Button2().whileTrue(new FeederPID("left"));
-    m_Controller.getRotStick_HAT_270().whileTrue(new FeederPID("left"));
-    m_Controller.getRotStick_HAT_90().whileTrue(new FeederPID("right"));
+    //m_Controller.getRotStick_HAT_270().whileTrue(new FeederPID("left"));
+    //m_Controller.getRotStick_HAT_90().whileTrue(new FeederPID("right"));
     //m_Controller.getRotStick_Button2().onFalse(new SwerveDrive(
     //    () -> m_Controller.getForward(),
     //    () -> m_Controller.getStrafe(),
@@ -154,8 +159,7 @@ public class RobotContainer {
     //     .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
     // m_Controller.getRotStick_Button4()
     //     .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
-    m_Controller.getRotStick_Button11().whileTrue(new InstantCommand( () -> m_Drivetrain.setSpinLock(true)));
-    m_Controller.getRotStick_Button11().onFalse(new InstantCommand( () -> m_Drivetrain.setSpinLock(false)));
+    // m_Controller.getRotStick_Button4().whileTrue(new SpinLock());
     m_Controller.getTransStick_Button8()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 

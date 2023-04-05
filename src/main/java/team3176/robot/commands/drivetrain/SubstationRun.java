@@ -27,25 +27,31 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class FeederAlign {
+public class SubstationRun {
     private Drivetrain m_Drivetrain;
     public NetworkTableInstance tableInstance;
-    public NetworkTable limelightTable;
+    public NetworkTable ll_lpov, ll_rpov;
+    public double ltv, rtv, tv, ltx, rtx, tx, lty, rty, ty, lta, rta, ta; 
     public DoubleTopic aprilIDTopic;
     public DoubleSubscriber aprilID;
-    public Double wantedAprilID, wantedYaw, wantedXpos, wantedYpos;
+    public double wantedAprilID, wantedYaw, wantedXpos, wantedYpos;
     public Alliance alliance;
     public PathPlannerTrajectory traja;
     public PPSwerveControllerCommand swerveCommand;
+    private String side;
     
-    public FeederAlign(){
+    public SubstationRun(String side){
         m_Drivetrain = Drivetrain.getInstance();
+        this.side = side;
+
     }
     
     public void initialize(){
-        m_Drivetrain.setBrakeMode();
+        //m_Drivetrain.setBrakeMode();
         tableInstance = NetworkTableInstance.getDefault();
-        limelightTable = tableInstance.getTable("limelight");
+        ll_lpov = tableInstance.getTable("limelight-lpov");
+        ll_rpov = tableInstance.getTable("limelight-rpov");
+
         if (DriverStation.isFMSAttached() && (alliance == null)) {
             alliance = DriverStation.getAlliance();
             if (alliance == Alliance.Red){
@@ -55,16 +61,38 @@ public class FeederAlign {
             } else if (alliance == Alliance.Invalid){
                 wantedAprilID = 9.0;
             }
-         }
-         if (wantedAprilID == 5.0) {
-            double wantedXpos = 68; //placeholder until we get the bot
-            double wantedYpos = 68; //placeholder until we get the bot
-            double wantedYaw = 0;//placeholder until we get the bot
-         } else if (wantedAprilID == 4.0) {
-            double wantedXpos = 8; //placeholder until we get the bot
-            double wantedYpos = 8; //placeholder until we get the bot
-            double wantedYaw = 0; //placeholder until we get the bot
-         }
+        }
+
+        if (wantedAprilID == 5.0) {
+            if (this.side == "left") {
+                wantedXpos = 68; //placeholder until we get the bot
+                wantedYpos = 680; //placeholder until we get the bot
+                wantedYaw = 0;//placeholder until we get the bot
+            } else if (this.side == "right") {
+                wantedXpos = 68; //placeholder until we get the bot
+                wantedYpos = 68; //placeholder until we get the bot
+                wantedYaw = 0;//placeholder until we get the bot
+            }
+        } else if (wantedAprilID == 4.0) {
+            if (this.side == "left") {
+                wantedXpos = 68; //placeholder until we get the bot
+                wantedYpos = 68; //placeholder until we get the bot
+                wantedYaw = 0;//placeholder until we get the bot
+            } else if (this.side == "right") {
+                wantedXpos = 68; //placeholder until we get the bot
+                wantedYpos = 68; //placeholder until we get the bot
+                wantedYaw = 0;//placeholder until we get the bot
+            }
+        }
+
+        ltv = ll_lpov.getEntry("tv").getDouble(0); 
+        rtv = ll_rpov.getEntry("tv").getDouble(0); 
+
+        if (ltv == 1) { 
+            
+        }
+
+
 
     }
     public void execute(){
@@ -72,7 +100,7 @@ public class FeederAlign {
         double xpos = pose.getX();
         double ypos = pose.getY();
    
-        aprilIDTopic = limelightTable.getDoubleTopic("tid");
+        //aprilIDTopic = limelightTable.getDoubleTopic("tid");
         aprilID = aprilIDTopic.subscribe(0.0);
         double forward = 0.0;
         if (aprilID.getAsDouble() == wantedAprilID ){
