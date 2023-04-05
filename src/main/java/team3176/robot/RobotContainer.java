@@ -106,10 +106,9 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_Controller.getTransStick_Button1().whileTrue(m_Claw.scoreGamePiece());
     //m_Controller.getTransStick_Button1().onFalse(new InstantCommand(() -> m_Drivetrain.setTurbo(false), m_Drivetrain));
-    m_Controller.getTransStick_Button2()
-        .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    m_Controller.getTransStick_Button2()
-        .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+    m_Controller.getTransStick_Button2().whileTrue(new IntakeGroundCube());
+    m_Controller.getTransStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
+    m_Controller.getTransStick_Button2().onFalse(m_Superstructure.prepareCarry());
         //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
     //m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
     //m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry())); 
@@ -130,10 +129,11 @@ public class RobotContainer {
       () -> m_Controller.getStrafe(),
       () -> m_Controller.getSpin())
     );
-   
-    m_Controller.getRotStick_Button2().whileTrue(new IntakeGroundCube());
-    m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
-    m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
+  
+    m_Controller.getRotStick_Button2()
+        .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
+    m_Controller.getRotStick_Button2()
+        .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
 
     //m_Controller.getRotStick_Button2().whileTrue(new teleopPath());
     //m_Controller.getRotStick_Button2().whileTrue(new FeederPID("left"));
