@@ -51,6 +51,9 @@ public class VisionPose {
             rnumtargets = rResults.targets_Fiducials.length;
         }
     }
+    public boolean isValid() {
+        return ltv != 0 || rtv != 0;
+    }
     public void updatePose() {
         if(ltv == 0 && rtv == 0) {
             //reset pose estimate to 0 indicating no seen tags

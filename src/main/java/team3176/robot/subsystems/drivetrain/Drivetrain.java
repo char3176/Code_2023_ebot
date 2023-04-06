@@ -490,6 +490,9 @@ public class Drivetrain extends SubsystemBase {
   public Pose2d getVisionPoseRed() {
     return visionPose.getPoseRed();
   }
+  public boolean isVisionValid() {
+    return visionPose.isValid();
+  }
   /*
    * public ChassisSpeeds getChassisSpeed() {
    * return DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(podFR.getState(),

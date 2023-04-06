@@ -23,7 +23,6 @@ public class FeederPID3D extends CommandBase{
     Pose2d BlueRight = new Pose2d(15.44, 6.17, Rotation2d.fromDegrees(0.0));
     Pose2d BlueLeft = new Pose2d(15.44, 7.44, Rotation2d.fromDegrees(0.0));
     Pose2d targetPose;
-    NetworkTable vision;
     Alliance alliance;
     String side;
     public FeederPID3D(String side) {
@@ -31,7 +30,6 @@ public class FeederPID3D extends CommandBase{
         alliance = DriverStation.getAlliance();
         m_Drivetrain = Drivetrain.getInstance();
         addRequirements(m_Drivetrain);
-        vision = NetworkTableInstance.getDefault().getTable("limelight");
         if(side == "right") {
             if(DriverStation.getAlliance() == Alliance.Red) {
                 targetPose = RedRight;
@@ -53,12 +51,9 @@ public class FeederPID3D extends CommandBase{
     }
     @Override
     public void execute() {
-        double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
-        double[] vision_pose_array = vision.getEntry("botpose_wpiblue").getDoubleArray(default_pose);
-        Pose2d cam_pose = new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
-        double tv = vision.getEntry("tv").getDouble(0.0);
+        Pose2d cam_pose = m_Drivetrain.getVisionPoseBlue();
         double reverseAxis = DriverStation.getAlliance() == Alliance.Red ? -1.0 : 1.0;
-        if (tv != 0.0) {
+        if (m_Drivetrain.isVisionValid()) {
             m_Drivetrain.drive(MathUtil.clamp(reverseAxis*xController.calculate(cam_pose.getX(), targetPose.getX()),-1.5,1.5),
                             (MathUtil.clamp(reverseAxis*yController.calculate(cam_pose.getY(),targetPose.getY()),-1.5,1.5)),
                             0.0);
