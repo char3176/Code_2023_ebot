@@ -3,6 +3,7 @@ package team3176.robot.subsystems.drivetrain;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionPose {
     private LimelightHelpers.Results lResults;
@@ -87,5 +88,11 @@ public class VisionPose {
         rResults = LimelightHelpers.getLatestResults(llRightString).targetingResults;
         updateLLNetworkTables();
         updatePose();
+        SmartDashboard.putNumber("visionBlueX", poseEstimateBlue.getX());
+        SmartDashboard.putNumber("visionBlueY", poseEstimateBlue.getY());
+        SmartDashboard.putNumber("visionRightX", rblue3D[0]);
+        SmartDashboard.putNumber("visionRightY", rblue3D[1]);
+        SmartDashboard.putNumber("visionLeftX", lblue3D[0]);
+        SmartDashboard.putNumber("visionLeftY", lblue3D[1]);
     }
 }
