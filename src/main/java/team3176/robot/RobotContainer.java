@@ -112,7 +112,7 @@ public class RobotContainer {
         //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
     //m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
     //m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry())); 
-    m_Controller.getTransStick_Button3().onTrue(new SetColorWantState(3));
+    m_Controller.getTransStick_Button3().whileTrue(new SetColorWantState(3));
     m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.groundCube());
     m_Controller.getTransStick_Button3().onFalse(new IntakeRetractSpinot());
     m_Controller.getTransStick_Button3().onFalse(m_Superstructure.prepareCarry());
