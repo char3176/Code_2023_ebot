@@ -78,7 +78,7 @@ public class Drivetrain extends SubsystemBase {
   private AHRS m_NavX;
   public SwerveDriveOdometry odom;
   public SwerveDrivePoseEstimator poseEstimator;
-  private VisionPose visionPose;
+  private VisionPose2 m_VisionPose;
   public NetworkTableInstance inst;
   public NetworkTable table;
   public DoubleTopic dblTopic;
@@ -154,7 +154,7 @@ public class Drivetrain extends SubsystemBase {
     table = inst.getTable("datatable");
 
     dblTopic = table.getDoubleTopic("Angle");
-    visionPose = new VisionPose();
+    m_VisionPose = new VisionPose2();
     dblPub = dblTopic.publish();
 
     field = new Field2d();
@@ -485,13 +485,13 @@ public class Drivetrain extends SubsystemBase {
     return Math.sqrt(Math.pow(this.forwardCommand,2) +  Math.pow(this.strafeCommand,2));
   }
   public Pose2d getVisionPoseBlue() {
-    return visionPose.getPoseBlue();
+    return m_VisionPose.getPoseBlue();
   }
   public Pose2d getVisionPoseRed() {
-    return visionPose.getPoseRed();
+    return m_VisionPose.getPoseRed();
   }
   public boolean isVisionValid() {
-    return visionPose.isValid();
+    return m_VisionPose.isValid();
   }
   /*
    * public ChassisSpeeds getChassisSpeed() {
@@ -541,7 +541,7 @@ public class Drivetrain extends SubsystemBase {
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
     SmartDashboard.putNumber("NavYaw",getPoseYawWrapped().getDegrees());
-    visionPose.periodic();
+    m_VisionPose.periodic();
     // double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
     // try {
     //   double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);
