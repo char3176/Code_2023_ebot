@@ -150,8 +150,9 @@ public class RobotContainer {
     //    () -> m_Controller.getSpin())
     //);
 
-    m_Controller.getRotStick_Button3().whileTrue(m_Superstructure.intakeConeHumanPlayer());
-    m_Controller.getRotStick_Button3().onFalse(m_Superstructure.prepareCarry());
+    //m_Controller.getRotStick_Button3().whileTrue(m_Superstructure.intakeConeHumanPlayer());
+    //m_Controller.getRotStick_Button3().onFalse(m_Superstructure.prepareCarry());
+    m_Controller.getRotStick_Button3().whileTrue(new InstantCommand(() -> m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
 
     m_Controller.getRotStick_Button4().whileTrue(m_Superstructure.intakeCubeHumanPlayer());
     m_Controller.getRotStick_Button4().onFalse(m_Superstructure.prepareCarry());

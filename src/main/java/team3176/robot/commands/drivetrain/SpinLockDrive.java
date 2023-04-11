@@ -17,10 +17,12 @@ public class SpinLockDrive extends CommandBase {
 
   private DoubleSupplier forwardCommand;
   private DoubleSupplier strafeCommand;
+  private double spinLockAngle;
 
   public SpinLockDrive( DoubleSupplier forwardCommand, DoubleSupplier strafeCommand) {
     this.forwardCommand = forwardCommand;
     this.strafeCommand = strafeCommand;
+
     addRequirements(m_Drivetrain);
   }
 
@@ -28,6 +30,8 @@ public class SpinLockDrive extends CommandBase {
   public void initialize() {
     m_Drivetrain.setDriveMode(driveMode.DRIVE);
     m_Drivetrain.setSpinLock(true);
+    this.spinLockAngle = m_Drivetrain.getPoseYawWrapped().getDegrees();
+
     //drivetrain.setCoastMode();
   }
 
@@ -36,7 +40,7 @@ public class SpinLockDrive extends CommandBase {
 
     m_Drivetrain.drive(forwardCommand.getAsDouble() * DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND *0.7, 
                       strafeCommand.getAsDouble() * DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND *0.7, 
-                      MathUtil.clamp(wController.calculate(m_Drivetrain.getPoseYawWrapped().getDegrees(), 0.0), -2, 2));
+                      MathUtil.clamp(wController.calculate(m_Drivetrain.getPoseYawWrapped().getDegrees(), this.spinLockAngle), -2, 2));
     //spinCommand.getAsDouble()*100);
   }
 

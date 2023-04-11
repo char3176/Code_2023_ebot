@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team3176.robot.subsystems.superstructure.Arm;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.CvSource;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,6 +24,7 @@ public class Robot extends LoggedRobot{
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  Thread m_fisheyeThread;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -32,6 +36,13 @@ public class Robot extends LoggedRobot{
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData(CommandScheduler.getInstance());
+    m_fisheyeThread = new Thread( () -> {
+      UsbCamera fisheye = CameraServer.startAutomaticCapture();
+      fisheye.setResolution(640,480);
+      CvSource outputStream = CameraServer.putVideo("fisheye", 640, 480);
+    });
+    m_fisheyeThread.setDaemon(true);
+    m_fisheyeThread.start();
 
   }
 
