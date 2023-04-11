@@ -1,11 +1,12 @@
 package team3176.robot.subsystems.drivetrain;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class VisionPose2 {
+public class VisionPose2{
     private LimelightHelpers.Results lResults;
     private LimelightHelpers.Results rResults;
     private static String llLeftString = "limelight-lpov";
@@ -22,49 +23,51 @@ public class VisionPose2 {
     public double[] rred3D;
     public double ltid;
     public double rtid;
-    public boolean ltv;
-    public boolean rtv;
+    public double ltv;
+    public double rtv;
     private int lnumtargets = 0;
     private int rnumtargets = 0;
 
     public VisionPose2(){
-        lResults = LimelightHelpers.getLatestResults(llLeftString).targetingResults;
-        rResults = LimelightHelpers.getLatestResults(llRightString).targetingResults;
+        this.lResults = LimelightHelpers.getLatestResults(llLeftString).targetingResults;
+        this.rResults = LimelightHelpers.getLatestResults(llRightString).targetingResults;
         poseEstimateBlue = new Pose2d();
         poseEstimateRed = new Pose2d();
     }
-    
-    public void updateLLlfovNetworkTables() { //update target coords.
-        if (lResults.valid) {
-            ltv = LimelightHelpers.getTV(llLeftString);
-            if (ltv){
-                ltarget3D = LimelightHelpers.getBotPose_TargetSpace(llLeftString);
-                lblue3D = LimelightHelpers.getBotPose_wpiBlue(llLeftString);
-                lred3D = LimelightHelpers.getBotPose_wpiRed(llLeftString);
-                ltid = LimelightHelpers.getFiducialID(llLeftString);
-                lnumtargets = rResults.targets_Fiducials.length;
-            }
+     
+    public void updateLLrfovNetworkTables() { //update target coords.
+        rtv = llRight.getEntry("tv").getDouble(0);
+        if (rtv > 0.0){
+            rtarget3D = llRight.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
+            rblue3D = llRight.getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
+            rred3D = llRight.getEntry("botpose_wpired").getDoubleArray(new double[7]);
+            rtid = llRight.getEntry("tid").getDouble(0);
+            rnumtargets = rResults.targets_Fiducials.length;
         }
     }
 
-    public void updateLLrfovNetworkTables() { //update target coords.
-        if (rResults.valid) {
-            rtv = LimelightHelpers.getTV(llRightString);
-            if(rtv) {
-                rtarget3D = LimelightHelpers.getBotPose_TargetSpace(llRightString);
-                rblue3D = LimelightHelpers.getBotPose_wpiBlue(llRightString);
-                rred3D = LimelightHelpers.getBotPose_wpiRed(llRightString);
-                rtid = LimelightHelpers.getFiducialID(llRightString);
-                rnumtargets = rResults.targets_Fiducials.length;
-            }
+    public void updateLLlfovNetworkTables() { //update target coords.
+        ltv = llLeft.getEntry("tv").getDouble(0);
+        if(ltv > 0.0) {
+            ltarget3D = llLeft.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
+            lblue3D = llLeft.getEntry("botpose_wpiblue").getDoubleArray(new double[7]);
+            lred3D = llLeft.getEntry("botpose_wpired").getDoubleArray(new double[7]);
+            ltid = llLeft.getEntry("tid").getDouble(0);
+            lnumtargets = lResults.targets_Fiducials.length;
         }
     }
 
     public boolean isValid() {
-        return ltv || rtv ;
+        return ltv != 0 || rtv != 0;
     }
+
+    public void updateLLResults() {
+        this.lResults = LimelightHelpers.getLatestResults(llLeftString).targetingResults;
+        this.rResults = LimelightHelpers.getLatestResults(llRightString).targetingResults;
+    }
+
     public void updatePose() {
-        if(ltv && rtv ) {
+        if(ltv == 0 && rtv == 0) {
             //reset pose estimate to 0 indicating no seen tags
             poseEstimateBlue = new Pose2d();
             poseEstimateRed = new Pose2d();
@@ -94,6 +97,7 @@ public class VisionPose2 {
     public void periodic() {
         lResults = LimelightHelpers.getLatestResults(llLeftString).targetingResults;
         rResults = LimelightHelpers.getLatestResults(llRightString).targetingResults;
+        
         updateLLlfovNetworkTables();
         updateLLrfovNetworkTables();
         updatePose();
