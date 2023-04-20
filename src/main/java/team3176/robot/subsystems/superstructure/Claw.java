@@ -1,9 +1,5 @@
 package team3176.robot.subsystems.superstructure;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -19,27 +15,20 @@ import team3176.robot.subsystems.superstructure.ClawIO.ClawIOHardware;
 import org.littletonrobotics.junction.Logger;
 
 public class Claw extends SubsystemBase {
-    private CANSparkMax claw;
-    private DigitalInput linebreakOne;
-    private DigitalInput linebreakTwo;
-    private DigitalInput linebreakThree;
     private static Claw instance;
     private final ClawIO io;
     private final ClawIOInputs inputs = new ClawIOInputs();
-    private final ClawIOHardware hardware = new ClawIOHardware();
+    public final ClawIOHardware hardware = new ClawIOHardware();
     public GamePiece currentGamePiece = GamePiece.CONE;
-    private Claw(ClawIO io) {
-        this.io = io;
-        // claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
-        // linebreakOne = new DigitalInput(0);
-        // linebreakTwo = new DigitalInput(2);
-        // linebreakThree = new DigitalInput(1);
-    }
+
+    private Claw(ClawIO io) {this.io = io;}
+
     public void setClawMotor(double percent, int amps) {
-        hardware.clawMotorPercent(percent, amps);
+        hardware.setClawVelocity(percent);
+        hardware.setClawAmps(amps);
         SmartDashboard.putNumber("intake power (%)", percent);
-        SmartDashboard.putNumber("intake motor current (amps)", claw.getOutputCurrent());
-        SmartDashboard.putNumber("intake motor temperature (C)", claw.getMotorTemperature());
+        SmartDashboard.putNumber("intake motor current (amps)", hardware.getClawAmps());
+        SmartDashboard.putNumber("intake motor temperature (C)", hardware.getClawTemp());
     }
 
     //states now implemented as functions
@@ -83,23 +72,8 @@ public class Claw extends SubsystemBase {
         this.currentGamePiece = piece;
     }
 
-    public boolean getLinebreakOne()
-    {
-        return linebreakOne.get();
-    }
-    
-    public boolean getLinebreakTwo()
-    {
-        return linebreakTwo.get();
-    }
-
-    public boolean getLinebreakThree()
-    {
-        return linebreakThree.get();
-    }
-
     public boolean isEmpty() {
-        return getLinebreakOne() || getLinebreakTwo();
+        return hardware.getLinebreakOne() || hardware.getLinebreakTwo();
     }
 
     public static Claw getInstance()
@@ -129,17 +103,17 @@ public class Claw extends SubsystemBase {
 
     //more examples of command composition and why its awesome!!
     public Command intakeCone() {
-        return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreakTwo);
+        return this.intakeGamePiece(GamePiece.CONE).until(() -> hardware.getLinebreakTwo());
     }
     public Command intakeCube() {
-        return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreakOne);
+        return this.intakeGamePiece(GamePiece.CUBE).until(() -> hardware.getLinebreakOne());
     }
     public Command determineGamePiece() {
         return this.runOnce( () -> {
-            if(this.linebreakOne.get()) {
+            if(this.hardware.getLinebreakOne()) {
                 this.currentGamePiece = GamePiece.CONE;
                 hold();
-            } else if(this.linebreakTwo.get()) {
+            } else if(this.hardware.getLinebreakTwo()) {
                 this.currentGamePiece = GamePiece.CUBE;
                 hold();
             }
@@ -157,9 +131,9 @@ public class Claw extends SubsystemBase {
     Logger.getInstance().recordOutput("Claw/LinebreakOne", getIsLinebreakOne());
     Logger.getInstance().recordOutput("Claw/LinebreakTwo", getIsLinebreakTwo());
     // Code stating if something is in the Intake
-    SmartDashboard.putBoolean("linebreakOne",linebreakOne.get());
-    SmartDashboard.putBoolean("linebreakTwo",linebreakTwo.get());
-    SmartDashboard.putBoolean("linebreakThree", linebreakThree.get());
+    SmartDashboard.putBoolean("linebreakOne",hardware.getLinebreakOne());
+    SmartDashboard.putBoolean("linebreakTwo",hardware.getLinebreakTwo());
+    SmartDashboard.putBoolean("linebreakThree", hardware.getLinebreakThree());
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
    }
@@ -177,6 +151,11 @@ public class Claw extends SubsystemBase {
    public boolean getIsLinebreakTwo()
    {
     return inputs.isLinebreakTwo;
+   }
+
+   public boolean getIsLinebreakThree()
+   {
+    return inputs.isLinebreakThree;
    }
 
    public void runVoltage(double volts)

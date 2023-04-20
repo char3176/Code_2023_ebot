@@ -56,7 +56,7 @@ public class OldPoopCube extends CommandBase {
     //if (m_Arm.getArmPosition() >= kArmPoopLowerLimit && m_Arm.getArmPosition() <= kArmPoopUpperLimit) {
       m_Claw.scoreGamePiece();
     //}
-    if (m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false) {
+    if (m_Claw.hardware.getLinebreakOne() == false || m_Claw.hardware.getLinebreakTwo() == false) {
       m_Claw.idle();
       new WaitCommand(2);
       m_Superstructure.prepareCarry();

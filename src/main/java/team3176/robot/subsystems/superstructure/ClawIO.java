@@ -25,6 +25,7 @@ public interface ClawIO{
     public double appliedVolts = 0.0;
     public boolean isLinebreakOne = true;
     public boolean isLinebreakTwo = true;
+    public boolean isLinebreakThree = true;
     public double[] currentAmps = new double[] {};
     public double[] tempCelcius = new double[] {};
 
@@ -34,6 +35,7 @@ public interface ClawIO{
       table.put("VelocityOutputPercent", velocity);
       table.put("isLinebreakOne", isLinebreakOne);
       table.put("isLinebreakTwo", isLinebreakTwo);
+      table.put("isLinebreakThree", isLinebreakThree);
       table.put("AppliedVolts", appliedVolts);
       table.put("CurrentAmps", currentAmps);
       table.put("TempCelcius", tempCelcius);
@@ -43,6 +45,7 @@ public interface ClawIO{
       velocity = table.getDouble("VelocityOutputPercent", velocity);
       isLinebreakOne = table.getBoolean("isLinebreakOne", isLinebreakOne);
       isLinebreakTwo = table.getBoolean("isLinebreakTwo", isLinebreakTwo);
+      isLinebreakThree = table.getBoolean("isLinebreakThree", isLinebreakThree);
       appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
       currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
       tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
@@ -56,11 +59,20 @@ public interface ClawIO{
     private DigitalInput linebreakTwo = new DigitalInput(2);
     private DigitalInput linebreakThree = new DigitalInput(1);
 
-    public void clawMotorPercent(double percent, int amps)
-    {
-      claw.set(percent);
-      claw.setSmartCurrentLimit(amps);
-    }
+    public void setClawVelocity(double percent) {claw.set(percent);}
+
+    public void setClawAmps(int amps) {claw.setSmartCurrentLimit(amps);}
+
+    public double getClawAmps() {return claw.getOutputCurrent();}
+
+    public double getClawTemp() {return claw.getMotorTemperature();}
+
+    public boolean getLinebreakOne() {return linebreakOne.get();}
+    
+    public boolean getLinebreakTwo() {return linebreakTwo.get();}
+
+    public boolean getLinebreakThree() {return linebreakThree.get();}
+
   }
 
 
