@@ -9,6 +9,13 @@ package team3176.robot.subsystems.superstructure;
 
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
+import team3176.robot.constants.Hardwaremap;
+import team3176.robot.constants.SuperStructureConstants;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 
 /** Template hardware interface for a closed loop subsystem. */
 public interface ClawIO{
@@ -39,6 +46,20 @@ public interface ClawIO{
       appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
       currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
       tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
+    }
+  }
+
+  public static class ClawIOHardware
+  {
+    private CANSparkMax claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);;
+    private DigitalInput linebreakOne = new DigitalInput(0);
+    private DigitalInput linebreakTwo = new DigitalInput(2);
+    private DigitalInput linebreakThree = new DigitalInput(1);
+
+    public void clawMotorPercent(double percent, int amps)
+    {
+      claw.set(percent);
+      claw.setSmartCurrentLimit(amps);
     }
   }
 

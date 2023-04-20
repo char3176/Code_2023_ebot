@@ -15,6 +15,7 @@ import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
 import team3176.robot.subsystems.superstructure.ClawIO;
 import team3176.robot.subsystems.superstructure.ClawIO.ClawIOInputs;
+import team3176.robot.subsystems.superstructure.ClawIO.ClawIOHardware;
 import org.littletonrobotics.junction.Logger;
 
 public class Claw extends SubsystemBase {
@@ -25,17 +26,17 @@ public class Claw extends SubsystemBase {
     private static Claw instance;
     private final ClawIO io;
     private final ClawIOInputs inputs = new ClawIOInputs();
+    private final ClawIOHardware hardware = new ClawIOHardware();
     public GamePiece currentGamePiece = GamePiece.CONE;
     private Claw(ClawIO io) {
         this.io = io;
-        claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
-        linebreakOne = new DigitalInput(0);
-        linebreakTwo = new DigitalInput(2);
-        linebreakThree = new DigitalInput(1);
+        // claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
+        // linebreakOne = new DigitalInput(0);
+        // linebreakTwo = new DigitalInput(2);
+        // linebreakThree = new DigitalInput(1);
     }
-    public void setClawMotor(double percent, double amps) {
-        claw.set(percent);
-        claw.setSmartCurrentLimit(SuperStructureConstants.CLAW_AMPS);
+    public void setClawMotor(double percent, int amps) {
+        hardware.clawMotorPercent(percent, amps);
         SmartDashboard.putNumber("intake power (%)", percent);
         SmartDashboard.putNumber("intake motor current (amps)", claw.getOutputCurrent());
         SmartDashboard.putNumber("intake motor temperature (C)", claw.getMotorTemperature());
