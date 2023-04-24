@@ -26,10 +26,13 @@ public interface ClawIO{
     public boolean isLinebreakOne = true;
     public boolean isLinebreakTwo = true;
     public boolean isLinebreakThree = true;
-    public double[] currentAmps = new double[] {};
-    public double[] tempCelcius = new double[] {};
+    // public double[] currentAmps = new double[] {};
+    public double tempCelcius;
 
-
+    private CANSparkMax claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
+    private DigitalInput linebreakOne = new DigitalInput(0);
+    private DigitalInput linebreakTwo = new DigitalInput(2);
+    private DigitalInput linebreakThree = new DigitalInput(1);
 
     public void toLog(LogTable table) {
       table.put("VelocityOutputPercent", velocity);
@@ -37,7 +40,7 @@ public interface ClawIO{
       table.put("isLinebreakTwo", isLinebreakTwo);
       table.put("isLinebreakThree", isLinebreakThree);
       table.put("AppliedVolts", appliedVolts);
-      table.put("CurrentAmps", currentAmps);
+      // table.put("CurrentAmps", currentAmps);
       table.put("TempCelcius", tempCelcius);
     }
 
@@ -47,17 +50,9 @@ public interface ClawIO{
       isLinebreakTwo = table.getBoolean("isLinebreakTwo", isLinebreakTwo);
       isLinebreakThree = table.getBoolean("isLinebreakThree", isLinebreakThree);
       appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
-      currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
-      tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
+      // currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
+      tempCelcius = table.getDouble("TempCelcius", tempCelcius);
     }
-  }
-
-  public static class ClawIOHardware
-  {
-    private CANSparkMax claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);;
-    private DigitalInput linebreakOne = new DigitalInput(0);
-    private DigitalInput linebreakTwo = new DigitalInput(2);
-    private DigitalInput linebreakThree = new DigitalInput(1);
 
     public void setClawVelocity(double percent) {claw.set(percent);}
 

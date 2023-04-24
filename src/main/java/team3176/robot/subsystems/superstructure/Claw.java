@@ -11,24 +11,22 @@ import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
 
 import team3176.robot.subsystems.superstructure.ClawIO;
 import team3176.robot.subsystems.superstructure.ClawIO.ClawIOInputs;
-import team3176.robot.subsystems.superstructure.ClawIO.ClawIOHardware;
 import org.littletonrobotics.junction.Logger;
 
 public class Claw extends SubsystemBase {
     private static Claw instance;
     private final ClawIO io;
-    private final ClawIOInputs inputs = new ClawIOInputs();
-    public final ClawIOHardware hardware = new ClawIOHardware();
+    public final ClawIOInputs inputs = new ClawIOInputs();
     public GamePiece currentGamePiece = GamePiece.CONE;
 
     private Claw(ClawIO io) {this.io = io;}
 
     public void setClawMotor(double percent, int amps) {
-        hardware.setClawVelocity(percent);
-        hardware.setClawAmps(amps);
+        inputs.setClawVelocity(percent);
+        inputs.setClawAmps(amps);
         SmartDashboard.putNumber("intake power (%)", percent);
-        SmartDashboard.putNumber("intake motor current (amps)", hardware.getClawAmps());
-        SmartDashboard.putNumber("intake motor temperature (C)", hardware.getClawTemp());
+        SmartDashboard.putNumber("intake motor current (amps)", inputs.getClawAmps());
+        SmartDashboard.putNumber("intake motor temperature (C)", inputs.getClawTemp());
     }
 
     //states now implemented as functions
@@ -73,7 +71,7 @@ public class Claw extends SubsystemBase {
     }
 
     public boolean isEmpty() {
-        return hardware.getLinebreakOne() || hardware.getLinebreakTwo();
+        return inputs.getLinebreakOne() || inputs.getLinebreakTwo();
     }
 
     public static Claw getInstance()
@@ -103,17 +101,17 @@ public class Claw extends SubsystemBase {
 
     //more examples of command composition and why its awesome!!
     public Command intakeCone() {
-        return this.intakeGamePiece(GamePiece.CONE).until(() -> hardware.getLinebreakTwo());
+        return this.intakeGamePiece(GamePiece.CONE).until(() -> inputs.getLinebreakTwo());
     }
     public Command intakeCube() {
-        return this.intakeGamePiece(GamePiece.CUBE).until(() -> hardware.getLinebreakOne());
+        return this.intakeGamePiece(GamePiece.CUBE).until(() -> inputs.getLinebreakOne());
     }
     public Command determineGamePiece() {
         return this.runOnce( () -> {
-            if(this.hardware.getLinebreakOne()) {
+            if(this.inputs.getLinebreakOne()) {
                 this.currentGamePiece = GamePiece.CONE;
                 hold();
-            } else if(this.hardware.getLinebreakTwo()) {
+            } else if(this.inputs.getLinebreakTwo()) {
                 this.currentGamePiece = GamePiece.CUBE;
                 hold();
             }
@@ -131,9 +129,9 @@ public class Claw extends SubsystemBase {
     Logger.getInstance().recordOutput("Claw/LinebreakOne", getIsLinebreakOne());
     Logger.getInstance().recordOutput("Claw/LinebreakTwo", getIsLinebreakTwo());
     // Code stating if something is in the Intake
-    SmartDashboard.putBoolean("linebreakOne",hardware.getLinebreakOne());
-    SmartDashboard.putBoolean("linebreakTwo",hardware.getLinebreakTwo());
-    SmartDashboard.putBoolean("linebreakThree", hardware.getLinebreakThree());
+    SmartDashboard.putBoolean("linebreakOne",inputs.getLinebreakOne());
+    SmartDashboard.putBoolean("linebreakTwo",inputs.getLinebreakTwo());
+    SmartDashboard.putBoolean("linebreakThree", inputs.getLinebreakThree());
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
    }
