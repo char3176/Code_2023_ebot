@@ -164,11 +164,11 @@ public class Drivetrain extends SubsystemBase {
     assert (!SwervePodHardwareID.check_duplicates_all(DrivetrainConstants.FR, DrivetrainConstants.FL,
         DrivetrainConstants.BR, DrivetrainConstants.BL));
     // Instantiate pods
-
-    podFR = new SwervePod(0, driveControllers[0], azimuthControllers[0]);
-    podFL = new SwervePod(1, driveControllers[1], azimuthControllers[1]);
-    podBL = new SwervePod(2, driveControllers[2], azimuthControllers[2]);
-    podBR = new SwervePod(3, driveControllers[3], azimuthControllers[3]);
+    
+    podFR = new SwervePod(0, new SwervePodIOFalconSpark(DrivetrainConstants.FR,DrivetrainConstants.STEER_FR_CID));
+    podFL = new SwervePod(1, new SwervePodIOFalconSpark(DrivetrainConstants.FL,DrivetrainConstants.STEER_FL_CID));
+    podBL = new SwervePod(2, new SwervePodIOFalconSpark(DrivetrainConstants.BL,DrivetrainConstants.STEER_BL_CID));
+    podBR = new SwervePod(3, new SwervePodIOFalconSpark(DrivetrainConstants.BR,DrivetrainConstants.STEER_BR_CID));
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
@@ -336,12 +336,6 @@ public class Drivetrain extends SubsystemBase {
   public void sendPodsAzimuthToHome() {
     for (int idx = 0; idx < (pods.size()); idx++) {
       pods.get(idx).goHome();
-    }
-  }
-
-  public void setCurrentPodPosAsHome() {
-    for (int idx = 0; idx < (pods.size()); idx++) {
-      pods.get(idx).setCurrentPositionAsHome();
     }
   }
 
