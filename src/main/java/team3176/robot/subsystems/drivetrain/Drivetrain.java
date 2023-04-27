@@ -71,11 +71,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team3176.robot.subsystems.controller.Controller;
 
 import org.littletonrobotics.junction.Logger;
-import team3176.robot.subsystems.drivetrain.DrivetrainIO.DrivetrainIOInputs;
+import team3176.robot.subsystems.drivetrain.GyroIO.GyroIOInputs;
 
 public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance;
-  private AHRS m_NavX;
   public SwerveDriveOdometry odom;
   public SwerveDrivePoseEstimator poseEstimator;
 
@@ -137,12 +136,15 @@ public class Drivetrain extends SubsystemBase {
   Pose2d last_pose = new Pose2d();
   double lastVisionTimeStamp = 0.0;
   double lastVisionX = 0.0;
-  private final DrivetrainIO io;
+  private final GyroIO io;
+  private GyroIOInputsAutoLogged inputs;
   Field2d field;
   
   // private final DrivetrainIOInputs inputs = new DrivetrainIOInputs();
 
-  private Drivetrain(DrivetrainIO io) {
+  private Drivetrain(GyroIO io) {
+    this.io = io;
+    inputs = new GyroIOInputsAutoLogged();
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("datatable");
 
@@ -151,8 +153,6 @@ public class Drivetrain extends SubsystemBase {
     dblPub = dblTopic.publish();
 
     field = new Field2d();
-    this.io = io;
-
     // check for duplicates
     assert (!SwervePodHardwareID.check_duplicates_all(DrivetrainConstants.FR, DrivetrainConstants.FL,
         DrivetrainConstants.BR, DrivetrainConstants.BL));
@@ -170,7 +170,7 @@ public class Drivetrain extends SubsystemBase {
     pods.add(podBL);
     pods.add(podBR);
 
-    m_NavX = new AHRS(SPI.Port.kMXP);
+    
 
     odom = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, this.getSensorYaw(),
         new SwerveModulePosition[] {
@@ -207,7 +207,7 @@ public class Drivetrain extends SubsystemBase {
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() {
     if (instance == null) {
-      instance = new Drivetrain(new DrivetrainIO() {
+      instance = new Drivetrain(new GyroIO() {
       });
     }
     return instance;
@@ -397,7 +397,7 @@ public class Drivetrain extends SubsystemBase {
    * @return Rotation2d of the yaw
    */
   private Rotation2d getSensorYaw() {
-    return m_NavX.getRotation2d();
+    return inputs.rotation2d;
   }
 
   public Rotation2d getChassisYaw() {
@@ -409,7 +409,7 @@ public class Drivetrain extends SubsystemBase {
    * @return navx pitch -180 to 180 around the X axis of the Navx
    */
   public double getChassisPitch() {
-    return m_NavX.getPitch();
+    return inputs.pitch;
   }
 
   /**
@@ -417,7 +417,7 @@ public class Drivetrain extends SubsystemBase {
    * @return navx roll -180 to 180 around the X axis of the Navx
    */
   public double getChassisRoll() {
-    return m_NavX.getRoll();
+    return inputs.roll;
   }
 
 
@@ -472,8 +472,8 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    dblPub.set(3.0);
-    
+    io.updateInputs(inputs);
+    Logger.getInstance().processInputs("Drive/gyro", inputs);
     //vision_lfov_pose = NetworkTableInstance.getDefault().getTable("limelight-lfov").getEntry("botpose_wpiblue");
     //vision_rfov_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue");
 

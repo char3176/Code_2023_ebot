@@ -68,7 +68,7 @@ public class SwervePod {
     private boolean isAutonSwerveControllerOptimizingAzimuthPos = false;
 
     private double PI = Math.PI;
-    private final PIDController  m_turningPIDController2;
+    private final PIDController  turningPIDController;
     //private final ProfiledPIDController m_turningProfiledPIDController;
     //private ProfiledPIDController m_turningPIDController;
 
@@ -89,14 +89,14 @@ public class SwervePod {
 
         
         
-        m_turningPIDController2 = new PIDController(kP_Azimuth, kI_Azimuth, kD_Azimuth);
-        m_turningPIDController2.setTolerance(4);
-        m_turningPIDController2.enableContinuousInput(-180, 180);
+        turningPIDController = new PIDController(kP_Azimuth, kI_Azimuth, kD_Azimuth);
+        turningPIDController.setTolerance(4);
+        turningPIDController.enableContinuousInput(-180, 180);
 
-        m_turningPIDController2.reset();
-        m_turningPIDController2.setP(this.kP_Azimuth);
-        m_turningPIDController2.setI(this.kI_Azimuth);
-        m_turningPIDController2.setD(this.kD_Azimuth);
+        turningPIDController.reset();
+        turningPIDController.setP(this.kP_Azimuth);
+        turningPIDController.setI(this.kI_Azimuth);
+        turningPIDController.setD(this.kD_Azimuth);
         
     }
 
@@ -116,14 +116,16 @@ public class SwervePod {
         this.azimuthEncoderAbsPosition = inputs.turnAbsolutePositionDegrees;
         SwerveModuleState desired_optimized = SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(this.azimuthEncoderAbsPosition));
         this.desired_optimized_azimuth_position = desired_optimized.angle.getDegrees();
+        
         if (desiredState.speedMetersPerSecond > (-Math.pow(10,-10)) && desiredState.speedMetersPerSecond  < (Math.pow(10,-10))) {      
-            this.turnOutput = m_turningPIDController2.calculate(this.azimuthEncoderAbsPosition, this.lastEncoderPos);
+            this.turnOutput = turningPIDController.calculate(this.azimuthEncoderAbsPosition, this.lastEncoderPos);
         } else {
-            this.turnOutput = m_turningPIDController2.calculate(this.azimuthEncoderAbsPosition, desired_optimized.angle.getDegrees());
+            this.turnOutput = turningPIDController.calculate(this.azimuthEncoderAbsPosition, desired_optimized.angle.getDegrees());
             this.lastEncoderPos = desired_optimized.angle.getDegrees(); 
         }
+        // reduce output if the error is high
+        desired_optimized.speedMetersPerSecond *= Math.cos(turningPIDController.getPositionError());
     
-        //azimuthController.set();
         io.setTurn(MathUtil.clamp(this.turnOutput, -0.4, 0.4));
         this.velTicsPer100ms = Units3176.mps2ums(desired_optimized.speedMetersPerSecond);
         io.setDrive(velTicsPer100ms);
@@ -142,7 +144,7 @@ public class SwervePod {
 
         // SmartDashboard.putNumber("P"+(this.id)+".optmizdazimuthAbsPos", optmizdAzimuthAbsPos);
 
-        double turnOutput = m_turningPIDController2.calculate(this.azimuthEncoderAbsPosition, s.angle.getDegrees());
+        double turnOutput = turningPIDController.calculate(this.azimuthEncoderAbsPosition, s.angle.getDegrees());
         //double turnOutput = m_turningPIDController.calculate(this.azimuthEncoderPosition, this.podAzimuth);
 
         // SmartDashboard.putNumber("P"+(this.id)+".turnOutput", turnOutput);
