@@ -109,7 +109,7 @@ public class SwervePod {
      *  alternative method for setting swervepod in line with WPILIB standard library
      * @param desiredState 
      */
-    public void set_module(SwerveModuleState desiredState) {
+    public SwerveModuleState set_module(SwerveModuleState desiredState) {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Drive/Module" + Integer.toString(this.id), inputs);
         
@@ -129,6 +129,7 @@ public class SwervePod {
         io.setTurn(MathUtil.clamp(this.turnOutput, -0.4, 0.4));
         this.velTicsPer100ms = Units3176.mps2ums(desired_optimized.speedMetersPerSecond);
         io.setDrive(velTicsPer100ms);
+        return desired_optimized;
     }   
     /*
      * odometry calls
