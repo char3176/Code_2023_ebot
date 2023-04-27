@@ -98,14 +98,7 @@ public class Drivetrain extends SubsystemBase {
 
   private driveMode currentDriveMode = driveMode.DRIVE;
 
-  public TalonFX[] driveControllers = { new TalonFX(DrivetrainConstants.FR.THRUST_CID),
-      new TalonFX(DrivetrainConstants.FL.THRUST_CID), new TalonFX(DrivetrainConstants.BL.THRUST_CID),
-      new TalonFX(DrivetrainConstants.BR.THRUST_CID) };
-
-  public CANSparkMax[] azimuthControllers = { new CANSparkMax(DrivetrainConstants.STEER_FR_CID, MotorType.kBrushless),
-      new CANSparkMax(DrivetrainConstants.STEER_FL_CID, MotorType.kBrushless),
-      new CANSparkMax(DrivetrainConstants.STEER_BL_CID, MotorType.kBrushless),
-      new CANSparkMax(DrivetrainConstants.STEER_BR_CID, MotorType.kBrushless) };
+  
 
   Rotation2d FieldAngleOffset = Rotation2d.fromDegrees(0.0);
 
@@ -315,15 +308,6 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-  public void stopMotors() {
-    // TODO: this seems to voilate a data flow overiding pods and could cause issues
-    // should be a state variable
-    for (int idx = 0; idx < (pods.size()); idx++) {
-      driveControllers[idx].set(ControlMode.PercentOutput, 0);
-      azimuthControllers[idx].set(0);
-    }
-
-  }
 
   public void setPodsAzimuthHome() {
     double smallNum = Math.pow(10, -5);
