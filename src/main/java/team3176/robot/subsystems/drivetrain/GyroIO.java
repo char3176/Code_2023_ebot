@@ -16,10 +16,13 @@ public interface GyroIO{
   /** Contains all of the input data received from hardware. */
   @AutoLog
   public static class GyroIOInputs {
-    double pitch;
-    double yaw;
-    double roll;
+    double pitch =0.0;
+    double yaw =0.0;
+    double roll =0.0;
     Rotation2d rotation2d;
+    GyroIOInputs() {
+      rotation2d = new Rotation2d();
+    }
   }
 
   /** Updates the set of loggable inputs. */
