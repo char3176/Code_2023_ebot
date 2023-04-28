@@ -34,6 +34,21 @@
       "/SmartDashboard/Auton Choice": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Scheduler": "Scheduler"
+    },
+    "windows": {
+      "/SmartDashboard/Scheduler": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "Retained Values": {
+      "open": false
     }
   }
 }
