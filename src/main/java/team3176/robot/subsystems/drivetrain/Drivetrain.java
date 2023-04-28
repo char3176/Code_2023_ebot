@@ -310,15 +310,19 @@ public class Drivetrain extends SubsystemBase {
     if (currentDriveMode != driveMode.DEFENSE) {
       ChassisSpeeds curr_chassisSpeeds = new ChassisSpeeds(forwardCommand, strafeCommand, spinCommand);
       SwerveModuleState[] pod_states = DrivetrainConstants.DRIVE_KINEMATICS.toSwerveModuleStates(curr_chassisSpeeds);
-      SwerveDriveKinematics.desaturateWheelSpeeds(pod_states, DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND);
+      Logger.getInstance().recordOutput("Drive/pod0", pod_states[0].angle.getDegrees());
+      //SwerveDriveKinematics.desaturateWheelSpeeds(pod_states, DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND);
       SwerveModuleState[] optimizedStates = new SwerveModuleState[4];
+      SwerveModuleState[] realStates = new SwerveModuleState[4];
       for (int idx = 0; idx < (pods.size()); idx++) {
-
         optimizedStates[idx]=pods.get(idx).set_module(pod_states[idx]);
+        realStates[idx] = new SwerveModuleState(pods.get(idx).getVelocity(),Rotation2d.fromDegrees(pods.get(idx).getAzimuth()));
 
       }
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", pod_states);
+      Logger.getInstance().recordOutput("SwerveStates/real", realStates);
       Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", optimizedStates);
+
       SmartDashboard.putNumber("spinCommand", spinCommand);
       SmartDashboard.putNumber("pod0 m/s", pod_states[0].speedMetersPerSecond);
 

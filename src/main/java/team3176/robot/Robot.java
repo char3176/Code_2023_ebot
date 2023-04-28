@@ -76,7 +76,7 @@ public class Robot extends LoggedRobot{
 
       case SIM:
         System.out.println("[init] starting simulation");
-        logger.addDataReceiver(new WPILOGWriter(""));
+        logger.addDataReceiver(new WPILOGWriter("./log/"));
         logger.addDataReceiver(new NT4Publisher());
         break;
 

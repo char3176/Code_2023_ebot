@@ -18,7 +18,7 @@ import team3176.robot.constants.SwervePodHardwareID;
 
 public class SwervePodIOSim implements SwervePodIO{
     private FlywheelSim driveSim = new FlywheelSim(DCMotor.getFalcon500(1), 6.75, 0.025);
-    private FlywheelSim turnSim = new FlywheelSim(DCMotor.getNeo550(1), 150.0 / 7.0, 0.004);
+    private FlywheelSim turnSim = new FlywheelSim(DCMotor.getNeo550(1), 70.0, 0.004);
     private PIDController drivePID = new PIDController(.03, 0, 0.0,.045);
     private double turnRelativePositionRad = 0.0;
     private double turnAbsolutePositionRad = Math.random() * 2.0 * Math.PI;
@@ -29,6 +29,8 @@ public class SwervePodIOSim implements SwervePodIO{
         
     }
     public void updateInputs(SwervePodIOInputs inputs) {
+        driveSim.update(Constants.loopPeriodSecs);
+        turnSim.update(Constants.loopPeriodSecs);
         double angleDiffRad = Units.radiansToDegrees(turnSim.getAngularVelocityRadPerSec() * Constants.loopPeriodSecs);
         turnRelativePositionRad += angleDiffRad;
         turnAbsolutePositionRad += angleDiffRad;
