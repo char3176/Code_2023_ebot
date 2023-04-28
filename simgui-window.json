@@ -10,15 +10,15 @@
       "style": "0",
       "userScale": "2",
       "width": "1846",
-      "xpos": "83",
-      "ypos": "71"
+      "xpos": "-642",
+      "ypos": "266"
     }
   },
   "Window": {
     "###Addressable LEDs": {
       "Collapsed": "0",
       "Pos": "318,53",
-      "Size": "136,48"
+      "Size": "142,259"
     },
     "###FMS": {
       "Collapsed": "0",
@@ -27,8 +27,8 @@
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "483,801",
-      "Size": "796,73"
+      "Pos": "483,713",
+      "Size": "632,155"
     },
     "###NetworkTables": {
       "Collapsed": "0",
@@ -37,7 +37,7 @@
     },
     "###Other Devices": {
       "Collapsed": "0",
-      "Pos": "1827,40",
+      "Pos": "619,40",
       "Size": "500,1390"
     },
     "###RoboRIO": {
@@ -53,7 +53,7 @@
     "###Timing": {
       "Collapsed": "0",
       "Pos": "10,300",
-      "Size": "141,127"
+      "Size": "141,150"
     },
     "Debug##Default": {
       "Collapsed": "0",

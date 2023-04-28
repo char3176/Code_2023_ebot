@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodConstants2022;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -128,14 +128,14 @@ public class SwervePod {
     
         io.setTurn(MathUtil.clamp(this.turnOutput, -0.4, 0.4));
         this.velTicsPer100ms = Units3176.mps2ums(desired_optimized.speedMetersPerSecond);
-        io.setDrive(velTicsPer100ms);
+        io.setDrive(desired_optimized.speedMetersPerSecond);
         return desired_optimized;
     }   
     /*
      * odometry calls
      */
     public SwerveModulePosition getPosition() {
-        double mps = Units.feetToMeters(1.0 / Units3176.conversion_feet_to_tics *  inputs.drivePositionEncoder);
+        double mps = Units.feetToMeters((DrivetrainConstants.WHEEL_DIAMETER_INCHES/12.0 * Math.PI)  *  inputs.drivePositionRad / (2*Math.PI));
         return new SwerveModulePosition(mps,Rotation2d.fromDegrees(inputs.turnAbsolutePositionDegrees));
     }
 
@@ -161,8 +161,7 @@ public class SwervePod {
     } 
     
     public double getVelocity() {
-        double motorShaftVelocity = inputs.driveVelocityTics;   
-        double wheelVelocityInFeetPerSecond = Units3176.ums2fps(motorShaftVelocity); 
+        double wheelVelocityInFeetPerSecond = inputs.driveVelocityRadPerSec / (Math.PI *2) * DrivetrainConstants.WHEEL_DIAMETER_INCHES/12.0 * Math.PI;   
         double wheelVelocityInMetersPerSecond = Units3176.feetPerSecond2metersPerSecond(wheelVelocityInFeetPerSecond);
         return wheelVelocityInMetersPerSecond;
     }
@@ -194,7 +193,7 @@ public class SwervePod {
         return this.velTicsPer100ms;
     }
     public double getThrustEncoderVelocity() {
-        return inputs.driveVelocityTics;
+        return inputs.driveVelocityRadPerSec;
     }
     public double getAzimuthEncoderPosition() {
         return inputs.turnAbsolutePositionDegrees;

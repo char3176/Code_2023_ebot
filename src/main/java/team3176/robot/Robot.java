@@ -75,6 +75,7 @@ public class Robot extends LoggedRobot{
         break;
 
       case SIM:
+        System.out.println("[init] starting simulation");
         logger.addDataReceiver(new WPILOGWriter(""));
         logger.addDataReceiver(new NT4Publisher());
         break;
@@ -91,13 +92,13 @@ public class Robot extends LoggedRobot{
 
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData(CommandScheduler.getInstance());
-    m_fisheyeThread = new Thread( () -> {
-      UsbCamera fisheye = CameraServer.startAutomaticCapture();
-      fisheye.setResolution(640,480);
-      CvSource outputStream = CameraServer.putVideo("fisheye", 640, 480);
-    });
-    m_fisheyeThread.setDaemon(true);
-    m_fisheyeThread.start();
+    // m_fisheyeThread = new Thread( () -> {
+    //   UsbCamera fisheye = CameraServer.startAutomaticCapture();
+    //   fisheye.setResolution(640,480);
+    //   CvSource outputStream = CameraServer.putVideo("fisheye", 640, 480);
+    // });
+    // m_fisheyeThread.setDaemon(true);
+    // m_fisheyeThread.start();
 
   }
 

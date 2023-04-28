@@ -5,8 +5,8 @@ import org.littletonrobotics.junction.AutoLog;
 public interface SwervePodIO {
     @AutoLog
     public static class SwervePodIOInputs {
-        public double drivePositionEncoder = 0.0;
-        public double driveVelocityTics = 0.0;
+        public double drivePositionRad = 0.0;
+        public double driveVelocityRadPerSec = 0.0;
         public double driveAppliedVolts = 0.0;
         public double[] driveCurrentAmps = new double[] {};
         public double[] driveTempCelcius = new double[] {};
