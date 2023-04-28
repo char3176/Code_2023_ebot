@@ -5,6 +5,9 @@
 package team3176.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,6 +37,10 @@ public class Robot extends LoggedRobot{
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    Logger logger = Logger.getInstance();
+    logger.addDataReceiver(new WPILOGWriter("/media/sda2/"));
+    logger.addDataReceiver(new NT4Publisher());
+    logger.start();
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData(CommandScheduler.getInstance());
     m_fisheyeThread = new Thread( () -> {
