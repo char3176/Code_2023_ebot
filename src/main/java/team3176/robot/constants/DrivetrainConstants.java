@@ -5,10 +5,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 //import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
-import team3176.robot.Robot;
-import team3176.robot.constants.RobotConstants;
-import team3176.robot.constants.RobotConstants.RobotType;
-
 public class DrivetrainConstants extends DrivetrainHardwareMap {
     // IDs for Drivetrain motors and solenoids
   

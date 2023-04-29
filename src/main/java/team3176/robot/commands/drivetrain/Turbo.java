@@ -35,7 +35,7 @@ public class Turbo extends CommandBase {
   public void execute() {
     drivetrain.drive(forwardCommand.getAsDouble() * DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND * 1.0, 
     strafeCommand.getAsDouble() * DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND * 1.0, 
-    spinCommand.getAsDouble()*120);
+    spinCommand.getAsDouble()*7);
   }
 
   @Override

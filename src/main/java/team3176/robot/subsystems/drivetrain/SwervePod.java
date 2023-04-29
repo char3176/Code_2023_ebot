@@ -50,7 +50,8 @@ public class SwervePod {
     private double kP_Azimuth;
     private double kI_Azimuth;
     private double kD_Azimuth;
-
+    private double lastDistance =0.0;
+    private double delta = 0.0;
 
 
     private double turnOutput;
@@ -106,6 +107,9 @@ public class SwervePod {
             this.lastEncoderPos = desired_optimized.angle.getDegrees(); 
         }
         // reduce output if the error is high
+        double currentDistance = Units.feetToMeters((DrivetrainConstants.WHEEL_DIAMETER_INCHES/12.0 * Math.PI)  *  inputs.drivePositionRad / (2*Math.PI));
+        this.delta = currentDistance - this.lastDistance;
+        this.lastDistance = currentDistance;
         desired_optimized.speedMetersPerSecond *= Math.abs(Math.cos(Units.degreesToRadians(turningPIDController.getPositionError())));
         //Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "", id);
         io.setTurn(MathUtil.clamp(this.turnOutput, -0.4, 0.4));
@@ -120,6 +124,9 @@ public class SwervePod {
     public SwerveModulePosition getPosition() {
         double mps = Units.feetToMeters((DrivetrainConstants.WHEEL_DIAMETER_INCHES/12.0 * Math.PI)  *  inputs.drivePositionRad / (2*Math.PI));
         return new SwerveModulePosition(mps,Rotation2d.fromDegrees(inputs.turnAbsolutePositionDegrees));
+    }
+    public SwerveModulePosition getDelta() {
+        return new SwerveModulePosition(this.delta,Rotation2d.fromDegrees(inputs.turnAbsolutePositionDegrees));
     }
     
     public double getVelocity() {

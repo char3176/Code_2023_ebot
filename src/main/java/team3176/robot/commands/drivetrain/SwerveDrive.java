@@ -35,7 +35,7 @@ public class SwerveDrive extends CommandBase {
   public void execute() {
     drivetrain.drive(forwardCommand.getAsDouble() * DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND *0.7, 
     strafeCommand.getAsDouble() * DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND *0.7, 
-    spinCommand.getAsDouble()*100);
+    spinCommand.getAsDouble()*6);
   }
 
   @Override

@@ -109,9 +109,6 @@ public class RobotContainer {
     m_Controller.getTransStick_Button2().whileTrue(new IntakeGroundCube());
     m_Controller.getTransStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.getTransStick_Button2().onFalse(m_Superstructure.prepareCarry());
-        //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
-    //m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
-    //m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry())); 
     m_Controller.getTransStick_Button3().whileTrue(new SetColorWantState(3));
     m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.groundCube());
     m_Controller.getTransStick_Button3().onFalse(new IntakeRetractSpinot());
@@ -135,32 +132,11 @@ public class RobotContainer {
       () -> m_Controller.getStrafe())
     ); 
     
-    //m_Controller.getRotStick_Button2()
-    //    .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    //m_Controller.getRotStick_Button2()
-    //    .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
 
-    //m_Controller.getRotStick_Button2().whileTrue(new teleopPath());
-    //m_Controller.getRotStick_Button2().whileTrue(new FeederPID("left"));
-    //m_Controller.getRotStick_HAT_270().whileTrue(new FeederPID("left"));
-    //m_Controller.getRotStick_HAT_90().whileTrue(new FeederPID("right"));
-    //m_Controller.getRotStick_Button2().onFalse(new SwerveDrive(
-    //    () -> m_Controller.getForward(),
-    //    () -> m_Controller.getStrafe(),
-    //    () -> m_Controller.getSpin())
-    //);
-
-    //m_Controller.getRotStick_Button3().whileTrue(m_Superstructure.intakeConeHumanPlayer());
-    //m_Controller.getRotStick_Button3().onFalse(m_Superstructure.prepareCarry());
     m_Controller.getRotStick_Button3().whileTrue(new InstantCommand(() -> m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
 
     m_Controller.getRotStick_Button4().whileTrue(m_Superstructure.intakeCubeHumanPlayer());
     m_Controller.getRotStick_Button4().onFalse(m_Superstructure.prepareCarry());
-    // m_Controller.getRotStick_Button4()
-    //     .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    // m_Controller.getRotStick_Button4()
-    //     .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
-    // m_Controller.getRotStick_Button4().whileTrue(new SpinLock());
     m_Controller.getTransStick_Button8()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 
@@ -194,18 +170,6 @@ public class RobotContainer {
     m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
     m_Controller.operator.y().onFalse(new ClawIdle());
 
-    
-    //m_Controller.operator.rightBumper().whileTrue(m_IntakeCube.extendAndFreeSpin());
-    //m_Controller.operator.rightBumper().whileTrue(new InstantCommand( () -> m_IntakeCone.spinVelocityPercent(-80,20)));
-    //m_Controller.operator.rightBumper().onFalse(new InstantCommand( () -> m_IntakeCone.spinVelocityPercent(0, 20))); 
-//    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).whileTrue((m_Superstructure.groundCube()));
-
-    // m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () ->
-    //m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());
-    //m_Controller.operator.leftBumper().onFalse(new armAnalogIdle());
-
-    //m_Controller.operator.rightBumper().whileTrue(new armAnalogUp());
-    //m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
 
     m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).onTrue(new SetColorWantState(3));
     m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).whileTrue(new IntakeGroundCube());

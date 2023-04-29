@@ -251,7 +251,7 @@ public class Controller {
 
   public double getSpin() {
     if(Math.abs(rotStick.getX()) < 0.06) return 0.0;
-    return 0.2 * ControllerConstants.SPIN_AXIS_INVERSION * (Math.pow(rotStick.getX(), 1) / 7.0);
+    return ControllerConstants.SPIN_AXIS_INVERSION * rotStick.getX();
   }
 
   /**

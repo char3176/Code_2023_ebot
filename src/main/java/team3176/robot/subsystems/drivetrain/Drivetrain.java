@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import team3176.robot.Constants;
+import team3176.robot.Constants.Mode;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodHardwareID;
 
@@ -250,7 +252,7 @@ public class Drivetrain extends SubsystemBase {
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", pod_states);
       Logger.getInstance().recordOutput("SwerveStates/real", realStates);
       Logger.getInstance().recordOutput("SwerveStates/SetpointsOptimized", optimizedStates);
-
+      Logger.getInstance().recordOutput("Drive/SpinCommand", spinCommand);
       SmartDashboard.putNumber("spinCommand", spinCommand);
       SmartDashboard.putNumber("pod0 m/s", pod_states[0].speedMetersPerSecond);
 
@@ -338,7 +340,21 @@ public class Drivetrain extends SubsystemBase {
    * @return Rotation2d of the yaw
    */
   private Rotation2d getSensorYaw() {
+    if(Constants.getMode() == Mode.SIM) {
+      if(this.odom == null || this.poseEstimator == null) {
+        return new Rotation2d();
+      }
+      SwerveModulePosition[] deltas = new SwerveModulePosition[4];
+      for(int i=0;i<  pods.size(); i++) {
+        deltas[i] = pods.get(i).getDelta();
+      }
+      Twist2d twist = DrivetrainConstants.DRIVE_KINEMATICS.toTwist2d(deltas);
+      Rotation2d angle = getPose().exp(twist).getRotation();
+      return angle;
+    } 
     return inputs.rotation2d;
+    
+    
   }
 
   public Rotation2d getChassisYaw() {
@@ -415,6 +431,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Drive/gyro", inputs);
+    
     //vision_lfov_pose = NetworkTableInstance.getDefault().getTable("limelight-lfov").getEntry("botpose_wpiblue");
     //vision_rfov_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue");
 
@@ -451,6 +468,7 @@ public class Drivetrain extends SubsystemBase {
     // update encoders
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
+    Logger.getInstance().recordOutput("Drive/Odom", getPose());
     SmartDashboard.putNumber("NavYaw",getPoseYawWrapped().getDegrees());
 
     // double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
