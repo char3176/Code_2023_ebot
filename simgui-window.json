@@ -10,19 +10,19 @@
       "style": "0",
       "userScale": "2",
       "width": "1846",
-      "xpos": "-612",
-      "ypos": "424"
+      "xpos": "-610",
+      "ypos": "223"
     }
   },
   "Window": {
     "###/SmartDashboard/Auton Choice": {
       "Collapsed": "0",
-      "Pos": "202,13",
+      "Pos": "268,25",
       "Size": "254,54"
     },
     "###/SmartDashboard/Scheduler": {
       "Collapsed": "0",
-      "Pos": "328,173",
+      "Pos": "268,173",
       "Size": "400,200"
     },
     "###Addressable LEDs": {
@@ -37,17 +37,17 @@
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "328,713",
-      "Size": "416,155"
+      "Pos": "268,713",
+      "Size": "593,155"
     },
     "###NetworkTables": {
       "Collapsed": "1",
-      "Pos": "271,365",
+      "Pos": "268,365",
       "Size": "1500,370"
     },
     "###Other Devices": {
       "Collapsed": "0",
-      "Pos": "328,38",
+      "Pos": "268,38",
       "Size": "500,1390"
     },
     "###RoboRIO": {

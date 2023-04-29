@@ -280,6 +280,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetPose(Pose2d pose) {
+    wheelOnlyHeading = pose.getRotation();
     odom.resetPosition(getSensorYaw(), new SwerveModulePosition[] {
         podFR.getPosition(),
         podFL.getPosition(),
@@ -290,6 +291,7 @@ public class Drivetrain extends SubsystemBase {
           podFL.getPosition(),
           podBL.getPosition(),
           podBR.getPosition() }, pose);
+    
   }
 
   public void setModuleStates(SwerveModuleState[] states) {

@@ -69,7 +69,7 @@ public class SwervePodIOSim implements SwervePodIO{
         double voltage = 12 * velMetersPerSecond * 1.0/(freeSpeedRadPerSec / (2*Math.PI) * Units.inchesToMeters(DrivetrainConstants.WHEEL_DIAMETER_INCHES) * Math.PI);
         driveAppliedVolts = MathUtil.clamp(voltage + driveSpeedError*4,-12.0,12.0);
         if(DriverStation.isEnabled()) {
-            driveSim.setInputVoltage(voltage);
+            driveSim.setInputVoltage(driveAppliedVolts);
         }else {
             driveSim.setInputVoltage(0.0);
         }
