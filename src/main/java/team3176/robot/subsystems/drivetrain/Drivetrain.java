@@ -3,75 +3,36 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package team3176.robot.subsystems.drivetrain;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.*;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-// import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
-import edu.wpi.first.networktables.TimestampedDoubleArray;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import team3176.robot.util.God.PID3176;
 import team3176.robot.Constants;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodHardwareID;
-// import team3176.robot.util.God.PID3176;
-import team3176.robot.subsystems.drivetrain.SwervePod;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team3176.robot.subsystems.controller.Controller;
-
 import org.littletonrobotics.junction.Logger;
-import team3176.robot.subsystems.drivetrain.GyroIO.GyroIOInputs;
 
 public class Drivetrain extends SubsystemBase {
   private static Drivetrain instance;
@@ -101,12 +62,10 @@ public class Drivetrain extends SubsystemBase {
 
   Rotation2d FieldAngleOffset = Rotation2d.fromDegrees(0.0);
 
-  private double relMaxSpeed;
 
   private double forwardCommand;
   private double strafeCommand;
-  private double spinCommand;
-  private double spinCommandInit;
+  //private double spinCommand;
 
   // spin lock
   private PIDController spinLockPID;
@@ -131,7 +90,6 @@ public class Drivetrain extends SubsystemBase {
 
 
   NetworkTable vision;
-  private boolean hasvisionsubed = false;
   NetworkTableEntry vision_pose;
   Pose2d last_pose = new Pose2d();
   double lastVisionTimeStamp = 0.0;
@@ -202,9 +160,6 @@ public class Drivetrain extends SubsystemBase {
         }, new Pose2d(0.0, 0.0, new Rotation2d()));
     poseEstimator = new SwerveDrivePoseEstimator(DrivetrainConstants.DRIVE_KINEMATICS, getSensorYaw(),
         getSwerveModulePositions(), odom.getPoseMeters());
-    // TODO: update covariance matrix for vision
-    // poseEstimator.setVisionMeasurementStdDevs(new MatBuilder<>(Nat.N3(),
-    // Nat.N1()).fill(0.1,0.1,0.01));
     spinLockPID = new PIDController(0.1, 0.0, 0.0);
     // set for max and min of degrees for Rotation2D
     spinLockPID.enableContinuousInput(-180, 180);
@@ -212,15 +167,10 @@ public class Drivetrain extends SubsystemBase {
     arraytrack = 0;
     angleAvgRollingWindow = 0;
 
-    // TODO: We initialize to face forward but how do we make this into a command?
-    // Maybe we say drive with the below parameters, but where?
-    /*
-     * // Start wheels in a forward facing direction
-     */
 
     this.forwardCommand = Math.pow(10, -15); // Has to be positive to turn that direction?
     this.strafeCommand = 0.0;
-    this.spinCommand = 0.0;
+    //this.spinCommand = 0.0;
     vision = NetworkTableInstance.getDefault().getTable("limelight");
 
   }
@@ -233,16 +183,6 @@ public class Drivetrain extends SubsystemBase {
     }
     return instance;
   }
-
-  /**
-   * public void drive(double forwardCommand, double strafeCommand, double
-   * spinCommand, int uselessVariable) { double smallNum = Math.pow(10, -15);
-   * //spinCommand = (spinCommand - (-1))/(1 - (-1)); //rescales spinCommand to a
-   * 0..1 range double angle = (spinCommand * Math.PI) + Math.PI; // <- diff coord
-   * system than -1..1 = 0..2Pi // This coord system is 0..1 = Pi..2Pi, & // 0..-1
-   * = Pi..-2PI // right? // Fixed by new rescaling at line 140?
-   * pods.get(0).set(smallNum, angle); }
-   */
 
   /**
    * public facing drive command that allows command to specify if the command is
@@ -262,7 +202,13 @@ public class Drivetrain extends SubsystemBase {
       }
       speed = ChassisSpeeds.fromFieldRelativeSpeeds(speed, fieldOffset);
     }
-    p_drive(speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond);
+    if (isSpinLocked) {
+      spinCommand = spinLockPID.calculate(getPoseYawWrapped().getDegrees(), spinLockAngle.getDegrees());
+      SmartDashboard.putNumber("SpinLockYaw",getPoseYawWrapped().getDegrees());
+      calculateNSetPodPositions(speed.vxMetersPerSecond,speed.vyMetersPerSecond, spinCommand);
+      return;
+    }
+    calculateNSetPodPositions(speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond);
   }
 
   /**
@@ -276,25 +222,6 @@ public class Drivetrain extends SubsystemBase {
     drive(forwardCommand, strafeCommand, spinCommand, currentCoordType);
   }
 
-  /**
-   * 
-   * @param forwardCommand meters per second
-   * @param strafeCommand  meters per second
-   * @param spinCommand    meters per second
-   */
-  private void p_drive(double forwardCommand, double strafeCommand, double spinCommand) {
-    this.spinCommandInit = spinCommand;
-    this.forwardCommand = forwardCommand;
-    this.strafeCommand = strafeCommand;
-    this.spinCommand = spinCommand;
-    if (isSpinLocked) {
-      this.spinCommand = spinLockPID.calculate(getPoseYawWrapped().getDegrees(), spinLockAngle.getDegrees());
-      SmartDashboard.putNumber("SpinLockYaw",getPoseYawWrapped().getDegrees());
-    }
-
-    calculateNSetPodPositions(this.forwardCommand, this.strafeCommand, this.spinCommand);
-
-  }
 
   /**
    * Robot Centric Forward, strafe, and spin to set individual pods commanded spin
@@ -305,7 +232,9 @@ public class Drivetrain extends SubsystemBase {
    * @param spinCommand    meters per second
    */
   private void calculateNSetPodPositions(double forwardCommand, double strafeCommand, double spinCommand) {
-
+    this.forwardCommand = forwardCommand;
+    this.strafeCommand = strafeCommand;
+    //this.spinCommand = spinCommand;
     if (currentDriveMode != driveMode.DEFENSE) {
       ChassisSpeeds curr_chassisSpeeds = new ChassisSpeeds(forwardCommand, strafeCommand, spinCommand);
       SwerveModuleState[] pod_states = DrivetrainConstants.DRIVE_KINEMATICS.toSwerveModuleStates(curr_chassisSpeeds);
@@ -327,10 +256,10 @@ public class Drivetrain extends SubsystemBase {
 
     } else if (currentDriveMode == driveMode.DEFENSE) { // Enter defensive position
       double smallNum = Math.pow(10, -5);
-      pods.get(0).set(smallNum, Rotation2d.fromRadians(1.0 * Math.PI / 8.0));
-      pods.get(1).set(smallNum, Rotation2d.fromRadians(-1.0 * Math.PI / 8.0));
-      pods.get(2).set(smallNum, Rotation2d.fromRadians(-3.0 * Math.PI / 8.0));
-      pods.get(3).set(smallNum, Rotation2d.fromRadians(3.0 * Math.PI / 8.0));
+      pods.get(0).set_module(smallNum, Rotation2d.fromRadians(1.0 * Math.PI / 8.0));
+      pods.get(1).set_module(smallNum, Rotation2d.fromRadians(-1.0 * Math.PI / 8.0));
+      pods.get(2).set_module(smallNum, Rotation2d.fromRadians(-3.0 * Math.PI / 8.0));
+      pods.get(3).set_module(smallNum, Rotation2d.fromRadians(3.0 * Math.PI / 8.0));
     }
   }
 
@@ -581,22 +510,22 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void publishSwervePodPIDErrors(){
-    double FRAzError = podFR.getAzimuthSetpoint() - podFR.getAzimuthEncoderPosition();
+    double FRAzError = podFR.getAzimuthSetpoint() - podFR.getAzimuth();
     double FRThrustError = podFR.getThrustSetpoint() - podFR.getThrustEncoderVelocity();
     SmartDashboard.putNumber("FRAzError", FRAzError);
     SmartDashboard.putNumber("FRThrustError", FRThrustError);
 
-    double FLAzError = podFL.getAzimuthSetpoint() - podFL.getAzimuthEncoderPosition();
+    double FLAzError = podFL.getAzimuthSetpoint() - podFL.getAzimuth();
     double FLThrustError = podFL.getThrustSetpoint() - podFL.getThrustEncoderVelocity();
     SmartDashboard.putNumber("FLAzError", FLAzError);
     SmartDashboard.putNumber("FLThrustError", FLThrustError);
 
-    double BRAzError = podBR.getAzimuthSetpoint() - podBR.getAzimuthEncoderPosition();
+    double BRAzError = podBR.getAzimuthSetpoint() - podBR.getAzimuth();
     double BRThrustError = podBR.getThrustSetpoint() - podBR.getThrustEncoderVelocity();
     SmartDashboard.putNumber("BRAzError", BRAzError);
     SmartDashboard.putNumber("BRThrustError", BRThrustError);
 
-    double BLAzError = podBL.getAzimuthSetpoint() - podBL.getAzimuthEncoderPosition();
+    double BLAzError = podBL.getAzimuthSetpoint() - podBL.getAzimuth();
     double BLThrustError = podBL.getThrustSetpoint() - podBL.getThrustEncoderVelocity();
     SmartDashboard.putNumber("BLAzError", BLAzError);
     SmartDashboard.putNumber("BLThrustError", BLThrustError);
