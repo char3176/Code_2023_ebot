@@ -11,8 +11,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import team3176.robot.Constants;
+import team3176.robot.Robot;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodHardwareID;
@@ -66,13 +68,23 @@ public class SwervePodIOSim implements SwervePodIO{
         double driveSpeedError = velMetersPerSecond - (this.currentDriveSpeed / (2) * Units.inchesToMeters(DrivetrainConstants.WHEEL_DIAMETER_INCHES)); 
         double voltage = 12 * velMetersPerSecond * 1.0/(freeSpeedRadPerSec / (2*Math.PI) * Units.inchesToMeters(DrivetrainConstants.WHEEL_DIAMETER_INCHES) * Math.PI);
         driveAppliedVolts = MathUtil.clamp(voltage + driveSpeedError*4,-12.0,12.0);
-        driveSim.setInputVoltage(voltage);
+        if(DriverStation.isEnabled()) {
+            driveSim.setInputVoltage(voltage);
+        }else {
+            driveSim.setInputVoltage(0.0);
+        }
+        
     }
 
     /** Run the turn motor at the specified voltage. */
     public void setTurn(double volts) {
-        turnAppliedVolts = MathUtil.clamp(volts * 12, -12.0, 12.0);
-        turnSim.setInputVoltage(turnAppliedVolts);
+        if(DriverStation.isEnabled()){
+            turnAppliedVolts = MathUtil.clamp(volts * 12, -12.0, 12.0);
+            turnSim.setInputVoltage(turnAppliedVolts);
+        }else {
+            turnSim.setInput(0.0);
+        }
+        
     }
 
     /** Enable or disable brake mode on the drive motor. */

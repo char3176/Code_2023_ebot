@@ -112,6 +112,7 @@ public class SwervePod {
         this.lastDistance = currentDistance;
         desired_optimized.speedMetersPerSecond *= Math.abs(Math.cos(Units.degreesToRadians(turningPIDController.getPositionError())));
         //Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "", id);
+        
         io.setTurn(MathUtil.clamp(this.turnOutput, -0.4, 0.4));
         Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "/error",turningPIDController.getPositionError());
         this.velTicsPer100ms = Units3176.mps2ums(desired_optimized.speedMetersPerSecond);

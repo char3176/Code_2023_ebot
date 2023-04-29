@@ -67,7 +67,7 @@ public class Drivetrain extends SubsystemBase {
 
   private double forwardCommand;
   private double strafeCommand;
-  //private double spinCommand;
+  private double spinCommand;
 
   // spin lock
   private PIDController spinLockPID;
@@ -96,6 +96,7 @@ public class Drivetrain extends SubsystemBase {
   Pose2d last_pose = new Pose2d();
   double lastVisionTimeStamp = 0.0;
   double lastVisionX = 0.0;
+  Rotation2d wheelOnlyHeading = new Rotation2d();
   private final GyroIO io;
   private GyroIOInputsAutoLogged inputs;
   Field2d field;
@@ -172,7 +173,7 @@ public class Drivetrain extends SubsystemBase {
 
     this.forwardCommand = Math.pow(10, -15); // Has to be positive to turn that direction?
     this.strafeCommand = 0.0;
-    //this.spinCommand = 0.0;
+    this.spinCommand = 0.0;
     vision = NetworkTableInstance.getDefault().getTable("limelight");
 
   }
@@ -204,13 +205,13 @@ public class Drivetrain extends SubsystemBase {
       }
       speed = ChassisSpeeds.fromFieldRelativeSpeeds(speed, fieldOffset);
     }
+    this.forwardCommand = speed.vxMetersPerSecond;
+    this.strafeCommand = speed.vyMetersPerSecond;
+    this.spinCommand = speed.omegaRadiansPerSecond;
     if (isSpinLocked) {
       spinCommand = spinLockPID.calculate(getPoseYawWrapped().getDegrees(), spinLockAngle.getDegrees());
       SmartDashboard.putNumber("SpinLockYaw",getPoseYawWrapped().getDegrees());
-      calculateNSetPodPositions(speed.vxMetersPerSecond,speed.vyMetersPerSecond, spinCommand);
-      return;
     }
-    calculateNSetPodPositions(speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond);
   }
 
   /**
@@ -236,7 +237,7 @@ public class Drivetrain extends SubsystemBase {
   private void calculateNSetPodPositions(double forwardCommand, double strafeCommand, double spinCommand) {
     this.forwardCommand = forwardCommand;
     this.strafeCommand = strafeCommand;
-    //this.spinCommand = spinCommand;
+    this.spinCommand = spinCommand;
     if (currentDriveMode != driveMode.DEFENSE) {
       ChassisSpeeds curr_chassisSpeeds = new ChassisSpeeds(forwardCommand, strafeCommand, spinCommand);
       SwerveModuleState[] pod_states = DrivetrainConstants.DRIVE_KINEMATICS.toSwerveModuleStates(curr_chassisSpeeds);
@@ -344,13 +345,7 @@ public class Drivetrain extends SubsystemBase {
       if(this.odom == null || this.poseEstimator == null) {
         return new Rotation2d();
       }
-      SwerveModulePosition[] deltas = new SwerveModulePosition[4];
-      for(int i=0;i<  pods.size(); i++) {
-        deltas[i] = pods.get(i).getDelta();
-      }
-      Twist2d twist = DrivetrainConstants.DRIVE_KINEMATICS.toTwist2d(deltas);
-      Rotation2d angle = getPose().exp(twist).getRotation();
-      return angle;
+      return wheelOnlyHeading;
     } 
     return inputs.rotation2d;
     
@@ -426,12 +421,12 @@ public class Drivetrain extends SubsystemBase {
    * podFL.getState(), podBL.getState(), podBR.getState());
    * }
    */
-
+  
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Drive/gyro", inputs);
-    
+    calculateNSetPodPositions(this.forwardCommand,this.strafeCommand,this.spinCommand);
     //vision_lfov_pose = NetworkTableInstance.getDefault().getTable("limelight-lfov").getEntry("botpose_wpiblue");
     //vision_rfov_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue");
 
@@ -464,7 +459,12 @@ public class Drivetrain extends SubsystemBase {
     //   SmartDashboard.putNumber("camX",cam_pose.getX());
     // }
     last_pose = odom.getPoseMeters();
-      
+    SwerveModulePosition[] deltas = new SwerveModulePosition[4];
+    for(int i=0;i<  pods.size(); i++) {
+      deltas[i] = pods.get(i).getDelta();
+    }
+    Twist2d twist = DrivetrainConstants.DRIVE_KINEMATICS.toTwist2d(deltas);
+    wheelOnlyHeading = getPose().exp(twist).getRotation();
     // update encoders
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());

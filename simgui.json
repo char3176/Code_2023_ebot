@@ -37,6 +37,11 @@
       "/SmartDashboard/Scheduler": "Scheduler"
     },
     "windows": {
+      "/SmartDashboard/Auton Choice": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Scheduler": {
         "window": {
           "visible": true
