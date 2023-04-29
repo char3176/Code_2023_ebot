@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import team3176.robot.constants.DrivetrainConstants;
-import team3176.robot.constants.SwervePodConstants2022;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -150,7 +149,7 @@ public class SwervePod {
         //double turnOutput = m_turningPIDController.calculate(this.azimuthEncoderPosition, this.podAzimuth);
 
         // SmartDashboard.putNumber("P"+(this.id)+".turnOutput", turnOutput);
-        io.setTurn(turnOutput * SwervePodConstants2022.AZIMUTH_SPARKMAX_MAX_OUTPUTPERCENT);
+        io.setTurn(turnOutput * .4);
 
         //this.azimuthPIDController.setReference(homePos, CANSparkMax.ControlType.kPosition);
 
@@ -202,7 +201,7 @@ public class SwervePod {
 
     public void setupShuffleboard() {
         Shuffleboard.getTab(this.idString)
-            .add(idString+"/podAzimuth_setpoint_angle",SwervePodConstants2022.AZIMUTH_ABS_ENCODER_OFFSET_POSITION[id])
+            .add(idString+"/podAzimuth_setpoint_angle",DrivetrainConstants.AZIMUTH_ABS_ENCODER_OFFSET_POSITION[id])
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", -3.16, "max", 3.16))
             .withSize(2,1)

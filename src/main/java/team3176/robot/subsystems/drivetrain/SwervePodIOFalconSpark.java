@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import team3176.robot.constants.DrivetrainConstants;
-import team3176.robot.constants.SwervePodConstants2022;
 import team3176.robot.constants.SwervePodHardwareID;
 import team3176.robot.util.God.Units3176;
 
@@ -16,7 +15,7 @@ public class SwervePodIOFalconSpark implements SwervePodIO{
     private CANSparkMax turnSparkMax;
     private TalonFX thrustFalcon;
     private CANCoder azimuthEncoder;
-    public static double conversion_feet_to_tics = 12.0 * (1.0/ (DrivetrainConstants.WHEEL_DIAMETER_INCHES * Math.PI)) * (1.0 /SwervePodConstants2022.THRUST_GEAR_RATIO) * SwervePodConstants2022.THRUST_ENCODER_UNITS_PER_REVOLUTION;
+    public static double conversion_feet_to_tics = 12.0 * (1.0/ (DrivetrainConstants.WHEEL_DIAMETER_INCHES * Math.PI)) * (1.0 /DrivetrainConstants.THRUST_GEAR_RATIO) * DrivetrainConstants.THRUST_ENCODER_UNITS_PER_REVOLUTION;
     public SwervePodIOFalconSpark(SwervePodHardwareID id,int sparkMaxID) {
         turnSparkMax = new CANSparkMax(sparkMaxID, MotorType.kBrushless);
         thrustFalcon = new TalonFX(id.THRUST_CID);
@@ -43,8 +42,8 @@ public class SwervePodIOFalconSpark implements SwervePodIO{
         
     }
     public void updateInputs(SwervePodIOInputs inputs) {
-        inputs.drivePositionRad = thrustFalcon.getSelectedSensorPosition() * (SwervePodConstants2022.THRUST_GEAR_RATIO) * 1.0/SwervePodConstants2022.THRUST_ENCODER_UNITS_PER_REVOLUTION;
-        inputs.driveVelocityRadPerSec = thrustFalcon.getSelectedSensorVelocity() * (SwervePodConstants2022.THRUST_GEAR_RATIO) * 1.0/SwervePodConstants2022.THRUST_ENCODER_UNITS_PER_REVOLUTION * 10;
+        inputs.drivePositionRad = thrustFalcon.getSelectedSensorPosition() * (DrivetrainConstants.THRUST_GEAR_RATIO) * 1.0/DrivetrainConstants.THRUST_ENCODER_UNITS_PER_REVOLUTION;
+        inputs.driveVelocityRadPerSec = thrustFalcon.getSelectedSensorVelocity() * (DrivetrainConstants.THRUST_GEAR_RATIO) * 1.0/DrivetrainConstants.THRUST_ENCODER_UNITS_PER_REVOLUTION * 10;
         inputs.driveAppliedVolts = thrustFalcon.getMotorOutputVoltage();
         inputs.driveCurrentAmps = new double[] {thrustFalcon.getStatorCurrent()};
         inputs.driveTempCelcius = new double[] {thrustFalcon.getTemperature()};

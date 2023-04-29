@@ -14,7 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import team3176.robot.Constants;
 import team3176.robot.constants.DrivetrainConstants;
-import team3176.robot.constants.SwervePodConstants2022;
+import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodHardwareID;
 
 public class SwervePodIOSim implements SwervePodIO{

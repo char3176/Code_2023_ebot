@@ -3,7 +3,7 @@ package team3176.robot.util.God;
 import edu.wpi.first.wpilibj.Timer;
 import team3176.robot.*;
 import team3176.robot.constants.DrivetrainConstants;
-import team3176.robot.constants.SwervePodConstants2022;
+import team3176.robot.constants.DrivetrainConstants;
 
 
 public class Units3176{
@@ -32,8 +32,8 @@ public class Units3176{
         tics -= (EncoderUnitsPerRevolution / 2);
         return ((tics / EncoderUnitsPerRevolution) * (2 * Math.PI));
 	}
-    public static double conversion_feet_to_tics_per_100ms = 12.0 * (1.0/ (DrivetrainConstants.WHEEL_DIAMETER_INCHES * Math.PI)) * (1.0 /SwervePodConstants2022.THRUST_GEAR_RATIO) * SwervePodConstants2022.THRUST_ENCODER_UNITS_PER_REVOLUTION  * .1;
-    public static double conversion_feet_to_tics = 12.0 * (1.0/ (DrivetrainConstants.WHEEL_DIAMETER_INCHES * Math.PI)) * (1.0 /SwervePodConstants2022.THRUST_GEAR_RATIO) * SwervePodConstants2022.THRUST_ENCODER_UNITS_PER_REVOLUTION;
+    public static double conversion_feet_to_tics_per_100ms = 12.0 * (1.0/ (DrivetrainConstants.WHEEL_DIAMETER_INCHES * Math.PI)) * (1.0 /DrivetrainConstants.THRUST_GEAR_RATIO) * DrivetrainConstants.THRUST_ENCODER_UNITS_PER_REVOLUTION  * .1;
+    public static double conversion_feet_to_tics = 12.0 * (1.0/ (DrivetrainConstants.WHEEL_DIAMETER_INCHES * Math.PI)) * (1.0 /DrivetrainConstants.THRUST_GEAR_RATIO) * DrivetrainConstants.THRUST_ENCODER_UNITS_PER_REVOLUTION;
     /**
       * Given feet per second, returns Falcon500 units (ie tics per 100ms)  
      * @param i feet per second

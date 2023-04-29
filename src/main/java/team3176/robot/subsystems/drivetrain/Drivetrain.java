@@ -62,7 +62,6 @@ import team3176.robot.util.God.PID3176;
 import team3176.robot.Constants;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodHardwareID;
-import team3176.robot.constants.SwervePodConstants2022;
 // import team3176.robot.util.God.PID3176;
 import team3176.robot.subsystems.drivetrain.SwervePod;
 

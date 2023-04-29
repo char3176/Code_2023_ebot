@@ -10,14 +10,14 @@
       "style": "0",
       "userScale": "2",
       "width": "1846",
-      "xpos": "-299",
-      "ypos": "231"
+      "xpos": "-675",
+      "ypos": "249"
     }
   },
   "Window": {
     "###/SmartDashboard/Scheduler": {
       "Collapsed": "0",
-      "Pos": "597,173",
+      "Pos": "496,173",
       "Size": "400,200"
     },
     "###Addressable LEDs": {
@@ -33,7 +33,7 @@
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "476,713",
-      "Size": "625,155"
+      "Size": "509,155"
     },
     "###NetworkTables": {
       "Collapsed": "0",
@@ -42,7 +42,7 @@
     },
     "###Other Devices": {
       "Collapsed": "0",
-      "Pos": "597,38",
+      "Pos": "496,38",
       "Size": "500,1390"
     },
     "###RoboRIO": {
