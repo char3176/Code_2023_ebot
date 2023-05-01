@@ -4,81 +4,22 @@
 
 package team3176.robot.subsystems.superstructure;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import team3176.robot.subsystems.superstructure.IntakeCubeIO;
 import team3176.robot.subsystems.superstructure.IntakeCubeIO.IntakeCubeIOInputs;
 import org.littletonrobotics.junction.Logger;
 
-import team3176.robot.constants.Hardwaremap;
-
 public class IntakeCube extends SubsystemBase {
   /** Creates a new IntakeCube. */
-  private TalonFX rollermotor = new TalonFX(Hardwaremap.intake_CID);
-  private TalonSRX conveyor = new TalonSRX(61); //TODO: Add to HArdwareMap
-  private DoubleSolenoid pistonOne;
-  private DoubleSolenoid pistonTwo;
-  private DigitalInput linebreak;
 
-  private boolean isExtended;
-  private boolean isInIntake;
   private static IntakeCube instance;
   private final IntakeCubeIO io;
   private final IntakeCubeIOInputs inputs = new IntakeCubeIOInputs();
   public IntakeCube(IntakeCubeIO io) 
   {
     this.io = io;
-    pistonOne = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 6);
-    //pistonTwo = new DoubleSolenoid(PneumaticsModuleType.REVPH, 3, 2);
-    linebreak = new DigitalInput(4);
-  }
-
-  public void spinIntake(double pct) {
-    rollermotor.configPeakOutputReverse(pct);
-    rollermotor.configPeakOutputForward(pct);
-    rollermotor.set(ControlMode.PercentOutput, pct);
-  }
-
-  public void spinConveyor(double pct) {
-    conveyor.configPeakOutputReverse(pct);
-    conveyor.configPeakOutputForward(pct);
-    conveyor.set(ControlMode.PercentOutput, pct);
-  }
-
-  public void setCoastMode() {
-    rollermotor.setNeutralMode(NeutralMode.Coast);
-  }
-
-  public void setBrakeMode() {
-    rollermotor.setNeutralMode(NeutralMode.Brake);
-  } 
-
-  public void Extend() {
-    pistonOne.set(Value.kForward);
-    //pistonTwo.set(Value.kForward);
-    this.isExtended = true;
-  }
-
-  public void Retract() {
-    pistonOne.set(Value.kReverse);
-    //pistonTwo.set(Value.kReverse);
-    this.isExtended = false;
-  }
-
-  public boolean getLinebreak()
-  {
-    return linebreak.get();
   }
 
   public static IntakeCube getInstance(){
@@ -91,13 +32,13 @@ public class IntakeCube extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("IntakeCube", inputs);
+    //Logger.getInstance().processInputs("IntakeCube", inputs);
     Logger.getInstance().recordOutput("IntakeCube/Velocity", getVelocity());
     Logger.getInstance().recordOutput("IntakeCube/Linebreak", getIsLinebreakLogger());
     Logger.getInstance().recordOutput("IntakeCube/Extended", getIsExtended());
     // This method will be called once per scheduler run
     // Code stating if something is in the Intake
-    SmartDashboard.putBoolean("CubeLinebreak", getLinebreak());
+    SmartDashboard.putBoolean("CubeLinebreak", inputs.isLinebreak);
     // SmartDashboard.putBoolean("isInIntake", isInIntake);
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
@@ -130,22 +71,22 @@ public class IntakeCube extends SubsystemBase {
 
   public Command extendAndSpin() {
     return this.startEnd(() ->{
-      this.Extend();
-      this.spinIntake(.1);
+      this.io.Extend();
+      this.io.setTalonFX(.1);
     }, () -> {
-      this.Retract();
-      this.spinIntake(0.0);
+      this.io.Retract();
+      this.io.setTalonFX(0.0);
     });
   }
 
   
   public Command extendAndFreeSpin() {
     return this.startEnd(() ->{
-      this.Extend();
-      this.setCoastMode();
+      this.io.Extend();
+      this.io.setMode(1);
     }, () -> {
-      this.Retract();
-      this.setBrakeMode();
+      this.io.Retract();
+      this.io.setMode(2);
     });
   }
 }

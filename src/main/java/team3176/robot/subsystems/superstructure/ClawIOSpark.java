@@ -6,11 +6,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package team3176.robot.subsystems.superstructure;
-
-import org.littletonrobotics.junction.LogTable;
-import org.littletonrobotics.junction.inputs.LoggableInputs;
 import team3176.robot.constants.Hardwaremap;
-import team3176.robot.constants.SuperStructureConstants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;

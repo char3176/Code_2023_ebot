@@ -7,45 +7,37 @@
 
 package team3176.robot.subsystems.superstructure;
 
-import org.littletonrobotics.junction.LogTable;
-import org.littletonrobotics.junction.inputs.LoggableInputs;
+import org.littletonrobotics.junction.AutoLog;
 
 /** Template hardware interface for a closed loop subsystem. */
+@AutoLog
 public interface IntakeCubeIO{
   /** Contains all of the input data received from hardware. */
-  public static class IntakeCubeIOInputs implements LoggableInputs {
+  public static class IntakeCubeIOInputs{
     public double velocity = 0.0;
-    public double appliedVolts = 0.0;
+    public double appliedVoltsSRX = 0.0;
+    public double appliedVoltsFX = 0.0;
     public boolean isLinebreak = true;
-    public double[] currentAmps = new double[] {};
-    public double[] tempCelcius = new double[] {};
+    public double currentAmpsSRX = 0.0;
+    public double currentAmpsFX = 0.0;
+    public double tempCelciusFX = 0.0;
+    public double tempCelciusSRX = 0.0;
     public boolean isextended = false;
-
-
-
-    public void toLog(LogTable table) {
-      table.put("VelocityOutputPercent", velocity);
-      table.put("isLinebreak", isLinebreak);
-      table.put("AppliedVolts", appliedVolts);
-      table.put("CurrentAmps", currentAmps);
-      table.put("TempCelcius", tempCelcius);
-      table.put("isextended", isextended);
-    }
-
-    public void fromLog(LogTable table) {
-      velocity = table.getDouble("VelocityOutputPercent", velocity);
-      isLinebreak = table.getBoolean("isLinebreak", isLinebreak);
-      appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
-      currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
-      tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
-      isextended = table.getBoolean("isextended", isextended);
-    }
   }
 
 
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeCubeIOInputs inputs) {}
+
+  public default void setTalonFX(double pct) {}
+
+  public default void setTalonSRX(double pct) {}
+
+  public default void setMode(int mode) {}
+
+  public default void Extend() {}
+  public default void Retract() {}
 
   /** Run open loop at the specified voltage. */
   public default void setVoltage(double volts) {}

@@ -50,7 +50,7 @@ public class Superstructure extends SubsystemBase {
         return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS), 
                                         new IntakeConeExtendSpin(),
                                         new ClawInhaleCone())
-                    .until(() -> this.m_Claw.inputs.getLinebreakThree() == false)
+                    .until(() -> this.m_Claw.inputs.isLinebreakThree == false)
                     .andThen(m_IntakeCone.coneToClaw())
                     .andThen(new IntakeConeRetractSpinot())
                     .andThen(this.prepareCarry());

@@ -22,11 +22,10 @@ public class Claw extends SubsystemBase {
     private Claw(ClawIO io) {this.io = io;}
 
     public void setClawMotor(double percent, int amps) {
-        inputs.setClawVelocity(percent);
-        inputs.setClawAmps(amps);
+        io.set(percent, amps);
         SmartDashboard.putNumber("intake power (%)", percent);
-        SmartDashboard.putNumber("intake motor current (amps)", inputs.getClawAmps());
-        SmartDashboard.putNumber("intake motor temperature (C)", inputs.getClawTemp());
+        SmartDashboard.putNumber("intake motor current (amps)", inputs.appliedVolts);
+        SmartDashboard.putNumber("intake motor temperature (C)", inputs.tempCelcius);
     }
 
     //states now implemented as functions
@@ -71,7 +70,7 @@ public class Claw extends SubsystemBase {
     }
 
     public boolean isEmpty() {
-        return inputs.getLinebreakOne() || inputs.getLinebreakTwo();
+        return inputs.isLinebreakOne || inputs.isLinebreakTwo;
     }
 
     public static Claw getInstance()
@@ -101,17 +100,17 @@ public class Claw extends SubsystemBase {
 
     //more examples of command composition and why its awesome!!
     public Command intakeCone() {
-        return this.intakeGamePiece(GamePiece.CONE).until(() -> inputs.getLinebreakTwo());
+        return this.intakeGamePiece(GamePiece.CONE).until(() -> inputs.isLinebreakTwo);
     }
     public Command intakeCube() {
-        return this.intakeGamePiece(GamePiece.CUBE).until(() -> inputs.getLinebreakOne());
+        return this.intakeGamePiece(GamePiece.CUBE).until(() -> inputs.isLinebreakOne);
     }
     public Command determineGamePiece() {
         return this.runOnce( () -> {
-            if(this.inputs.getLinebreakOne()) {
+            if(this.inputs.isLinebreakOne) {
                 this.currentGamePiece = GamePiece.CONE;
                 hold();
-            } else if(this.inputs.getLinebreakTwo()) {
+            } else if(this.inputs.isLinebreakTwo) {
                 this.currentGamePiece = GamePiece.CUBE;
                 hold();
             }
@@ -124,21 +123,15 @@ public class Claw extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Claw", inputs);
-    Logger.getInstance().recordOutput("Claw/Velocity", getVelocity());
+    //Logger.getInstance().processInputs("Claw", inputs);
     Logger.getInstance().recordOutput("Claw/LinebreakOne", getIsLinebreakOne());
     Logger.getInstance().recordOutput("Claw/LinebreakTwo", getIsLinebreakTwo());
     // Code stating if something is in the Intake
-    SmartDashboard.putBoolean("linebreakOne",inputs.getLinebreakOne());
-    SmartDashboard.putBoolean("linebreakTwo",inputs.getLinebreakTwo());
-    SmartDashboard.putBoolean("linebreakThree", inputs.getLinebreakThree());
+    SmartDashboard.putBoolean("linebreakOne",inputs.isLinebreakOne);
+    SmartDashboard.putBoolean("linebreakTwo",inputs.isLinebreakTwo);
+    SmartDashboard.putBoolean("linebreakThree", inputs.isLinebreakThree);
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
-   }
-
-   public double getVelocity()
-   {
-    return inputs.velocity;
    }
 
    public boolean getIsLinebreakOne()
@@ -159,10 +152,5 @@ public class Claw extends SubsystemBase {
    public void runVoltage(double volts)
    {
     io.setVoltage(volts);
-   }
-
-   public void setVelocity(double velocity)
-   {
-    io.setVelocity(velocity);
    }
 }
