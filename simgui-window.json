@@ -1,6 +1,8 @@
 {
   "Docking": {
-    "Data": []
+    "Data": [
+      "DockNode  ID=0x00000001 Pos=43,352 Size=1375,281 Selected=0x2D9B9756"
+    ]
   },
   "MainWindow": {
     "GLOBAL": {
@@ -10,14 +12,14 @@
       "style": "0",
       "userScale": "2",
       "width": "1846",
-      "xpos": "-610",
-      "ypos": "223"
+      "xpos": "-680",
+      "ypos": "226"
     }
   },
   "Window": {
     "###/SmartDashboard/Auton Choice": {
       "Collapsed": "0",
-      "Pos": "268,25",
+      "Pos": "69,46",
       "Size": "254,54"
     },
     "###/SmartDashboard/Scheduler": {
@@ -32,22 +34,24 @@
     },
     "###FMS": {
       "Collapsed": "0",
-      "Pos": "223,177",
-      "Size": "283,146"
+      "DockId": "0x00000001,0",
+      "Pos": "43,352",
+      "Size": "1375,281"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "268,713",
-      "Size": "593,155"
+      "Size": "796,155"
     },
     "###NetworkTables": {
-      "Collapsed": "1",
-      "Pos": "268,365",
-      "Size": "1500,370"
+      "Collapsed": "0",
+      "DockId": "0x00000001,1",
+      "Pos": "43,352",
+      "Size": "1375,281"
     },
     "###Other Devices": {
       "Collapsed": "0",
-      "Pos": "268,38",
+      "Pos": "571,81",
       "Size": "500,1390"
     },
     "###RoboRIO": {

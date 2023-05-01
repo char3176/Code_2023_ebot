@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -197,21 +198,12 @@ public class Drivetrain extends SubsystemBase {
    * @param type           FIELD CENTRIC or ROBOT_CENTRIC
    */
   public void drive(double forwardCommand, double strafeCommand, double spinCommand, coordType type) {
-    ChassisSpeeds speed = new ChassisSpeeds(forwardCommand, strafeCommand, spinCommand);
-    if (type == coordType.FIELD_CENTRIC) {
-      Rotation2d fieldOffset = this.getPose().getRotation();
-      if (DriverStation.getAlliance() == Alliance.Red) {
-        fieldOffset.plus(Rotation2d.fromDegrees(180));
-      }
-      speed = ChassisSpeeds.fromFieldRelativeSpeeds(speed, fieldOffset);
-    }
-    this.forwardCommand = speed.vxMetersPerSecond;
-    this.strafeCommand = speed.vyMetersPerSecond;
-    this.spinCommand = speed.omegaRadiansPerSecond;
-    if (isSpinLocked) {
-      spinCommand = spinLockPID.calculate(getPoseYawWrapped().getDegrees(), spinLockAngle.getDegrees());
-      SmartDashboard.putNumber("SpinLockYaw",getPoseYawWrapped().getDegrees());
-    }
+    
+    this.currentCoordType = type;
+    this.forwardCommand = forwardCommand;
+    this.strafeCommand = strafeCommand;
+    this.spinCommand = spinCommand;
+    
   }
 
   /**
@@ -234,21 +226,28 @@ public class Drivetrain extends SubsystemBase {
    * @param strafeCommand  meters per second
    * @param spinCommand    meters per second
    */
-  private void calculateNSetPodPositions(double forwardCommand, double strafeCommand, double spinCommand) {
-    this.forwardCommand = forwardCommand;
-    this.strafeCommand = strafeCommand;
-    this.spinCommand = spinCommand;
+  private void calculateNSetPodPositions() {
     if (currentDriveMode != driveMode.DEFENSE) {
       ChassisSpeeds curr_chassisSpeeds = new ChassisSpeeds(forwardCommand, strafeCommand, spinCommand);
+      if (this.currentCoordType == coordType.FIELD_CENTRIC) {
+        Rotation2d fieldOffset = this.getPose().getRotation();
+        if (DriverStation.getAlliance() == Alliance.Red) {
+          fieldOffset.plus(Rotation2d.fromDegrees(180));
+        }
+        curr_chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(curr_chassisSpeeds, fieldOffset);
+      }
+      if (isSpinLocked) {
+        curr_chassisSpeeds.omegaRadiansPerSecond = spinLockPID.calculate(getPoseYawWrapped().getDegrees(), spinLockAngle.getDegrees());
+        SmartDashboard.putNumber("SpinLockYaw",getPoseYawWrapped().getDegrees());
+      }
       SwerveModuleState[] pod_states = DrivetrainConstants.DRIVE_KINEMATICS.toSwerveModuleStates(curr_chassisSpeeds);
       Logger.getInstance().recordOutput("Drive/pod0", pod_states[0].angle.getDegrees());
-      //SwerveDriveKinematics.desaturateWheelSpeeds(pod_states, DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND);
+      SwerveDriveKinematics.desaturateWheelSpeeds(pod_states, DrivetrainConstants.MAX_WHEEL_SPEED_METERS_PER_SECOND);
       SwerveModuleState[] optimizedStates = new SwerveModuleState[4];
       SwerveModuleState[] realStates = new SwerveModuleState[4];
       for (int idx = 0; idx < (pods.size()); idx++) {
         optimizedStates[idx]=pods.get(idx).set_module(pod_states[idx]);
         realStates[idx] = new SwerveModuleState(pods.get(idx).getVelocity(),Rotation2d.fromDegrees(pods.get(idx).getAzimuth()));
-
       }
       Logger.getInstance().recordOutput("SwerveStates/Setpoints", pod_states);
       Logger.getInstance().recordOutput("SwerveStates/real", realStates);
@@ -428,7 +427,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Drive/gyro", inputs);
-    calculateNSetPodPositions(this.forwardCommand,this.strafeCommand,this.spinCommand);
+    
     //vision_lfov_pose = NetworkTableInstance.getDefault().getTable("limelight-lfov").getEntry("botpose_wpiblue");
     //vision_rfov_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue");
 
@@ -503,7 +502,7 @@ public class Drivetrain extends SubsystemBase {
     // catch (ClassCastException e) {
     //   System.out.println("vision error" + e);
     // }
-    
+    calculateNSetPodPositions();
     
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);

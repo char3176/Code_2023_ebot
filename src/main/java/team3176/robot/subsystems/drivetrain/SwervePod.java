@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import team3176.robot.constants.DrivetrainConstants;
-
+import team3176.robot.util.LoggedTunableNumber;
 import team3176.robot.util.God.*;
 
 
@@ -28,7 +28,7 @@ public class SwervePod {
     double desired_optimized_azimuth_position;
     double velTicsPer100ms;
     boolean lastHasResetOccurred;
-
+    
     /** Numerical identifier to differentiate between pods.
      *     For 4 Pods:  0 = FrontRight (FR),
      *                  1 = FrontLeft (FL),
@@ -47,7 +47,8 @@ public class SwervePod {
 
     public double podThrust, podAzimuth, podAbsAzimuth;
 
-    private double kP_Azimuth;
+    //private double kP_Azimuth;
+    private LoggedTunableNumber kP_azimuth = new LoggedTunableNumber("kP_azimuth");
     private double kI_Azimuth;
     private double kD_Azimuth;
     private double lastDistance =0.0;
@@ -68,16 +69,17 @@ public class SwervePod {
         this.io = io;
         this.desired_optimized_azimuth_position = 0.0;
 
-        this.kP_Azimuth = 0.006;
+        //this.kP_Azimuth = 0.006;
+        kP_azimuth.initDefault(.05);
         this.kI_Azimuth = 0.0;
         this.kD_Azimuth = 0.0;
 
-        turningPIDController = new PIDController(kP_Azimuth, kI_Azimuth, kD_Azimuth);
+        turningPIDController = new PIDController(kP_azimuth.get(), kI_Azimuth, kD_Azimuth);
         turningPIDController.setTolerance(4);
         turningPIDController.enableContinuousInput(-180, 180);
 
         turningPIDController.reset();
-        turningPIDController.setP(this.kP_Azimuth);
+        turningPIDController.setP(this.kP_azimuth.get());
         turningPIDController.setI(this.kI_Azimuth);
         turningPIDController.setD(this.kD_Azimuth);
         
@@ -117,6 +119,11 @@ public class SwervePod {
         Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "/error",turningPIDController.getPositionError());
         this.velTicsPer100ms = Units3176.mps2ums(desired_optimized.speedMetersPerSecond);
         io.setDrive(desired_optimized.speedMetersPerSecond);
+
+        if(kP_azimuth.hasChanged(hashCode())) {
+            turningPIDController.setP(kP_azimuth.get());
+        }
+
         return desired_optimized;
     }   
     /*
@@ -171,7 +178,7 @@ public class SwervePod {
             .withPosition(2,1)
             .getEntry();
         Shuffleboard.getTab(this.idString)
-            .add(idString+"/kP_Azimuth", this.kP_Azimuth)
+            .add(idString+"/kP_Azimuth", this.kP_azimuth.get())
             .withSize(1,1)
             .withPosition(4,1)
             .getEntry();

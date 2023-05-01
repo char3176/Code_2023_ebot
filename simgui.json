@@ -55,6 +55,14 @@
     },
     "Retained Values": {
       "open": false
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "TunableNumbers": {
+          "open": true
+        },
+        "open": true
+      }
     }
   }
 }
