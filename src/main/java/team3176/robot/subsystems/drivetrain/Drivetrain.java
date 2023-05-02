@@ -11,6 +11,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.*;
@@ -503,7 +504,18 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     dblPub.set(3.0);
+    /*
+     * an important note when going to 2 limelights we will need to change the default table within 
+     * the limelight web interface to be limelight1 and lightlight2 (or two unique values)
+     * Also we have been using botpose_wpiblue which lines up with pathplanners native coordinate system
+     * we need to check where botpose_wpired is originated because path planner mirrors with the following operation
+     * redX = blueX, redY = blueY - FieldWidth putting the origin on the HP load side of the red field diagonol from the blue origin
+     * read PathPlannerTrajectory.transformStateForAlliance() 
+     * There are many assumptions through the code that we are dealing with botpose_blue all the time. an easy way to find them is to
+     * check for anytime the code querys if it is red and then has to modify a value. That might need to be stripped out
+     */
     
+
     //vision_lfov_pose = NetworkTableInstance.getDefault().getTable("limelight-lfov").getEntry("botpose_wpiblue");
     //vision_rfov_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue");
 
@@ -522,6 +534,7 @@ public class Drivetrain extends SubsystemBase {
     
 
     
+    vision_pose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose_wpiblue");
 
     //testing new limelight command
     //LimelightHelpers.LimelightResults r = LimelightHelpers.getLatestResults("limelight");
@@ -538,6 +551,7 @@ public class Drivetrain extends SubsystemBase {
     last_pose = odom.getPoseMeters();
       
     // update encoders
+    //this must be called every loop. without vision updates poseEstimator performs identical to normal odom
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
     SmartDashboard.putNumber("NavYaw",getPoseYawWrapped().getDegrees());
@@ -545,14 +559,19 @@ public class Drivetrain extends SubsystemBase {
     // double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
     // try {
     //   double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);
+    //this takes the x,y and yaw rotation and converts to a Pose2D
     //   Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
     //   //store x value to check if its the same data as before
       
     //   double camera_inovation_error = cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm(); 
     //   SmartDashboard.putNumber("camInovationError",camera_inovation_error);
+    //this checks we are within 1 meter, it is a new frame, and we see a tag (x is nonzero)
+    //the poseEstimator recommends only adding measurment within 1 meter of current estimate 
     //   if(camera_inovation_error < 1.0 && lastVisionX != cam_pose.getX() && cam_pose.getX() != 0.0){
-    //     lastVisionX = cam_pose.getX();
+    //     lastVisionX = cam_pose.getX();//an option within controls is to only apply the vision update if we are moving to prevent collapse of odometry data to be only vision
+    //an option within controls is to only apply the vision update if we are moving to prevent collapse of odometry data to be only vision
     //     Transform2d diff = last_pose.minus(odom.getPoseMeters());
+    //the norm is unused currently but represents if the robot has moved either translationally or rotationally
     //     double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
     //     if(!(getPose().getX() > 3.5 && getPose().getX() < 10.5)){
     //       double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
@@ -573,7 +592,7 @@ public class Drivetrain extends SubsystemBase {
     //   System.out.println("vision error" + e);
     // }
     
-    
+
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);
     
@@ -586,8 +605,6 @@ public class Drivetrain extends SubsystemBase {
     
     SmartDashboard.putNumber("odomx", getPose().getX());
     SmartDashboard.putNumber("odomy", getPose().getY());
-    SmartDashboard.putNumber("v_odomx", poseEstimator.getEstimatedPosition().getX());
-    SmartDashboard.putNumber("v_odomy", poseEstimator.getEstimatedPosition().getY());
     SmartDashboard.putBoolean("Turbo", isTurboOn);
     publishSwervePodPIDErrors();
     // SmartDashboard.putBoolean("Defense", currentDriveMode == driveMode.DEFENSE);

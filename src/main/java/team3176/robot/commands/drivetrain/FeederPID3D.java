@@ -18,7 +18,9 @@ public class FeederPID3D extends CommandBase{
     Drivetrain m_Drivetrain;
     PIDController xController = new PIDController(2.0,0.0,0.0);
     PIDController yController = new PIDController(2.0,0.0,0.0);
-    PIDController wController = new PIDController(2.0,0.0,0.0);
+     /*these are all within the botpose_wpiblue coordinate frame.
+    * blue should work fine but red needs to be double checked with what origin you would like to pick
+    */
     Pose2d RedRight = new Pose2d(1.17, 7.44, Rotation2d.fromDegrees(180));
     Pose2d RedLeft = new Pose2d(1.17, 6.17, Rotation2d.fromDegrees(180));
     Pose2d BlueRight = new Pose2d(15.44, 6.17, Rotation2d.fromDegrees(0.0));
@@ -58,6 +60,9 @@ public class FeederPID3D extends CommandBase{
         Pose2d cam_pose = m_Drivetrain.getVisionPoseBlue();
         double reverseAxis = DriverStation.getAlliance() == Alliance.Red ? -1.0 : 1.0;
         if (m_Drivetrain.isVisionValid()) {
+
+            //control loop simply tries to acheive the target position with the reverseAxis if for Red. Will need to double check
+            // when we decide on the red coordinate system or to keep a universal coordinate system and translate pathplanner
             m_Drivetrain.drive(MathUtil.clamp(reverseAxis*xController.calculate(cam_pose.getX(), targetPose.getX()),-1.5,1.5),
                             (MathUtil.clamp(reverseAxis*yController.calculate(cam_pose.getY(),targetPose.getY()),-1.5,1.5)),
                             (MathUtil.clamp(reverseAxis* wController.calculate(cam_pose.getRotation().getDegrees(), targetRotation), -1.5, 1.5)));
