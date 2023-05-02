@@ -21,6 +21,9 @@ import team3176.robot.commands.superstructure.*;
 import team3176.robot.commands.superstructure.arm.*;
 import team3176.robot.commands.superstructure.claw.*;
 import team3176.robot.commands.superstructure.claw.ClawIdle;
+import team3176.robot.commands.superstructure.intakecone.*;
+import team3176.robot.commands.superstructure.intakecone.IntakeConeExtendSpin;
+import team3176.robot.commands.superstructure.intakecone.IntakeConeRetractSpinot;
 import team3176.robot.commands.superstructure.intakecube.*;
 import team3176.robot.commands.vision.*;
 import team3176.robot.constants.SuperStructureConstants;
@@ -65,6 +68,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the trigger bindings
+    m_RobotState = RobotState.getInstance();
     m_Arm = Arm.getInstance();
     m_Controller = Controller.getInstance();
     m_Claw = Claw.getInstance();
@@ -72,13 +76,16 @@ public class RobotContainer {
     m_IntakeCube = IntakeCube.getInstance();
     m_IntakeCone = IntakeCone.getInstance();
 
-    m_RobotState = RobotState.getInstance();
+    //prevents circular dependency of singletons
+    m_Claw.setRobotStateInstance(m_RobotState);
+
     m_Superstructure = Superstructure.getInstance();
     m_Drivetrain.setDefaultCommand(new SwerveDrive(
         () -> m_Controller.getForward(),
         () -> m_Controller.getStrafe(),
         () -> m_Controller.getSpin()));
-    m_Arm.setDefaultCommand(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY()));
+    //m_Arm.setDefaultCommand(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY()));
+    //m_Arm.setDefaultCommand(m_Superstructure.preparePoop());
     m_autonChooser = new SendableChooser<>();
     File paths = new File(Filesystem.getDeployDirectory(), "pathplanner");
     for (File f : paths.listFiles()) {
@@ -103,10 +110,10 @@ public class RobotContainer {
     m_Controller.getTransStick_Button2()
         .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
         //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
-    m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
-    m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry()));
-    m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
-    m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarry()));
+    m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMidContinue());
+    m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarryContinue()));
+    m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHighContinue());
+    m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarryContinue()));
     m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(()->m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
      //m_Controller.getTransStick_Button10()
      //    .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
@@ -118,6 +125,7 @@ public class RobotContainer {
       () -> m_Controller.getSpin())
     );
    
+
     m_Controller.getRotStick_Button2().whileTrue(new IntakeGroundCube());
     m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
     m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
@@ -145,6 +153,7 @@ public class RobotContainer {
     m_Controller.getTransStick_Button8()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 
+
     m_Controller.operator.povUp().whileTrue(m_Superstructure.prepareScoreHigh());
     //m_Controller.operator.povUp().onTrue(new InstantComamnd(() -> m_IntakeCube.spinConveyor(-0.85))).))
     m_Controller.operator.povRight().whileTrue(m_Superstructure.prepareCarry());
@@ -162,27 +171,40 @@ public class RobotContainer {
     m_Controller.operator.x().whileTrue(m_Superstructure.intakeCubeHumanPlayer());
     m_Controller.operator.x().onFalse(m_Superstructure.prepareCarry());
 
-    m_Controller.operator.a().onTrue(new SetColorWantState(3));
-    m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
-    m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
-    m_Controller.operator.a().onFalse(m_Superstructure.prepareCarry());
+    //m_Controller.operator.a().onTrue(new SetColorWantState(3));
+    //m_Controller.operator.a().whileTrue(m_Superstructure.groundCube());
+    //m_Controller.operator.a().onFalse(new IntakeRetractSpinot());
+    //m_Controller.operator.a().onFalse(m_Superstructure.prepareCarry());
 
     m_Controller.operator.y().onTrue(new SetColorWantState(0));
     m_Controller.operator.y().whileTrue(m_Claw.scoreGamePiece());
     m_Controller.operator.y().onFalse(new ClawIdle());
 
+    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).onTrue(new SetColorWantState(3));
+    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).whileTrue(m_Superstructure.groundCube());
+    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).onFalse(new IntakeRetractSpinot());
+    //m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).onFalse(m_Superstructure.prepareCarry());
     
+    m_Controller.operator.leftBumper().and(m_Controller.operator.rightBumper().negate()).onTrue(new SetColorWantState(1));
+    m_Controller.operator.leftBumper().and(m_Controller.operator.rightBumper().negate()).whileTrue(new IntakeConeExtendSpin());
+    m_Controller.operator.leftBumper().and(m_Controller.operator.rightBumper().negate()).onFalse(new IntakeConeRetractSpinot());
+
+    m_Controller.operator.leftBumper().and(m_Controller.operator.rightBumper()).whileTrue(new InstantCommand( () -> m_IntakeCone.spit()).
+          alongWith(new PoopCube()));
+    m_Controller.operator.leftBumper().and(m_Controller.operator.rightBumper()).onFalse(new InstantCommand( () -> m_IntakeCone.idle())); 
+    
+
     //m_Controller.operator.rightBumper().whileTrue(m_IntakeCube.extendAndFreeSpin());
     //m_Controller.operator.rightBumper().whileTrue(new InstantCommand( () -> m_IntakeCone.spinVelocityPercent(-80,20)));
     //m_Controller.operator.rightBumper().onFalse(new InstantCommand( () -> m_IntakeCone.spinVelocityPercent(0, 20))); 
 //    m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).whileTrue((m_Superstructure.groundCube()));
 
-    // m_Controller.operator.leftBumper().whileTrue(new manuallyPositionArm( () ->
     //m_Controller.operator.leftBumper().whileTrue(new armAnalogDown());
     //m_Controller.operator.leftBumper().onFalse(new armAnalogIdle());
 
     //m_Controller.operator.rightBumper().whileTrue(new armAnalogUp());
     //m_Controller.operator.rightBumper().onFalse(new armAnalogIdle());
+
 
     m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).onTrue(new SetColorWantState(3));
     m_Controller.operator.rightBumper().and(m_Controller.operator.leftBumper().negate()).whileTrue(new IntakeGroundCube());
@@ -204,6 +226,7 @@ public class RobotContainer {
     m_Controller.operator.back().whileTrue(m_Superstructure.preparePoop());
     //m_Controller.operator.leftTrigger().whileTrue(new PoopCube()); 
     m_Controller.operator.rightTrigger().whileTrue(m_Superstructure.preparePoop());
+
   }
 
   public void setArmCoast() {

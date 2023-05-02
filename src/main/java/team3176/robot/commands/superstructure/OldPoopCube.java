@@ -12,7 +12,7 @@ import team3176.robot.subsystems.superstructure.Arm;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.superstructure.Superstructure;
-import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
+import team3176.robot.subsystems.RobotState.GamePiece;
 
 public class OldPoopCube extends CommandBase {
   /** Creates a new ClawInhale. */
@@ -56,7 +56,7 @@ public class OldPoopCube extends CommandBase {
     //if (m_Arm.getArmPosition() >= kArmPoopLowerLimit && m_Arm.getArmPosition() <= kArmPoopUpperLimit) {
       m_Claw.scoreGamePiece();
     //}
-    if (m_Claw.getLinebreakOne() == false || m_Claw.getLinebreakTwo() == false) {
+    if (m_Claw.getLinebreakCube() == false || m_Claw.getLinebreakCone() == false) {
       m_Claw.idle();
       new WaitCommand(2);
       m_Superstructure.prepareCarry();
