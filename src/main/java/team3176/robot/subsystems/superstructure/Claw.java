@@ -34,12 +34,9 @@ public class Claw extends SubsystemBase {
         linebreakCone = new DigitalInput(2);
         linebreakThree = new DigitalInput(1);
     }
-    public void setRobotStateInstance(RobotState st) {
-        m_RobotState = st;
-    }
-    public void setClawMotor(double percent, double amps) {
+    public void setClawMotor(double percent, int amps) 
         claw.set(percent);
-        claw.setSmartCurrentLimit(SuperStructureConstants.CLAW_AMPS);
+        claw.setSmartCurrentLimit(amps);
         SmartDashboard.putNumber("intake power (%)", percent);
         SmartDashboard.putNumber("intake motor current (amps)", claw.getOutputCurrent());
         SmartDashboard.putNumber("intake motor temperature (C)", claw.getMotorTemperature());
@@ -151,10 +148,14 @@ public class Claw extends SubsystemBase {
     public Command scoreGamePiece() {  
         return this.run(() ->  {score(); })
                     .until(() -> this.isEmpty())
-                    .andThen(new WaitCommand(2.0))
+
+                    .andThen(new WaitCommand(0.7))
+
                     .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
     }
-
+    public Command scoreGamePieceTeleop() {
+        return this.runEnd(() ->  {score(); this.currentGamePiece = GamePiece.NONE;},() -> idle());
+    }
     //more examples of command composition and why its awesome!!
     public Command intakeCone() {
         return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreakCone);

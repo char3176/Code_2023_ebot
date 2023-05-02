@@ -29,8 +29,9 @@ public class IntakeGroundCube extends CommandBase {
   @Override
   public void initialize() 
   {
-    m_RobotState.setWantedGamePiece(GamePiece.CUBE);
-    m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_ZERO_POS);
+    m_Claw.setCurrentGamePiece(GamePiece.CUBE);
+    m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_ZERO_POS);
+
     m_IntakeCube.Extend();
     m_IntakeCube.spinIntake(-.85);
     m_Claw.intake();
@@ -50,8 +51,9 @@ public class IntakeGroundCube extends CommandBase {
     m_IntakeCube.spinIntake(-.85);
     if (m_Claw.getIsLinebreakOne())
     {
-      m_Arm.setPIDPosition(SuperStructureConstants.ARM_ZERO_POS);
-    } else {m_Arm.setPIDPosition(SuperStructureConstants.ARM_ZERO_POS);
+      m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_ZERO_POS);
+    } else {m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_ZERO_POS);
+
     }
     m_Claw.determineGamePiece();
   }
@@ -66,6 +68,7 @@ public class IntakeGroundCube extends CommandBase {
     m_IntakeCube.spinIntake(0);
     m_IntakeCube.spinConveyor(0);
     m_Claw.hold();
+    m_Arm.setAngleSetpoint(SuperStructureConstants.ARM_ZERO_POS);
   }
 
   // Returns true when the command should end.
