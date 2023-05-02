@@ -6,10 +6,11 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -49,15 +50,16 @@ public class SwervePod {
 
     //private double kP_Azimuth;
     private LoggedTunableNumber kP_azimuth = new LoggedTunableNumber("kP_azimuth");
-    private double kI_Azimuth;
+    private LoggedTunableNumber kI_Azimuth = new LoggedTunableNumber("kI_azimuth");
     private double kD_Azimuth;
     private double lastDistance =0.0;
     private double delta = 0.0;
-
+    private LoggedTunableNumber velMax = new LoggedTunableNumber("az_vel");
+    private LoggedTunableNumber velAcc = new LoggedTunableNumber("az_acc");
 
     private double turnOutput;
 
-    private final PIDController  turningPIDController;
+    private final ProfiledPIDController  turningPIDController;
     //private final ProfiledPIDController m_turningProfiledPIDController;
     //private ProfiledPIDController m_turningPIDController;
 
@@ -70,17 +72,18 @@ public class SwervePod {
         this.desired_optimized_azimuth_position = 0.0;
 
         //this.kP_Azimuth = 0.006;
-        kP_azimuth.initDefault(.05);
-        this.kI_Azimuth = 0.0;
+        kP_azimuth.initDefault(.006);
+        this.kI_Azimuth.initDefault(0.0);
         this.kD_Azimuth = 0.0;
+        velMax.initDefault(900);
+        velAcc.initDefault(900);
 
-        turningPIDController = new PIDController(kP_azimuth.get(), kI_Azimuth, kD_Azimuth);
+        turningPIDController = new ProfiledPIDController(kP_azimuth.get(), kI_Azimuth.get(), kD_Azimuth,new Constraints(velMax.get(), velAcc.get()));
         turningPIDController.setTolerance(4);
         turningPIDController.enableContinuousInput(-180, 180);
-
-        turningPIDController.reset();
+        turningPIDController.setIntegratorRange(-0.1,0.1);
         turningPIDController.setP(this.kP_azimuth.get());
-        turningPIDController.setI(this.kI_Azimuth);
+        turningPIDController.setI(this.kI_Azimuth.get());
         turningPIDController.setD(this.kD_Azimuth);
         
     }
@@ -112,16 +115,22 @@ public class SwervePod {
         double currentDistance = Units.feetToMeters((DrivetrainConstants.WHEEL_DIAMETER_INCHES/12.0 * Math.PI)  *  inputs.drivePositionRad / (2*Math.PI));
         this.delta = currentDistance - this.lastDistance;
         this.lastDistance = currentDistance;
-        desired_optimized.speedMetersPerSecond *= Math.abs(Math.cos(Units.degreesToRadians(turningPIDController.getPositionError())));
+        
+        desired_optimized.speedMetersPerSecond *= Math.abs(Math.cos(desired_optimized.angle.minus(Rotation2d.fromDegrees(azimuthEncoderAbsPosition)).getRadians()));
         //Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "", id);
         
         io.setTurn(MathUtil.clamp(this.turnOutput, -0.4, 0.4));
         Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "/error",turningPIDController.getPositionError());
+        Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "/setpoint",turningPIDController.getSetpoint().position);
         this.velTicsPer100ms = Units3176.mps2ums(desired_optimized.speedMetersPerSecond);
         io.setDrive(desired_optimized.speedMetersPerSecond);
 
-        if(kP_azimuth.hasChanged(hashCode())) {
+        if(kP_azimuth.hasChanged(hashCode()) || kI_Azimuth.hasChanged(hashCode())) {
             turningPIDController.setP(kP_azimuth.get());
+            turningPIDController.setI(kI_Azimuth.get());
+        }
+        if(velAcc.hasChanged(hashCode()) || velMax.hasChanged(hashCode())){
+            turningPIDController.setConstraints(new Constraints(velMax.get(),velAcc.get()));
         }
 
         return desired_optimized;

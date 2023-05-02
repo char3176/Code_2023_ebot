@@ -182,7 +182,7 @@ public class Drivetrain extends SubsystemBase {
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() {
     if (instance == null) {
-      instance = new Drivetrain(new GyroIO() {
+      instance = new Drivetrain(new GyroIONavX() {
       });
     }
     return instance;
