@@ -6,10 +6,14 @@ package team3176.robot;
 
 import java.io.File;
 
+import edu.wpi.first.hal.PowerDistributionStickyFaults;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.hal.PowerDistributionStickyFaults;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -23,6 +27,7 @@ import team3176.robot.commands.superstructure.claw.*;
 import team3176.robot.commands.superstructure.claw.ClawIdle;
 import team3176.robot.commands.superstructure.intakecube.*;
 import team3176.robot.commands.vision.*;
+import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.controller.Controller;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
@@ -53,6 +58,8 @@ public class RobotContainer {
   private final Claw m_Claw;
   private final IntakeCube m_IntakeCube;
   private final IntakeCone m_IntakeCone;
+  private PowerDistribution m_PDH; 
+
 
   // private final Compressor m_Compressor;
   private final Drivetrain m_Drivetrain;
@@ -71,6 +78,7 @@ public class RobotContainer {
     m_Drivetrain = Drivetrain.getInstance();
     m_IntakeCube = IntakeCube.getInstance();
     m_IntakeCone = IntakeCone.getInstance();
+    m_PDH = new PowerDistribution(Hardwaremap.PDH_CID, ModuleType.kRev);
 
     m_RobotState = RobotState.getInstance();
     m_Superstructure = Superstructure.getInstance();
@@ -98,16 +106,20 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_Controller.getTransStick_Button1().whileTrue(m_Claw.scoreGamePiece());
     //m_Controller.getTransStick_Button1().onFalse(new InstantCommand(() -> m_Drivetrain.setTurbo(false), m_Drivetrain));
-    m_Controller.getTransStick_Button2()
-        .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
-    m_Controller.getTransStick_Button2()
-        .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
+    m_Controller.getTransStick_Button2().whileTrue(new IntakeGroundCube());
+    m_Controller.getTransStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
+    m_Controller.getTransStick_Button2().onFalse(m_Superstructure.prepareCarry());
         //.whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
-    m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
-    m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry()));
+    //m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.prepareScoreMid());
+    //m_Controller.getTransStick_Button3().onFalse((m_Superstructure.prepareCarry())); 
+    m_Controller.getTransStick_Button3().onTrue(new SetColorWantState(3));
+    m_Controller.getTransStick_Button3().whileTrue(m_Superstructure.groundCube());
+    m_Controller.getTransStick_Button3().onFalse(new IntakeRetractSpinot());
+    m_Controller.getTransStick_Button3().onFalse(m_Superstructure.prepareCarry());
+
     m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
     m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarry()));
-    m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(()->m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
+    m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(() -> m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
      //m_Controller.getTransStick_Button10()
      //    .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
 
@@ -117,10 +129,16 @@ public class RobotContainer {
       () -> m_Controller.getStrafe(),
       () -> m_Controller.getSpin())
     );
-   
-    m_Controller.getRotStick_Button2().whileTrue(new IntakeGroundCube());
-    m_Controller.getRotStick_Button2().onFalse(new IntakeRetractSpinot().andThen(m_Superstructure.prepareCarry()));
-    m_Controller.getRotStick_Button2().onFalse(m_Superstructure.prepareCarry());
+ 
+    m_Controller.getRotStick_Button2().whileTrue(new SpinLockDrive(
+      () -> m_Controller.getForward(),
+      () -> m_Controller.getStrafe())
+    ); 
+    
+    //m_Controller.getRotStick_Button2()
+    //    .whileTrue(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.ROBOT_CENTRIC), m_Drivetrain));
+    //m_Controller.getRotStick_Button2()
+    //    .onFalse(new InstantCommand(() -> m_Drivetrain.setCoordType(coordType.FIELD_CENTRIC), m_Drivetrain));
 
     //m_Controller.getRotStick_Button2().whileTrue(new teleopPath());
     //m_Controller.getRotStick_Button2().whileTrue(new FeederPID("left"));
@@ -145,11 +163,15 @@ public class RobotContainer {
     m_Controller.getTransStick_Button8()
         .whileTrue(new InstantCommand(() -> m_Drivetrain.resetFieldOrientation(), m_Drivetrain));
 
+    double conveyorBumpTime = .1;  //In units of seconds
     m_Controller.operator.povUp().whileTrue(m_Superstructure.prepareScoreHigh());
-    //m_Controller.operator.povUp().onTrue(new InstantComamnd(() -> m_IntakeCube.spinConveyor(-0.85))).))
+    m_Controller.operator.povUp().onTrue(m_IntakeCube.bumpConveyor().withTimeout(conveyorBumpTime));
     m_Controller.operator.povRight().whileTrue(m_Superstructure.prepareCarry());
+    m_Controller.operator.povRight().onTrue(m_IntakeCube.bumpConveyor().withTimeout(conveyorBumpTime));
     m_Controller.operator.povDown().whileTrue(m_Superstructure.prepareCatch());
+    m_Controller.operator.povDown().onTrue(m_IntakeCube.bumpConveyor().withTimeout(conveyorBumpTime));
     m_Controller.operator.povLeft().whileTrue(m_Superstructure.prepareScoreMid());
+    m_Controller.operator.povLeft().onTrue(m_IntakeCube.bumpConveyor().withTimeout(conveyorBumpTime));
 
     // m_Controller.operator.start().onTrue(new ToggleVisionLEDs());
     // m_Controller.operator.back().onTrue(new SwitchToNextVisionPipeline());
@@ -222,6 +244,13 @@ public class RobotContainer {
     m_Drivetrain.setBrakeMode();
   }
 
+  public void clearCanFaults(){
+    m_PDH.clearStickyFaults();
+  }
+
+  public void printCanFaults(){
+    m_PDH.getStickyFaults();
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

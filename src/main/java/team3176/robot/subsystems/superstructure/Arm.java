@@ -103,9 +103,11 @@ public class Arm extends SubsystemBase {
         double feedForward = kg * physicsAngle/SuperStructureConstants.ARM_HIGH_POS;
         if (this.armEncoderAbsPosition < SuperStructureConstants.ARM_MID_POS + 10){
             feedForward =0.0;
+        } else if (desiredAngle < SuperStructureConstants.ARM_ZERO_POS+5) {
+            feedForward = -.2;
         }
         double turnOutput = m_turningPIDController.calculate(this.armEncoderAbsPosition, desiredAngle);
-        turnOutput = MathUtil.clamp(turnOutput,-0.4,0.4);
+        turnOutput = MathUtil.clamp(turnOutput,-1,1);
         armController.set(turnOutput + feedForward);
         SmartDashboard.putNumber("Arm_Output", turnOutput + feedForward);
         SmartDashboard.putNumber("Arm Feed Forward", feedForward);

@@ -2,7 +2,7 @@
 Todo:
 ## Top Priority 
 
-  ☐ Rebolt & loctite Arm Gearbox
+  ✔ Rebolt & loctite Arm Gearbox @done(23-03-29 22:30)
   ☐ Build backup Arm Gearbox
   ✘ Lower backside of poop chute @cancelled(23-03-07 15:36)
   ☐ Mount fisheye camera 
@@ -24,9 +24,9 @@ Todo:
 
   ## High Priority
 
-  ☐ Double check / restore SwerveLock (Chris/Jon)
-  ☐ 3D Print component mounts
-  ☐ CAN connection exception check (Jon/Chris)
+  ✘ Double check / restore SwerveLock (Chris/Jon) @cancelled(23-03-29 22:30)
+  ✔ 3D Print component mounts @done(23-03-29 22:30)
+  ✔ CAN connection exception check (Jon/Chris) @done(23-03-29 22:30)
   ✔ Restore autonselector @done(23-03-03 23:15)
   ✔ Make pit checklist (Nathan) @done(23-03-03 23:15)
   ✔ Impact Presentation practice (Cate & Elliot) @done(23-03-03 23:15)
@@ -39,9 +39,9 @@ Todo:
     ✘ speed_cube_3 @cancelled(23-03-01 23:48)
     ✘ speed_cube_4 @cancelled(23-03-01 23:48)
   ✔ Make decision about going to 1741 Wed for Auto Practice / tuning (Ben) @done(23-02-28 19:50)
-  ☐ Go to RedAlert and practice autons Wed 4:30 - 9:00
-    ☐ Confirm limelight camera coordinates are set correctly for ebot
-    ☐ run Calibration Auto to confirm effective wheel diameter (turn vision off for this run)
+  ✔ Go to RedAlert and practice autons Wed 4:30 - 9:00 @done(23-03-29 22:31)
+    ✘ Confirm limelight camera coordinates are set correctly for ebot @cancelled(23-03-29 22:31)
+    ✔ run Calibration Auto to confirm effective wheel diameter (turn vision off for this run) @done(23-03-29 22:31)
     ✔ test basic scoreHigh Command on Cones and Cubes without moving @done(23-03-01 23:48)
     ✔ test autoBalance command @done(23-03-01 23:48)
     ✔ begin testing full autos above @done(23-03-01 23:48)
@@ -58,7 +58,7 @@ Todo:
 
 ## Mid Priority
 
-  ☐ Handles added to drivestation
+  ✔ Handles added to drivestation @done(23-03-29 22:30)
   ☐ Create auto-assist for HP station 
   ☐ Fault Accommodation for software (what happens if a line break fails or encoder does our code “fail gracefully” and are there manual backups)
   ☐ Check limelight data and ensure it doesn’t cause a runtime error if unplugged

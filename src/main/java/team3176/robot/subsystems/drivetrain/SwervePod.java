@@ -37,6 +37,7 @@ public class SwervePod {
     /** Current value in radians of the azimuthEncoder's position */
     double azimuthEncoderRelPosition;
     double azimuthEncoderAbsPosition;
+    Double desired_optimized_azimuth_position;
     boolean lastHasResetOccurred;
 
     /** Numerical identifier to differentiate between pods.
@@ -92,6 +93,7 @@ public class SwervePod {
         azimuthEncoder.configSensorDirection(true,100);
         updateAzimuthAbsEncoder();
         initializeSmartDashboard();
+        this.desired_optimized_azimuth_position = 0.0;
         ///System.out.println("P"+(this.id+1)+" kEncoderOffset: "+this.kEncoderOffset);
 
         
@@ -193,6 +195,7 @@ public class SwervePod {
         updateAzimuthAbsEncoder();  
         this.azimuthEncoderAbsPosition = azimuthEncoder.getAbsolutePosition();
         SwerveModuleState desired_optimized = SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(this.azimuthEncoderAbsPosition));
+        this.desired_optimized_azimuth_position = desired_optimized.angle.getDegrees();
         if (desiredState.speedMetersPerSecond > (-Math.pow(10,-10)) && desiredState.speedMetersPerSecond  < (Math.pow(10,-10))) {      
             this.turnOutput = m_turningPIDController2.calculate(this.azimuthEncoderAbsPosition, this.lastEncoderPos);
         } else {
@@ -311,6 +314,18 @@ public class SwervePod {
         // SmartDashboard.putBoolean("P"+(this.id)+".On", false);
     }
 
+    public double getThrustSetpoint() {
+        return this.velTicsPer100ms;
+    }
+    public double getAzimuthSetpoint() {
+        return this.desired_optimized_azimuth_position;
+    }
+    public double getThrustEncoderVelocity() {
+        return thrustController.getSelectedSensorVelocity();
+    }
+    public double getAzimuthEncoderPosition() {
+        return azimuthEncoder.getAbsolutePosition();
+    }
 
     public void setupShuffleboard() {
         Shuffleboard.getTab(this.idString)

@@ -79,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
   private AHRS m_NavX;
   public SwerveDriveOdometry odom;
   public SwerveDrivePoseEstimator poseEstimator;
-
+  private VisionPose2 m_VisionPose;
   public NetworkTableInstance inst;
   public NetworkTable table;
   public DoubleTopic dblTopic;
@@ -92,7 +92,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public coordType currentCoordType = coordType.FIELD_CENTRIC;
-  // private PowerDistribution PDP = new
+  //private PowerDistribution PDH = new PowerDistribution();
   // PowerDistribution(PowerManagementConstants.PDP_CAN_ID, ModuleType.kCTRE);
 
   private ArrayList<SwervePod> pods;
@@ -155,12 +155,11 @@ public class Drivetrain extends SubsystemBase {
     table = inst.getTable("datatable");
 
     dblTopic = table.getDoubleTopic("Angle");
-
+    m_VisionPose = new VisionPose2();
     dblPub = dblTopic.publish();
 
     field = new Field2d();
     this.io = io;
-
     // check for duplicates
     assert (!SwervePodHardwareID.check_duplicates_all(DrivetrainConstants.FR, DrivetrainConstants.FL,
         DrivetrainConstants.BR, DrivetrainConstants.BL));
@@ -486,6 +485,15 @@ public class Drivetrain extends SubsystemBase {
   public double getCurrentChassisSpeed(){
     return Math.sqrt(Math.pow(this.forwardCommand,2) +  Math.pow(this.strafeCommand,2));
   }
+  public Pose2d getVisionPoseBlue() {
+    return m_VisionPose.getPoseBlue();
+  }
+  public Pose2d getVisionPoseRed() {
+    return m_VisionPose.getPoseRed();
+  }
+  public boolean isVisionValid() {
+    return m_VisionPose.isValid();
+  }
   /*
    * public ChassisSpeeds getChassisSpeed() {
    * return DrivetrainConstants.DRIVE_KINEMATICS.toChassisSpeeds(podFR.getState(),
@@ -507,6 +515,24 @@ public class Drivetrain extends SubsystemBase {
      * check for anytime the code querys if it is red and then has to modify a value. That might need to be stripped out
      */
     
+
+    //vision_lfov_pose = NetworkTableInstance.getDefault().getTable("limelight-lfov").getEntry("botpose_wpiblue");
+    //vision_rfov_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue");
+
+    // double[] vision_pose_array=vision_pose.getDoubleArray(new double[6]);
+    // //System.out.println(vision_pose_array[0]);
+    // Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
+    // //poseEstimator.addVisionMeasurement(cam_pose,  Timer.getFPGATimestamp() - (15) / 1000);
+    
+    //commenting out because I believe we should update the limelight apriltag map
+
+    // double xoffset = Units.inchesToMeters(285.16+ 40.45);
+    // double yoffset = Units.inchesToMeters(115.59 + 42.49);
+    // cam_pose = cam_pose.transformBy(new Transform2d(new Translation2d(xoffset,yoffset),new Rotation2d()));
+    
+    //update the pose estimator with correct timestamped values
+    
+
     
     vision_pose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose_wpiblue");
 
@@ -528,48 +554,43 @@ public class Drivetrain extends SubsystemBase {
     //this must be called every loop. without vision updates poseEstimator performs identical to normal odom
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
-    
-    double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
-    try {
-      double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);
-      //this takes the x,y and yaw rotation and converts to a Pose2D
-      Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
+    SmartDashboard.putNumber("NavYaw",getPoseYawWrapped().getDegrees());
+    m_VisionPose.periodic();
+    // double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
+    // try {
+    //   double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);
+    //this takes the x,y and yaw rotation and converts to a Pose2D
+    //   Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
+    //   //store x value to check if its the same data as before
       
-      //the poseEstimator recommends only adding measurment within 1 meter of current estimate 
-      double camera_inovation_error = cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm(); 
-      SmartDashboard.putNumber("camInovationError",camera_inovation_error);
-      //this checks we are within 1 meter, it is a new frame, and we see a tag (x is nonzero)
-      if(camera_inovation_error < 1.0 && lastVisionX != cam_pose.getX() && cam_pose.getX() != 0.0){
-        lastVisionX = cam_pose.getX();
-        //an option within controls is to only apply the vision update if we are moving to prevent collapse of odometry data to be only vision
-        Transform2d diff = last_pose.minus(odom.getPoseMeters());
-        //the norm is unused currently but represents if the robot has moved either translationally or rotationally
-        double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
-
-        //vision measurments started to get really noisy when far away from the grid. We only wanted to use them when within ~3 meters of a tag
-        if(!(getPose().getX() > 3.5 && getPose().getX() < 10.5)){
-          
-          double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
-          //distanceToGrid could be used as a covariance term we have experimented with this but didn't find it super impactful 
-          double translation_cov = MathUtil.clamp(distanceToGrid, 0.9, 3.0); 
-          SmartDashboard.putNumber("camTransCov",translation_cov);
-          /*
-          the following line is the line that actaully incoperates the vision innovation. 
-          the final value in vision_pose_array is the latency in milliseconds that the limelight reports.
-          */
-          //poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0, VecBuilder.fill(translation_cov, translation_cov, translation_cov));
-        }
-      }
-      SmartDashboard.putNumber("camX",cam_pose.getX());
-      SmartDashboard.putNumber("camY",cam_pose.getY());
-      SmartDashboard.putNumber("camW",cam_pose.getRotation().getDegrees());
-      //System.out.println("cam_pose"+cam_pose.getX());
-      //SmartDashboard.putNumber("camX",cam_pose.getX());
-      //SmartDashboard.putNumber("camY",cam_pose.getY());
-    }
-    catch (ClassCastException e) {
-      System.out.println("vision error" + e);
-    }
+    //   double camera_inovation_error = cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm(); 
+    //   SmartDashboard.putNumber("camInovationError",camera_inovation_error);
+    //this checks we are within 1 meter, it is a new frame, and we see a tag (x is nonzero)
+    //the poseEstimator recommends only adding measurment within 1 meter of current estimate 
+    //   if(camera_inovation_error < 1.0 && lastVisionX != cam_pose.getX() && cam_pose.getX() != 0.0){
+    //     lastVisionX = cam_pose.getX();//an option within controls is to only apply the vision update if we are moving to prevent collapse of odometry data to be only vision
+    //an option within controls is to only apply the vision update if we are moving to prevent collapse of odometry data to be only vision
+    //     Transform2d diff = last_pose.minus(odom.getPoseMeters());
+    //the norm is unused currently but represents if the robot has moved either translationally or rotationally
+    //     double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
+    //     if(!(getPose().getX() > 3.5 && getPose().getX() < 10.5)){
+    //       double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
+    //       double translation_cov = MathUtil.clamp(distanceToGrid, 0.9, 3.0); 
+    //       SmartDashboard.putNumber("camTransCov",translation_cov);
+    //       //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, translation_cov));
+    //       //poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0, VecBuilder.fill(translation_cov, translation_cov, translation_cov));
+    //     }
+    //   }
+    //   SmartDashboard.putNumber("camX",cam_pose.getX());
+    //   SmartDashboard.putNumber("camY",cam_pose.getY());
+    //   SmartDashboard.putNumber("camW",cam_pose.getRotation().getDegrees());
+    //   //System.out.println("cam_pose"+cam_pose.getX());
+    //   //SmartDashboard.putNumber("camX",cam_pose.getX());
+    //   //SmartDashboard.putNumber("camY",cam_pose.getY());
+    // }
+    // catch (ClassCastException e) {
+    //   System.out.println("vision error" + e);
+    // }
     
 
     field.setRobotPose(getPose());
@@ -585,6 +606,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("odomx", getPose().getX());
     SmartDashboard.putNumber("odomy", getPose().getY());
     SmartDashboard.putBoolean("Turbo", isTurboOn);
+    publishSwervePodPIDErrors();
     // SmartDashboard.putBoolean("Defense", currentDriveMode == driveMode.DEFENSE);
   }
 
@@ -593,5 +615,28 @@ public class Drivetrain extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
+  public void publishSwervePodPIDErrors(){
+    double FRAzError = podFR.getAzimuthSetpoint() - podFR.getAzimuthEncoderPosition();
+    double FRThrustError = podFR.getThrustSetpoint() - podFR.getThrustEncoderVelocity();
+    SmartDashboard.putNumber("FRAzError", FRAzError);
+    SmartDashboard.putNumber("FRThrustError", FRThrustError);
+
+    double FLAzError = podFL.getAzimuthSetpoint() - podFL.getAzimuthEncoderPosition();
+    double FLThrustError = podFL.getThrustSetpoint() - podFL.getThrustEncoderVelocity();
+    SmartDashboard.putNumber("FLAzError", FLAzError);
+    SmartDashboard.putNumber("FLThrustError", FLThrustError);
+
+    double BRAzError = podBR.getAzimuthSetpoint() - podBR.getAzimuthEncoderPosition();
+    double BRThrustError = podBR.getThrustSetpoint() - podBR.getThrustEncoderVelocity();
+    SmartDashboard.putNumber("BRAzError", BRAzError);
+    SmartDashboard.putNumber("BRThrustError", BRThrustError);
+
+    double BLAzError = podBL.getAzimuthSetpoint() - podBL.getAzimuthEncoderPosition();
+    double BLThrustError = podBL.getThrustSetpoint() - podBL.getThrustEncoderVelocity();
+    SmartDashboard.putNumber("BLAzError", BLAzError);
+    SmartDashboard.putNumber("BLThrustError", BLThrustError);
+
+  }
+  
   
 }

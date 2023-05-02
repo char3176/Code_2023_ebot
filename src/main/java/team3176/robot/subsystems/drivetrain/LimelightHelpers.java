@@ -1,4 +1,4 @@
-//LimelightHelpers v1.2.0 (Feb 13, 2023)
+//LimelightHelpers v1.2.1 (March 1, 2023)
 
 package team3176.robot.subsystems.drivetrain;
 
@@ -394,7 +394,7 @@ public class LimelightHelpers {
                     Units.degreesToRadians(inData[5])));
     }
 
-    private static Pose2d toPose2D(double[] inData){
+    public static Pose2d toPose2D(double[] inData){
         if(inData.length < 6)
         {
             System.err.println("Bad LL 2D Pose Data!");
@@ -521,7 +521,7 @@ public class LimelightHelpers {
     }
 
     public static double[] getBotPose_TargetSpace(String limelightName) {
-        return getLimelightNTDoubleArray(limelightName, "botpose_targetSpace");
+        return getLimelightNTDoubleArray(limelightName, "botpose_targetspace");
     }
 
     public static double[] getCameraPose_TargetSpace(String limelightName) {
