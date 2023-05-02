@@ -91,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public coordType currentCoordType = coordType.FIELD_CENTRIC;
-  // private PowerDistribution PDP = new
+  //private PowerDistribution PDH = new PowerDistribution();
   // PowerDistribution(PowerManagementConstants.PDP_CAN_ID, ModuleType.kCTRE);
 
   private ArrayList<SwervePod> pods;
@@ -496,7 +496,9 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     dblPub.set(3.0);
     
-    vision_pose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose_wpiblue");
+    //vision_lfov_pose = NetworkTableInstance.getDefault().getTable("limelight-lfov").getEntry("botpose_wpiblue");
+    //vision_rfov_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue");
+
     // double[] vision_pose_array=vision_pose.getDoubleArray(new double[6]);
     // //System.out.println(vision_pose_array[0]);
     // Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
@@ -530,37 +532,38 @@ public class Drivetrain extends SubsystemBase {
     // update encoders
     this.poseEstimator.update(getSensorYaw(), getSwerveModulePositions());
     this.odom.update(getSensorYaw(), getSwerveModulePositions());
+    SmartDashboard.putNumber("NavYaw",getPoseYawWrapped().getDegrees());
 
-    double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
-    try {
-      double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);
-      Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
-      //store x value to check if its the same data as before
+    // double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
+    // try {
+    //   double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);
+    //   Pose2d cam_pose =new Pose2d(vision_pose_array[0],vision_pose_array[1],Rotation2d.fromDegrees(vision_pose_array[5]));
+    //   //store x value to check if its the same data as before
       
-      double camera_inovation_error = cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm(); 
-      SmartDashboard.putNumber("camInovationError",camera_inovation_error);
-      if(camera_inovation_error < 1.0 && lastVisionX != cam_pose.getX() && cam_pose.getX() != 0.0){
-        lastVisionX = cam_pose.getX();
-        Transform2d diff = last_pose.minus(odom.getPoseMeters());
-        double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
-        if(!(getPose().getX() > 3.5 && getPose().getX() < 10.5)){
-          double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
-          double translation_cov = MathUtil.clamp(distanceToGrid, 0.9, 3.0); 
-          SmartDashboard.putNumber("camTransCov",translation_cov);
-          //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, translation_cov));
-          //poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0, VecBuilder.fill(translation_cov, translation_cov, translation_cov));
-        }
-      }
-      SmartDashboard.putNumber("camX",cam_pose.getX());
-      SmartDashboard.putNumber("camY",cam_pose.getY());
-      SmartDashboard.putNumber("camW",cam_pose.getRotation().getDegrees());
-      //System.out.println("cam_pose"+cam_pose.getX());
-      //SmartDashboard.putNumber("camX",cam_pose.getX());
-      //SmartDashboard.putNumber("camY",cam_pose.getY());
-    }
-    catch (ClassCastException e) {
-      System.out.println("vision error" + e);
-    }
+    //   double camera_inovation_error = cam_pose.getTranslation().minus(poseEstimator.getEstimatedPosition().getTranslation()).getNorm(); 
+    //   SmartDashboard.putNumber("camInovationError",camera_inovation_error);
+    //   if(camera_inovation_error < 1.0 && lastVisionX != cam_pose.getX() && cam_pose.getX() != 0.0){
+    //     lastVisionX = cam_pose.getX();
+    //     Transform2d diff = last_pose.minus(odom.getPoseMeters());
+    //     double norm = Math.abs(diff.getRotation().getRadians()) + diff.getTranslation().getNorm();
+    //     if(!(getPose().getX() > 3.5 && getPose().getX() < 10.5)){
+    //       double distanceToGrid = getPose().getX() < 7.0 ? getPose().getX() - 1.8 : 14.6 - getPose().getX();
+    //       double translation_cov = MathUtil.clamp(distanceToGrid, 0.9, 3.0); 
+    //       SmartDashboard.putNumber("camTransCov",translation_cov);
+    //       //poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(translation_cov, translation_cov, translation_cov));
+    //       //poseEstimator.addVisionMeasurement(cam_pose, Timer.getFPGATimestamp() - vision_pose_array[6] / 1000.0, VecBuilder.fill(translation_cov, translation_cov, translation_cov));
+    //     }
+    //   }
+    //   SmartDashboard.putNumber("camX",cam_pose.getX());
+    //   SmartDashboard.putNumber("camY",cam_pose.getY());
+    //   SmartDashboard.putNumber("camW",cam_pose.getRotation().getDegrees());
+    //   //System.out.println("cam_pose"+cam_pose.getX());
+    //   //SmartDashboard.putNumber("camX",cam_pose.getX());
+    //   //SmartDashboard.putNumber("camY",cam_pose.getY());
+    // }
+    // catch (ClassCastException e) {
+    //   System.out.println("vision error" + e);
+    // }
     
     
     field.setRobotPose(getPose());
@@ -578,6 +581,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("v_odomx", poseEstimator.getEstimatedPosition().getX());
     SmartDashboard.putNumber("v_odomy", poseEstimator.getEstimatedPosition().getY());
     SmartDashboard.putBoolean("Turbo", isTurboOn);
+    publishSwervePodPIDErrors();
     // SmartDashboard.putBoolean("Defense", currentDriveMode == driveMode.DEFENSE);
   }
 
@@ -586,5 +590,28 @@ public class Drivetrain extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
+  public void publishSwervePodPIDErrors(){
+    double FRAzError = podFR.getAzimuthSetpoint() - podFR.getAzimuthEncoderPosition();
+    double FRThrustError = podFR.getThrustSetpoint() - podFR.getThrustEncoderVelocity();
+    SmartDashboard.putNumber("FRAzError", FRAzError);
+    SmartDashboard.putNumber("FRThrustError", FRThrustError);
+
+    double FLAzError = podFL.getAzimuthSetpoint() - podFL.getAzimuthEncoderPosition();
+    double FLThrustError = podFL.getThrustSetpoint() - podFL.getThrustEncoderVelocity();
+    SmartDashboard.putNumber("FLAzError", FLAzError);
+    SmartDashboard.putNumber("FLThrustError", FLThrustError);
+
+    double BRAzError = podBR.getAzimuthSetpoint() - podBR.getAzimuthEncoderPosition();
+    double BRThrustError = podBR.getThrustSetpoint() - podBR.getThrustEncoderVelocity();
+    SmartDashboard.putNumber("BRAzError", BRAzError);
+    SmartDashboard.putNumber("BRThrustError", BRThrustError);
+
+    double BLAzError = podBL.getAzimuthSetpoint() - podBL.getAzimuthEncoderPosition();
+    double BLThrustError = podBL.getThrustSetpoint() - podBL.getThrustEncoderVelocity();
+    SmartDashboard.putNumber("BLAzError", BLAzError);
+    SmartDashboard.putNumber("BLThrustError", BLThrustError);
+
+  }
+  
   
 }

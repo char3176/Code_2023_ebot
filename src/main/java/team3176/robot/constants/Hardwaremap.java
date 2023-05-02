@@ -12,6 +12,7 @@ public class Hardwaremap {
     public static int intake_CID = 7;
     public static int armEncoder_CID = 2;
     //public static int armEncoder_CID = 9;
+    public static int PDH_CID = 1;
 
     /*
      * Drivetrain CIDs
