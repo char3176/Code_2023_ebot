@@ -116,7 +116,7 @@ public class IntakeCone extends SubsystemBase {
 
    public Command coneToClaw() {  
     return this.run(() ->  {spit();})
-                .until(() -> this.m_Claw.getLinebreakTwo() == false)
+                .until(() -> this.m_Claw.getLinebreakCone() == false)
                 .andThen(new WaitCommand(0.5))
                 .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
 }

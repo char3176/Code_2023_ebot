@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import team3176.robot.subsystems.superstructure.IntakeCube;
-import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
+import team3176.robot.subsystems.RobotState;
+import team3176.robot.subsystems.RobotState.GamePiece;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.superstructure.Arm;
@@ -16,6 +17,7 @@ import team3176.robot.subsystems.superstructure.Arm;
 public class IntakeGroundCube extends CommandBase {
   /** Creates a new IntakeExtendSpin. */
   IntakeCube m_IntakeCube = IntakeCube.getInstance();
+  RobotState m_RobotState = RobotState.getInstance();
   Claw m_Claw = Claw.getInstance();
   Arm m_Arm = Arm.getInstance();
   public IntakeGroundCube() {
@@ -27,7 +29,7 @@ public class IntakeGroundCube extends CommandBase {
   @Override
   public void initialize() 
   {
-    m_Claw.setCurrentGamePiece(GamePiece.CUBE);
+    m_RobotState.setWantedGamePiece(GamePiece.CUBE);
     m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_ZERO_POS);
     m_IntakeCube.Extend();
     m_IntakeCube.spinIntake(-.85);
@@ -43,22 +45,24 @@ public class IntakeGroundCube extends CommandBase {
     {
       m_IntakeCube.Retract();
     }
-    m_Claw.intake();
+    m_Claw.intake(GamePiece.CUBE);
     m_IntakeCube.spinConveyor(-0.6);
     m_IntakeCube.spinIntake(-.85);
-    if (!m_Claw.getIsLinebreakOne())
+    if (m_Claw.getIsLinebreakOne())
     {
-      m_Arm.armSetPosition(SuperStructureConstants.ARM_CARRY_POS);
-    } else {m_Arm.armSetPosition(SuperStructureConstants.ARM_CATCH_POS);
+      m_Arm.setPIDPosition(SuperStructureConstants.ARM_ZERO_POS);
+    } else {m_Arm.setPIDPosition(SuperStructureConstants.ARM_ZERO_POS);
     }
+    m_Claw.determineGamePiece();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-    //m_IntakeCube.Retract();
-    //new WaitCommand(0.1);
+    m_Arm.setPIDPosition(SuperStructureConstants.ARM_ZERO_POS);
+    m_IntakeCube.Retract();
+    new WaitCommand(0.1);
     m_IntakeCube.spinIntake(0);
     m_IntakeCube.spinConveyor(0);
     m_Claw.hold();
@@ -67,6 +71,6 @@ public class IntakeGroundCube extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !m_Claw.getLinebreakOne();
+    return !m_Claw.getLinebreakCube();
   }
 }

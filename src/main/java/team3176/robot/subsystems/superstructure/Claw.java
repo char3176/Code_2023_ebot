@@ -11,27 +11,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.constants.Hardwaremap;
 import team3176.robot.constants.SuperStructureConstants;
-import team3176.robot.subsystems.superstructure.Superstructure.GamePiece;
+import team3176.robot.subsystems.RobotState;
+import team3176.robot.subsystems.RobotState.GamePiece;
 
 import team3176.robot.subsystems.superstructure.ClawIO;
 import team3176.robot.subsystems.superstructure.ClawIO.ClawIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class Claw extends SubsystemBase {
+    private RobotState m_RobotState; 
     private CANSparkMax claw;
-    private DigitalInput linebreakOne;
-    private DigitalInput linebreakTwo;
+    private DigitalInput linebreakCube;
+    private DigitalInput linebreakCone;
     private DigitalInput linebreakThree;
     private static Claw instance;
     private final ClawIO io;
     private final ClawIOInputs inputs = new ClawIOInputs();
-    public GamePiece currentGamePiece = GamePiece.CONE;
     private Claw(ClawIO io) {
         this.io = io;
         claw = new CANSparkMax(Hardwaremap.claw_CID, MotorType.kBrushless);
-        linebreakOne = new DigitalInput(0);
-        linebreakTwo = new DigitalInput(2);
+        linebreakCube = new DigitalInput(0);
+        linebreakCone = new DigitalInput(2);
         linebreakThree = new DigitalInput(1);
+    }
+    public void setRobotStateInstance(RobotState st) {
+        m_RobotState = st;
     }
     public void setClawMotor(double percent, double amps) {
         claw.set(percent);
@@ -42,20 +46,28 @@ public class Claw extends SubsystemBase {
     }
 
     //states now implemented as functions
-    
-    public void intake() {
-        //System.out.println("m_Claw.intake()");
-        if(currentGamePiece == GamePiece.CUBE) {
+   
+    public void intake(GamePiece gamepiece){
+        if(gamepiece == GamePiece.CUBE) {
             setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
-         else if(currentGamePiece == GamePiece.CONE) {
+         else if(gamepiece == GamePiece.CONE) {
+             setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+         }
+    }
+    public void intake() {
+        //System.out.println("m_Claw.intake()");
+        if(m_RobotState.getWantedGamePiece() == GamePiece.CUBE) {
+            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+         }
+         else if(m_RobotState.getWantedGamePiece() == GamePiece.CONE) {
              setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
          }
     }
     
-    public void hold() {
+    public void hold(GamePiece gamepiece) {
         //System.out.println("m_Claw.hold()");
-        if(currentGamePiece == GamePiece.CUBE) {
+        if(gamepiece == GamePiece.CUBE) {
             setClawMotor(SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
             //idle(); 
         } else {
@@ -63,12 +75,32 @@ public class Claw extends SubsystemBase {
         }
     }
 
-    public void score() {
+    public void hold() {
+        //System.out.println("m_Claw.hold()");
+        if(m_RobotState.getWantedGamePiece() == GamePiece.CUBE) {
+            setClawMotor(SuperStructureConstants.CLAW_HOLD_POWER,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
+            //idle(); 
+        } else {
+            setClawMotor(-SuperStructureConstants.CLAW_HOLD_POWER * SuperStructureConstants.CLAW_HOLD_CONE_FACTOR,SuperStructureConstants.CLAW_HOLD_CURRENT_LIMIT_A);
+        }
+    }
+
+    public void score(GamePiece gamepiece) {
         //System.out.println("m_Claw.score()");
-        if(currentGamePiece == GamePiece.CUBE) {
+        if(gamepiece == GamePiece.CUBE) {
             setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
-        else if(currentGamePiece == GamePiece.CONE) {
+        else 
+        if(gamepiece == GamePiece.CONE) {
+            setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+        }
+    }
+    public void score() {
+        //System.out.println("m_Claw.score()");
+        if(m_RobotState.getWantedGamePiece() == GamePiece.CUBE) {
+            setClawMotor(-SuperStructureConstants.CLAW_OUTPUT_POWER_CUBE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
+        }
+        else if(m_RobotState.getWantedGamePiece() == GamePiece.CONE) {
             setClawMotor(SuperStructureConstants.CLAW_OUTPUT_POWER_CONE,SuperStructureConstants.CLAW_CURRENT_LIMIT_A);
         }
     }
@@ -77,19 +109,16 @@ public class Claw extends SubsystemBase {
         setClawMotor(0, 0);
     }
 
-    public void setCurrentGamePiece(GamePiece piece) {
-        //System.out.println("m_Claw.setCurrentGamePiece() to " + piece);
-        this.currentGamePiece = piece;
-    }
+    
 
-    public boolean getLinebreakOne()
+    public boolean getLinebreakCube() //Cube
     {
-        return linebreakOne.get();
+        return linebreakCube.get();
     }
     
-    public boolean getLinebreakTwo()
+    public boolean getLinebreakCone()  //Cone (Upper)
     {
-        return linebreakTwo.get();
+        return linebreakCone.get();
     }
 
     public boolean getLinebreakThree()
@@ -98,7 +127,7 @@ public class Claw extends SubsystemBase {
     }
 
     public boolean isEmpty() {
-        return getLinebreakOne() || getLinebreakTwo();
+        return getLinebreakCube() || getLinebreakCone();
     }
 
     public static Claw getInstance()
@@ -113,34 +142,34 @@ public class Claw extends SubsystemBase {
      * to be called with a whileTrue trigger binding
      */
     public CommandBase intakeGamePiece(GamePiece piece) {
-        return this.startEnd(() ->  {this.currentGamePiece = piece; intake();},() -> hold());
+        return this.startEnd(() ->  {intake();},() -> hold());
     }
     /**
      *  scores game piece then returns to idle state
      * @return to be called with a whileTrue or onTrue trigger binding
      */
     public Command scoreGamePiece() {  
-        return this.run(() ->  {score(); this.currentGamePiece = GamePiece.NONE;})
+        return this.run(() ->  {score(); })
                     .until(() -> this.isEmpty())
-                    .andThen(new WaitCommand(1.5))
+                    .andThen(new WaitCommand(2.0))
                     .andThen(this.runOnce(()->idle())).withTimeout(2.0).finallyDo((b)->idle());
     }
 
     //more examples of command composition and why its awesome!!
     public Command intakeCone() {
-        return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreakTwo);
+        return this.intakeGamePiece(GamePiece.CONE).until(this::getLinebreakCone);
     }
     public Command intakeCube() {
-        return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreakOne);
+        return this.intakeGamePiece(GamePiece.CUBE).until(this::getLinebreakCube);
     }
     public Command determineGamePiece() {
         return this.runOnce( () -> {
-            if(this.linebreakOne.get()) {
-                this.currentGamePiece = GamePiece.CONE;
-                hold();
-            } else if(this.linebreakTwo.get()) {
-                this.currentGamePiece = GamePiece.CUBE;
-                hold();
+            if(!this.linebreakCube.get()) {
+                m_RobotState.setCurrentGamePiece(GamePiece.CUBE);
+            } else if(!this.linebreakCone.get()) {
+                m_RobotState.setCurrentGamePiece(GamePiece.CONE);
+            } else if (this.linebreakCube.get() && this.linebreakCone.get()) {
+                m_RobotState.setCurrentGamePiece(GamePiece.NONE);
             }
         });
     }
@@ -153,12 +182,30 @@ public class Claw extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Claw", inputs);
     Logger.getInstance().recordOutput("Claw/Velocity", getVelocity());
-    Logger.getInstance().recordOutput("Claw/LinebreakOne", getIsLinebreakOne());
-    Logger.getInstance().recordOutput("Claw/LinebreakTwo", getIsLinebreakTwo());
+    Logger.getInstance().recordOutput("Claw/LinebreakCube", getIsLinebreakOne());
+    Logger.getInstance().recordOutput("Claw/LinebreakCone", getIsLinebreakTwo());
     // Code stating if something is in the Intake
-    SmartDashboard.putBoolean("linebreakOne",linebreakOne.get());
-    SmartDashboard.putBoolean("linebreakTwo",linebreakTwo.get());
+    SmartDashboard.putBoolean("linebreakCube",linebreakCube.get());
+    SmartDashboard.putBoolean("linebreakCone",linebreakCone.get());
     SmartDashboard.putBoolean("linebreakThree", linebreakThree.get());
+    System.out.print("Robot State = " + m_RobotState.getRobotState());
+    if(!this.linebreakCube.get()) {
+        m_RobotState.setCurrentGamePiece(GamePiece.CUBE);
+    } else if(!this.linebreakCone.get()) {
+        m_RobotState.setCurrentGamePiece(GamePiece.CONE);
+    //} else if (this.linebreakCube.get() && this.linebreakCone.get()) {
+    //    m_RobotState.setCurrentGamePiece(GamePiece.NONE);
+    }
+    /* 
+    if (!linebreakOne.get()) {
+        setCurrentGamePiece(GamePiece.CUBE);
+    } else if (!linebreakTwo.get()) {
+        setCurrentGamePiece(GamePiece.CONE);
+    }
+    if (linebreakOne.get() && linebreakTwo.get()) {
+        setCurrentGamePiece(GamePiece.NONE); 
+    }
+    */
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
    }

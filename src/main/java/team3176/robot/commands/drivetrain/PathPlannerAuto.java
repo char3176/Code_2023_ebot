@@ -31,19 +31,19 @@ public class PathPlannerAuto {
         Claw m_Claw = Claw.getInstance();
         Drivetrain driveSubsystem = Drivetrain.getInstance();
         Superstructure m_Superstructure = Superstructure.getInstance();
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup(autoPathName, new PathConstraints(1, 1));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup(autoPathName, new PathConstraints(2.0, 1.2));
         //System.out.println("length" + pathGroup.size());
         // This is just an example event map. It would be better to have a constant, global event map
         // in your code that will be used by all path following commands.
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("scoreHighFirst", m_Superstructure.scoreFirstGamePieceAuto());
+        eventMap.put("scoreHighFirst", m_Superstructure.scoreGamePieceAuto());
         eventMap.put("scoreHigh", m_Superstructure.scoreGamePieceAuto());
         eventMap.put("autoBalance", new AutoBalance().andThen(new SwerveDefense()).finallyDo((b) -> {
             driveSubsystem.setDriveMode(driveMode.DEFENSE);
             driveSubsystem.drive(0.0,0.0,0.0);
         }));
-        eventMap.put("groundCube",m_Superstructure.groundCube());
-        eventMap.put("poopCube",new PoopCube());
+        eventMap.put("groundCube",m_Superstructure.groundCube().withTimeout(3));
+        eventMap.put("poopCube",new PoopCube().withTimeout(.7));
         // eventMap.put("intakeDown", new IntakeDown());
         // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
         SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
