@@ -7,53 +7,34 @@
 
 package team3176.robot.subsystems.superstructure;
 
+import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
+
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 
 /** Template hardware interface for a closed loop subsystem. */
 public interface ArmIO{
   /** Contains all of the input data received from hardware. */
-  public static class ArmIOInputs implements LoggableInputs {
-    public double velocity = 0.0;
-    public double position = 0.0;
-    public double appliedVolts = 0.0;
-    public double[] currentAmps = new double[] {};
-    public double[] tempCelcius = new double[] {};
+  @AutoLog
+  public static class ArmIOInputs {
+      public double Position = 0.0;
+      public double VelocityRadPerSec = 0.0;
+      public double AppliedVolts = 0.0;
+      public double[] CurrentAmps = new double[] {};
+      public double[] TempCelcius = new double[] {};
 
-
-
-    public void toLog(LogTable table) {
-      table.put("VelocityOutputPercent", velocity);
-      table.put("Position", position);
-      table.put("AppliedVolts", appliedVolts);
-      table.put("CurrentAmps", currentAmps);
-      table.put("TempCelcius", tempCelcius);
-    }
-
-    public void fromLog(LogTable table) {
-      velocity = table.getDouble("VelocityOutputPercent", velocity);
-      position = table.getDouble("Position", position);
-      appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
-      currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
-      tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
-    }
+      //constructor if needed for some inputs
+      ArmIOInputs() {
+      }
   }
-
-
-
+    
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ArmIOInputs inputs) {}
-
-  /** Run open loop at the specified voltage. */
-  public default void setVoltage(double volts) {}
-
-  /**
-   * Run closed loop at the specified velocity.
-   * 
-   * @param velocityRadPerSec Velocity setpoint.
-   */
-  public default void setVelocity(double velocityRadPerSec) {}
-
-  public default void setPosition(double position) {}
+  public default void set(double percentOutput){}
+  public default void setCoastMode(boolean isCoastMode) {}
+  public default void reset() {}
 }
 

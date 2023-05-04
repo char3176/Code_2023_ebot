@@ -86,7 +86,7 @@ public class Robot extends LoggedRobot{
         logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(path, "_sim")));
         break;
     }
-
+    setUseTiming(Constants.getMode() != Constants.Mode.REPLAY);
     logger.start();
 
 

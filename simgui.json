@@ -1,68 +1,19 @@
 {
   "HALProvider": {
-    "Addressable LEDs": {
-      "window": {
-        "visible": true
-      }
-    },
-    "RoboRIO": {
-      "window": {
-        "visible": true
+    "Other Devices": {
+      "navX-Sensor[0]": {
+        "header": {
+          "open": true
+        }
       }
     }
   },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/LiveWindow/Claw": "Subsystem",
-      "/LiveWindow/Superstructure": "Subsystem",
-      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
-      "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
-      "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
-      "/LiveWindow/Ungrouped/DigitalInput[3]": "Digital Input",
-      "/LiveWindow/Ungrouped/DigitalInput[4]": "Digital Input",
-      "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/SmartDashboard/Auton Choice": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Scheduler": "Scheduler"
-    },
-    "windows": {
-      "/SmartDashboard/Auton Choice": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Scheduler": {
-        "window": {
-          "visible": true
-        }
-      }
-    }
-  },
-  "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
-    "Retained Values": {
-      "open": false
-    },
-    "transitory": {
-      "SmartDashboard": {
-        "TunableNumbers": {
-          "open": true
-        },
-        "open": true
-      }
     }
   }
 }

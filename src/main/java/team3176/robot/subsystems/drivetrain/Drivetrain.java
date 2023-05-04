@@ -119,32 +119,38 @@ public class Drivetrain extends SubsystemBase {
     assert (!SwervePodHardwareID.check_duplicates_all(DrivetrainConstants.FR, DrivetrainConstants.FL,
         DrivetrainConstants.BR, DrivetrainConstants.BL));
     // Instantiate pods
-    switch(Constants.getRobot()){
-      case ROBOT_2023C:
-        System.out.println("[init] normal swervePods");
-        DrivetrainConstants.FR.OFFSET += 180;
-        DrivetrainConstants.FL.OFFSET += 90;
-        DrivetrainConstants.BL.OFFSET += 0;
-        DrivetrainConstants.BR.OFFSET += -90;
-        podFR = new SwervePod(0, new SwervePodIOFalconSpark(DrivetrainConstants.FR,DrivetrainConstants.STEER_FR_CID));
-        podFL = new SwervePod(1, new SwervePodIOFalconSpark(DrivetrainConstants.FL,DrivetrainConstants.STEER_FL_CID));
-        podBL = new SwervePod(2, new SwervePodIOFalconSpark(DrivetrainConstants.BL,DrivetrainConstants.STEER_BL_CID));
-        podBR = new SwervePod(3, new SwervePodIOFalconSpark(DrivetrainConstants.BR,DrivetrainConstants.STEER_BR_CID));
-        break;
-      case ROBOT_2023P:
-        break;
-      case ROBOT_SIMBOT:
-        System.out.println("[init] simulated swervePods");
-        podFR = new SwervePod(0, new SwervePodIOSim());
-        podFL = new SwervePod(1, new SwervePodIOSim());
-        podBL = new SwervePod(2, new SwervePodIOSim());
-        podBR = new SwervePod(3, new SwervePodIOSim());
-        break;
-      default:
-        break;
-      
+    if(Constants.getMode() != Mode.REPLAY) {
+      switch(Constants.getRobot()){
+        case ROBOT_2023C:
+          System.out.println("[init] normal swervePods");
+          DrivetrainConstants.FR.OFFSET += 180;
+          DrivetrainConstants.FL.OFFSET += 90;
+          DrivetrainConstants.BL.OFFSET += 0;
+          DrivetrainConstants.BR.OFFSET += -90;
+          podFR = new SwervePod(0, new SwervePodIOFalconSpark(DrivetrainConstants.FR,DrivetrainConstants.STEER_FR_CID));
+          podFL = new SwervePod(1, new SwervePodIOFalconSpark(DrivetrainConstants.FL,DrivetrainConstants.STEER_FL_CID));
+          podBL = new SwervePod(2, new SwervePodIOFalconSpark(DrivetrainConstants.BL,DrivetrainConstants.STEER_BL_CID));
+          podBR = new SwervePod(3, new SwervePodIOFalconSpark(DrivetrainConstants.BR,DrivetrainConstants.STEER_BR_CID));
+          break;
+        case ROBOT_2023P:
+          break;
+        case ROBOT_SIMBOT:
+          System.out.println("[init] simulated swervePods");
+          podFR = new SwervePod(0, new SwervePodIOSim());
+          podFL = new SwervePod(1, new SwervePodIOSim());
+          podBL = new SwervePod(2, new SwervePodIOSim());
+          podBR = new SwervePod(3, new SwervePodIOSim());
+          break;
+        default:
+          break;
+        
+      }
+    } else {
+      podFR = new SwervePod(0, new SwervePodIO(){});
+      podFL = new SwervePod(1, new SwervePodIO(){});
+      podBL = new SwervePod(2, new SwervePodIO(){});
+      podBR = new SwervePod(3, new SwervePodIO(){});
     }
-    
 
     // Instantiate array list then add instantiated pods to list
     pods = new ArrayList<SwervePod>();
@@ -182,8 +188,12 @@ public class Drivetrain extends SubsystemBase {
   // Prevents more than one instance of drivetrian
   public static Drivetrain getInstance() {
     if (instance == null) {
-      instance = new Drivetrain(new GyroIONavX() {
-      });
+      if(Constants.getMode() != Mode.REPLAY) {
+        instance = new Drivetrain(new GyroIONavX());
+      }
+      else{
+        instance = new Drivetrain(new GyroIO() {});
+      }
     }
     return instance;
   }
