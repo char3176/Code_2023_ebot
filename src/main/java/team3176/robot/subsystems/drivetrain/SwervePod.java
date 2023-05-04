@@ -59,7 +59,7 @@ public class SwervePod {
 
     private double turnOutput;
 
-    private final ProfiledPIDController  turningPIDController;
+    private final PIDController  turningPIDController;
     //private final ProfiledPIDController m_turningProfiledPIDController;
     //private ProfiledPIDController m_turningPIDController;
 
@@ -72,13 +72,13 @@ public class SwervePod {
         this.desired_optimized_azimuth_position = 0.0;
 
         //this.kP_Azimuth = 0.006;
-        kP_azimuth.initDefault(.006);
+        kP_azimuth.initDefault(.007);
         this.kI_Azimuth.initDefault(0.0);
         this.kD_Azimuth = 0.0;
         velMax.initDefault(900);
         velAcc.initDefault(900);
 
-        turningPIDController = new ProfiledPIDController(kP_azimuth.get(), kI_Azimuth.get(), kD_Azimuth,new Constraints(velMax.get(), velAcc.get()));
+        turningPIDController = new PIDController(kP_azimuth.get(), kI_Azimuth.get(), kD_Azimuth);//,new Constraints(velMax.get(), velAcc.get()));
         turningPIDController.setTolerance(4);
         turningPIDController.enableContinuousInput(-180, 180);
         turningPIDController.setIntegratorRange(-0.1,0.1);
@@ -121,7 +121,7 @@ public class SwervePod {
         
         io.setTurn(MathUtil.clamp(this.turnOutput, -0.4, 0.4));
         Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "/error",turningPIDController.getPositionError());
-        Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "/setpoint",turningPIDController.getSetpoint().position);
+        //Logger.getInstance().recordOutput("Drive/Module" + Integer.toString(this.id) + "/setpoint",turningPIDController.getSetpoint().position);
         this.velTicsPer100ms = Units3176.mps2ums(desired_optimized.speedMetersPerSecond);
         io.setDrive(desired_optimized.speedMetersPerSecond);
 
@@ -129,9 +129,9 @@ public class SwervePod {
             turningPIDController.setP(kP_azimuth.get());
             turningPIDController.setI(kI_Azimuth.get());
         }
-        if(velAcc.hasChanged(hashCode()) || velMax.hasChanged(hashCode())){
-            turningPIDController.setConstraints(new Constraints(velMax.get(),velAcc.get()));
-        }
+        // if(velAcc.hasChanged(hashCode()) || velMax.hasChanged(hashCode())){
+        //     turningPIDController.setConstraints(new Constraints(velMax.get(),velAcc.get()));
+        // }
 
         return desired_optimized;
     }   
