@@ -33,11 +33,8 @@ public class Arm extends SubsystemBase {
     private static Arm instance;
     private final ArmIO io;
     private final ArmIOInputs inputs = new ArmIOInputs();
-    private CANSparkMax armController;
-    private CANCoder armEncoder;
     private double armEncoderAbsPosition;    
     private double lastEncoderPos;
-    private final PIDController m_turningPIDController;
     private int counter;
     public enum States {OPEN_LOOP,CLOSED_LOOP};
     private States currentState = States.OPEN_LOOP;
@@ -45,38 +42,9 @@ public class Arm extends SubsystemBase {
 
     private Arm(ArmIO io) {
         this.io = io;
-        armController = new CANSparkMax(Hardwaremap.arm_CID, MotorType.kBrushless);
-        armController.setSmartCurrentLimit(SuperStructureConstants.ARM_CURRENT_LIMIT_A);
-        armEncoder = new CANCoder(Hardwaremap.armEncoder_CID);
-        this.m_turningPIDController = new PIDController(SuperStructureConstants.ARM_kP, SuperStructureConstants.ARM_kI, SuperStructureConstants.ARM_kD);
         SmartDashboard.putNumber("Arm_kp", SuperStructureConstants.ARM_kP);
         SmartDashboard.putNumber("Arm_Kg", SuperStructureConstants.ARM_kg);
-        setArmPidPosMode();
-    }
-
-    public void setCoastMode() {
-        armController.setIdleMode(IdleMode.kCoast);
-    }
-
-    public void setBrakeMode() {
-        armController.setIdleMode(IdleMode.kBrake);
-    } 
-
-    private void setArmPidPosMode() {
-        this.armEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
-        this.armEncoder.configMagnetOffset(SuperStructureConstants.ARM_ENCODER_OFFSET);
-        this.armEncoder.configSensorDirection(true,100);
-
-        this.m_turningPIDController.setTolerance(SuperStructureConstants.ARM_TOLERANCE);
-        //this.m_turningPIDController.enableContinuousInput() 
-        this.m_turningPIDController.reset();
-        this.m_turningPIDController.setP(SuperStructureConstants.ARM_kP);
-        this.m_turningPIDController.setI(SuperStructureConstants.ARM_kI);
-        this.m_turningPIDController.setD(SuperStructureConstants.ARM_kD);
-        //this.m_turningPIDController.enableContinuousInput(0, 360);
-        this.armController.setOpenLoopRampRate(0.5);
-        
-        this.armController.burnFlash();
+        io.setSparkPIDPosMode();
     }
 
     public static Arm getInstance() {
@@ -106,32 +74,28 @@ public class Arm extends SubsystemBase {
         }
         double turnOutput = m_turningPIDController.calculate(this.armEncoderAbsPosition, desiredAngle);
         turnOutput = MathUtil.clamp(turnOutput,-0.4,0.4);
-        armController.set(turnOutput + feedForward);
+        io.setSpark(turnOutput + feedForward);
         SmartDashboard.putNumber("Arm_Output", turnOutput + feedForward);
         SmartDashboard.putNumber("Arm Feed Forward", feedForward);
     }
+
     public void armAnalogUp() {
         this.currentState = States.OPEN_LOOP;
-        armController.set(SuperStructureConstants.ARM_OUTPUT_POWER);
+        io.setSpark(SuperStructureConstants.ARM_OUTPUT_POWER);
     }
+
     public void armAnalogDown() {
         this.currentState = States.OPEN_LOOP;
-        armController.set(-SuperStructureConstants.ARM_OUTPUT_POWER);
-        //System.out.println("Arm Analog Down"); 
-        //System.out.println("Arm_Abs_Position: " + armEncoder.getAbsolutePosition()); 
-        //System.out.println("Arm_Rel_Position: " + armEncoder.getPosition());
+        io.setSpark(-SuperStructureConstants.ARM_OUTPUT_POWER);
     }
-    public void idle() {
-        armController.set(0.0);
-    }
+
     public void fineTune(double delta) {
         this.currentState = States.CLOSED_LOOP;
         this.armSetpointAngleRaw -= delta * 0.5;
         
     }
-    private void nothing() {
+    private void nothing() {}
 
-    }
     public double getArmPosition() {
         return armEncoder.getAbsolutePosition();
     }
@@ -209,20 +173,5 @@ public class Arm extends SubsystemBase {
     public double getPosition()
     {
         return inputs.position;
-    }
-
-    public void runVoltage(double volts)
-    {
-        io.setVoltage(volts);
-    }
-
-    public void setVelocity(double velocity)
-    {
-        io.setVelocity(velocity);
-    }
-
-    public void setPosition(double position)
-    {
-        io.setPosition(position);
     }
 }

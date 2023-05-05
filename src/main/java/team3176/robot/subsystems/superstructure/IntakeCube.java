@@ -33,40 +33,15 @@ public class IntakeCube extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     //Logger.getInstance().processInputs("IntakeCube", inputs);
-    Logger.getInstance().recordOutput("IntakeCube/Velocity", getVelocity());
-    Logger.getInstance().recordOutput("IntakeCube/Linebreak", getIsLinebreakLogger());
-    Logger.getInstance().recordOutput("IntakeCube/Extended", getIsExtended());
+    Logger.getInstance().recordOutput("IntakeCube/Velocity", inputs.velocity);
+    Logger.getInstance().recordOutput("IntakeCube/Linebreak", inputs.isLinebreak);
+    Logger.getInstance().recordOutput("IntakeCube/Extended", inputs.isextended);
     // This method will be called once per scheduler run
     // Code stating if something is in the Intake
     SmartDashboard.putBoolean("CubeLinebreak", inputs.isLinebreak);
     // SmartDashboard.putBoolean("isInIntake", isInIntake);
     // SmartDashboard.putBoolean("isExtended", isExtended);
 
-   }
-
-   public double getVelocity()
-   {
-    return inputs.velocity;
-   }
-
-   public boolean getIsLinebreakLogger()
-   {
-    return inputs.isLinebreak;
-   }
-
-   public boolean getIsExtended()
-   {
-    return inputs.isextended;
-   }
-
-   public void runVoltage(double volts)
-   {
-    io.setVoltage(volts);
-   }
-
-   public void setVelocity(double velocity)
-   {
-    io.setVelocity(velocity);
    }
 
   public Command extendAndSpin() {

@@ -38,14 +38,4 @@ public interface IntakeCubeIO{
 
   public default void Extend() {}
   public default void Retract() {}
-
-  /** Run open loop at the specified voltage. */
-  public default void setVoltage(double volts) {}
-
-  /**
-   * Run closed loop at the specified velocity.
-   * 
-   * @param velocityRadPerSec Velocity setpoint.
-   */
-  public default void setVelocity(double velocityRadPerSec) {}
 }
