@@ -48,4 +48,5 @@ public class SuperStructureConstants {
   public static final double ARM_CATCH_POS = 45 + ARM_ZERO_POS;
   public static final double ARM_MID_POS =  100 + ARM_ZERO_POS;
   public static final double ARM_HIGH_POS = 185 + ARM_ZERO_POS;
+  public static final double ARM_SIM_OFFSET = 70 + ARM_ZERO_POS;
 }

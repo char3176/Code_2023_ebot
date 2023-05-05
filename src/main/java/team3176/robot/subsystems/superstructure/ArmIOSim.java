@@ -9,6 +9,7 @@ package team3176.robot.subsystems.superstructure;
 
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.LogTable;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -17,6 +18,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -32,17 +34,17 @@ public class ArmIOSim implements ArmIO{
   private SingleJointedArmSim armSim;
   private double appliedVolts;
   public ArmIOSim() {
-    armSim = new SingleJointedArmSim(DCMotor.getNEO(1), 50, 0.1, 1, -1.0, 3.14, true);
-
+    armSim = new SingleJointedArmSim(DCMotor.getNEO(1), 75, 0.5, 0.7, -1.0*Math.PI, 3.14, true);
   }
   /** Updates the set of loggable inputs. */
   public void updateInputs(ArmIOInputs inputs) {
     armSim.update(Constants.loopPeriodSecs);
-    inputs.Position = Units.radiansToDegrees(armSim.getAngleRads()) + SuperStructureConstants.ARM_CATCH_POS;
+    inputs.Position = Units.radiansToDegrees(armSim.getAngleRads()) + 90 + SuperStructureConstants.ARM_SIM_OFFSET;
     inputs.VelocityRadPerSec = armSim.getVelocityRadPerSec();
     inputs.AppliedVolts = appliedVolts;
     inputs.CurrentAmps = new double[] {armSim.getCurrentDrawAmps()};
     inputs.TempCelcius = new double[] {0.0};
+    Logger.getInstance().recordOutput("Arm/SimPos",armSim.getAngleRads());
   }
   public void set(double percentOuput) {
     if(DriverStation.isEnabled()) {
@@ -50,6 +52,7 @@ public class ArmIOSim implements ArmIO{
     } else {
       appliedVolts = 0.0;
     }
+    appliedVolts = MathUtil.clamp(appliedVolts,-12,12);
     armSim.setInputVoltage(appliedVolts);
   }
   public void setCoastMode(boolean isCoastMode) {
