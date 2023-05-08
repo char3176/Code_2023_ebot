@@ -13,10 +13,9 @@ public interface ArmIO{
   /** Contains all of the input data received from hardware. */
   @AutoLog
   public static class ArmIOInputs{
-    public double velocity = 0.0;
     public double position = 0.0;
     public double appliedVolts = 0.0;
-    public double currentAmps = 0.0;
+    //public double currentAmps = 0.0;
     public double tempCelcius = 0.0;
   }
 
@@ -28,6 +27,9 @@ public interface ArmIO{
   public default void setSpark(double pct) {}
 
   public default void setSparkPIDPosMode() {}
+  public default void setPIDPosition(double desiredAngle, ArmIOInputs inputs) {}
+
+  public default void setP(double kp) {}
 
   public default void setMode(int mode) {}
 }
