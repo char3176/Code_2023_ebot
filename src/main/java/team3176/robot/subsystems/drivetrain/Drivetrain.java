@@ -7,13 +7,16 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
@@ -101,6 +104,7 @@ public class Drivetrain extends SubsystemBase {
   private final GyroIO io;
   private GyroIOInputsAutoLogged inputs;
   Field2d field;
+  Pose3d visionPose3d;
   
   // private final DrivetrainIOInputs inputs = new DrivetrainIOInputs();
 
@@ -160,7 +164,7 @@ public class Drivetrain extends SubsystemBase {
     pods.add(podBR);
 
     
-
+    visionPose3d = new Pose3d();
     odom = new SwerveDriveOdometry(DrivetrainConstants.DRIVE_KINEMATICS, this.getSensorYaw(),
         new SwerveModulePosition[] {
             podFR.getPosition(),
@@ -302,6 +306,10 @@ public class Drivetrain extends SubsystemBase {
           podBR.getPosition() }, pose);
     
   }
+  public void resetPoseToVision() {
+    Pose2d v =  new Pose2d(visionPose3d.getX(), visionPose3d.getY(), visionPose3d.getRotation().toRotation2d());
+    this.resetPose(v);
+  }
 
   public void setModuleStates(SwerveModuleState[] states) {
     for (int idx = 0; idx < (pods.size()); idx++) {
@@ -432,6 +440,7 @@ public class Drivetrain extends SubsystemBase {
    * podFL.getState(), podBL.getState(), podBR.getState());
    * }
    */
+
   
   @Override
   public void periodic() {
@@ -482,6 +491,9 @@ public class Drivetrain extends SubsystemBase {
     Logger.getInstance().recordOutput("Drive/Odom", getPose());
     SmartDashboard.putNumber("NavYaw",getPoseYawWrapped().getDegrees());
 
+    double[] vision_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    visionPose3d = new Pose3d(vision_pose[0], vision_pose[1], vision_pose[2], new Rotation3d( Units.degreesToRadians(vision_pose[3]), Units.degreesToRadians(vision_pose[4]), Units.degreesToRadians(vision_pose[5])));
+    Logger.getInstance().recordOutput("Drive/vision_pose", visionPose3d);
     // double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
     // try {
     //   double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);

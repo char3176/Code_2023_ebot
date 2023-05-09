@@ -116,6 +116,7 @@ public class RobotContainer {
 
     m_Controller.getTransStick_Button4().whileTrue(m_Superstructure.prepareScoreHigh());
     m_Controller.getTransStick_Button4().onFalse((m_Superstructure.prepareCarry()));
+    m_Controller.getTransStick_Button5().onTrue(new InstantCommand(() -> m_Drivetrain.resetPoseToVision(),m_Drivetrain));
     m_Controller.getTransStick_Button10().whileTrue(new InstantCommand(() -> m_Drivetrain.setBrakeMode()).andThen(new SwerveDefense()));
      //m_Controller.getTransStick_Button10()
      //    .onFalse(new InstantCommand(() -> m_Drivetrain.setDriveMode(driveMode.DRIVE), m_Drivetrain));
