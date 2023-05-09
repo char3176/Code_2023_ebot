@@ -307,8 +307,7 @@ public class Drivetrain extends SubsystemBase {
     
   }
   public void resetPoseToVision() {
-    Pose2d v =  new Pose2d(visionPose3d.getX(), visionPose3d.getY(), visionPose3d.getRotation().toRotation2d());
-    this.resetPose(v);
+    this.resetPose(visionPose3d.toPose2d());
   }
 
   public void setModuleStates(SwerveModuleState[] states) {
