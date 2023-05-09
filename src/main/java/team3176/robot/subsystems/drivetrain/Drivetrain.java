@@ -35,6 +35,7 @@ import team3176.robot.Constants;
 import team3176.robot.Constants.Mode;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodHardwareID;
+import team3176.robot.subsystems.vision.VisionDual;
 
 import java.util.ArrayList;
 
@@ -490,9 +491,14 @@ public class Drivetrain extends SubsystemBase {
     Logger.getInstance().recordOutput("Drive/Odom", getPose());
     SmartDashboard.putNumber("NavYaw",getPoseYawWrapped().getDegrees());
 
+    //Liam and Andrews work!
     double[] vision_pose = NetworkTableInstance.getDefault().getTable("limelight-rfov").getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    visionPose3d = new Pose3d(vision_pose[0], vision_pose[1], vision_pose[2], new Rotation3d( Units.degreesToRadians(vision_pose[3]), Units.degreesToRadians(vision_pose[4]), Units.degreesToRadians(vision_pose[5])));
-    Logger.getInstance().recordOutput("Drive/vision_pose", visionPose3d);
+    Pose3d visionPose3dNT = new Pose3d(vision_pose[0], vision_pose[1], vision_pose[2], new Rotation3d( Units.degreesToRadians(vision_pose[3]), Units.degreesToRadians(vision_pose[4]), Units.degreesToRadians(vision_pose[5])));
+    Logger.getInstance().recordOutput("Drive/vision_pose", visionPose3dNT);
+
+    //new vision proposal 
+    visionPose3d = VisionDual.getInstance().getPose3d();
+
     // double[] default_pose = {0.0,0.0,0.0,0.0,0.0,0.0};
     // try {
     //   double[] vision_pose_array = vision_pose.getDoubleArray(default_pose);

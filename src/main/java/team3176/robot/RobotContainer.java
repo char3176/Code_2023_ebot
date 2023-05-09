@@ -40,6 +40,8 @@ import team3176.robot.subsystems.superstructure.IntakeCube;
 import team3176.robot.subsystems.superstructure.IntakeCone;
 
 import team3176.robot.subsystems.superstructure.Superstructure;
+import team3176.robot.subsystems.vision.VisionDual;
+import team3176.robot.subsystems.vision.VisionDualIOLime;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -63,7 +65,7 @@ public class RobotContainer {
 
   // private final Compressor m_Compressor;
   private final Drivetrain m_Drivetrain;
-  private final RobotState m_RobotState;
+  private final VisionDual m_Vision;
   private final Superstructure m_Superstructure;
   private SendableChooser<String> m_autonChooser;
 
@@ -80,7 +82,7 @@ public class RobotContainer {
     m_IntakeCone = IntakeCone.getInstance();
     m_PDH = new PowerDistribution(Hardwaremap.PDH_CID, ModuleType.kRev);
 
-    m_RobotState = RobotState.getInstance();
+    m_Vision = VisionDual.getInstance();
     m_Superstructure = Superstructure.getInstance();
     m_Drivetrain.setDefaultCommand(new SwerveDrive(
         () -> m_Controller.getForward(),
