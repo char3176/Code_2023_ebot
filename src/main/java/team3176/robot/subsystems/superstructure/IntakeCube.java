@@ -15,8 +15,8 @@ public class IntakeCube extends SubsystemBase {
   /** Creates a new IntakeCube. */
 
   private static IntakeCube instance;
-  private final IntakeCubeIO io;
-  private final IntakeCubeIOInputs inputs = new IntakeCubeIOInputs();
+  public final IntakeCubeIO io;
+  public final IntakeCubeIOInputs inputs = new IntakeCubeIOInputs();
   public IntakeCube(IntakeCubeIO io) 
   {
     this.io = io;

@@ -12,8 +12,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
     private static Arm instance;
-    private final ArmIO io;
-    private final ArmIOInputs inputs = new ArmIOInputs();  
+    public final ArmIO io;
+    public final ArmIOInputs inputs = new ArmIOInputs();  
     public enum States {OPEN_LOOP,CLOSED_LOOP};
     private States currentState = States.OPEN_LOOP;
     private double armSetpointAngleRaw = SuperStructureConstants.ARM_ZERO_POS;

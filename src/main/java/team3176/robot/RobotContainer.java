@@ -198,11 +198,11 @@ public class RobotContainer {
   }
 
   public void setArmCoast() {
-    m_Arm.setCoastMode();
+    m_Arm.io.setMode(1);
   }
   
   public void setArmBrake() {
-    m_Arm.setBrakeMode();
+    m_Arm.io.setMode(2);
   }
   
   public void setThrustCoast() {

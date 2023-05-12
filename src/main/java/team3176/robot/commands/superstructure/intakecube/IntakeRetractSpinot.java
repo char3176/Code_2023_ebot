@@ -23,8 +23,8 @@ public class IntakeRetractSpinot extends CommandBase {
   @Override
   public void execute() 
   {
-    m_IntakeCube.Retract();
-    m_IntakeCube.spinIntake(0);
+    m_IntakeCube.io.Retract();
+    m_IntakeCube.io.setTalonFX(0);
   }
 
   // Called once the command ends or is interrupted.

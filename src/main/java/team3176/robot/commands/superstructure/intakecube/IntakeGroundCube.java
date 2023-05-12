@@ -29,24 +29,24 @@ public class IntakeGroundCube extends CommandBase {
   {
     m_Claw.setCurrentGamePiece(GamePiece.CUBE);
     m_Arm.armSetPositionBlocking(SuperStructureConstants.ARM_ZERO_POS);
-    m_IntakeCube.Extend();
-    m_IntakeCube.spinIntake(-.85);
+    m_IntakeCube.io.Extend();
+    m_IntakeCube.io.setTalonFX(-.85);
     m_Claw.intake();
-    m_IntakeCube.spinConveyor(-0.4);
+    m_IntakeCube.io.setTalonSRX(-0.4);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    if (!m_IntakeCube.getLinebreak())
+    if (!m_IntakeCube.inputs.isLinebreak)
     {
-      m_IntakeCube.Retract();
+      m_IntakeCube.io.Retract();
     }
     m_Claw.intake();
-    m_IntakeCube.spinConveyor(-0.6);
-    m_IntakeCube.spinIntake(-.85);
-    if (!m_Claw.getIsLinebreakOne())
+    m_IntakeCube.io.setTalonSRX(-0.6);
+    m_IntakeCube.io.setTalonFX(-.85);
+    if (!m_Claw.inputs.isLinebreakOne)
     {
       m_Arm.armSetPosition(SuperStructureConstants.ARM_CARRY_POS);
     } else {m_Arm.armSetPosition(SuperStructureConstants.ARM_CATCH_POS);
@@ -59,14 +59,14 @@ public class IntakeGroundCube extends CommandBase {
   {
     //m_IntakeCube.Retract();
     //new WaitCommand(0.1);
-    m_IntakeCube.spinIntake(0);
-    m_IntakeCube.spinConveyor(0);
+    m_IntakeCube.io.setTalonFX(0);
+    m_IntakeCube.io.setTalonSRX(0);
     m_Claw.hold();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !m_Claw.hardware.getLinebreakOne();
+    return !m_Claw.inputs.isLinebreakOne;
   }
 }

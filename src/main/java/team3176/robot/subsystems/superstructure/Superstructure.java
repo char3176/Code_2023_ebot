@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.superstructure.arm.armAnalogDown;
 import team3176.robot.commands.superstructure.claw.ClawInhaleCone;
 import team3176.robot.commands.superstructure.claw.ClawInhaleCube;
-import team3176.robot.commands.superstructure.intakecone.IntakeConeExtendSpin;
-import team3176.robot.commands.superstructure.intakecone.IntakeConeRetractSpinot;
+// import team3176.robot.commands.superstructure.intakecone.IntakeConeExtendSpin;
+// import team3176.robot.commands.superstructure.intakecone.IntakeConeRetractSpinot;
 import team3176.robot.commands.superstructure.intakecube.*;
 import team3176.robot.subsystems.superstructure.IntakeCone;
 import team3176.robot.constants.Hardwaremap;
@@ -45,16 +45,16 @@ public class Superstructure extends SubsystemBase {
         return new IntakeGroundCube().andThen(this.prepareCarry());
     }
 
-    public Command groundCone()
-    {
-        return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS), 
-                                        new IntakeConeExtendSpin(),
-                                        new ClawInhaleCone())
-                    .until(() -> this.m_Claw.inputs.isLinebreakThree == false)
-                    .andThen(m_IntakeCone.coneToClaw())
-                    .andThen(new IntakeConeRetractSpinot())
-                    .andThen(this.prepareCarry());
-    }
+    // public Command groundCone()
+    // {
+    //     return new ParallelCommandGroup(m_Arm.armSetPositionOnce(SuperStructureConstants.ARM_CATCH_POS), 
+    //                                     new IntakeConeExtendSpin(),
+    //                                     new ClawInhaleCone())
+    //                 .until(() -> this.m_Claw.inputs.isLinebreakThree == false)
+    //                 .andThen(m_IntakeCone.coneToClaw())
+    //                 .andThen(new IntakeConeRetractSpinot())
+    //                 .andThen(this.prepareCarry());
+    // }
 
     public Command clawIntakeCube()
     {

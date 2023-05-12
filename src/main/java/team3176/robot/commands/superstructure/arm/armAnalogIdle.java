@@ -24,7 +24,7 @@ public class armAnalogIdle  extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      m_Arm.idle();
+      m_Arm.io.setSpark(0);
 
   }
 

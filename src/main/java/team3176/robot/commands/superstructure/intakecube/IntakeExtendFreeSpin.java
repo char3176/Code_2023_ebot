@@ -18,21 +18,21 @@ public class IntakeExtendFreeSpin extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_IntakeCube.setCoastMode();
+    m_IntakeCube.io.setMode(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    m_IntakeCube.Extend();
+    m_IntakeCube.io.Extend();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_IntakeCube.setBrakeMode();
-    m_IntakeCube.Retract();
+    m_IntakeCube.io.setMode(2);
+    m_IntakeCube.io.Retract();
   }
 
   // Returns true when the command should end.

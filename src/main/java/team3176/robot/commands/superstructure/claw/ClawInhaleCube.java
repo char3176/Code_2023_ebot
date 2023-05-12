@@ -31,7 +31,7 @@ public class ClawInhaleCube extends CommandBase {
   public void execute() 
   {
     m_Claw.intake();
-    if(m_Claw.getIsLinebreakOne()) {
+    if(m_Claw.inputs.isLinebreakOne) {
     continueRunningTimer.restart();
     }
   }
@@ -40,7 +40,7 @@ public class ClawInhaleCube extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_Claw.hold();
-    m_IntakeCube.spinConveyor(0);
+    m_IntakeCube.io.setTalonSRX(0);
   }
 
   // Returns true when the command should end.

@@ -10,9 +10,9 @@ package team3176.robot.subsystems.superstructure;
 import org.littletonrobotics.junction.AutoLog;
 
 /** Template hardware interface for a closed loop subsystem. */
-@AutoLog
 public interface IntakeCubeIO{
   /** Contains all of the input data received from hardware. */
+  @AutoLog
   public static class IntakeCubeIOInputs{
     public double velocity = 0.0;
     public double appliedVoltsSRX = 0.0;

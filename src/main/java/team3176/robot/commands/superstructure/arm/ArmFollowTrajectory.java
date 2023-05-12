@@ -24,7 +24,7 @@ public class ArmFollowTrajectory  extends CommandBase {
     public void initialize() {
         traj = new TrapezoidProfile(new Constraints(20, 20), 
                                     new State(goalAngle,0.0),
-                                    new State(m_Arm.getArmPosition(),0.0));
+                                    new State(m_Arm.inputs.position,0.0));
         timeElapsed.start();
     }
   

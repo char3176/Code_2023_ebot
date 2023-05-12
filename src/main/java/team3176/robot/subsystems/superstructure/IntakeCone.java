@@ -35,7 +35,7 @@ public class IntakeCone extends SubsystemBase {
   private boolean isInIntake;
   private static IntakeCone instance;
   private Claw m_Claw;
-  private final IntakeConeIO io;
+  public final IntakeConeIO io;
   private final IntakeConeIOInputs inputs = new IntakeConeIOInputs();
   public IntakeCone(IntakeConeIO io) 
   {
