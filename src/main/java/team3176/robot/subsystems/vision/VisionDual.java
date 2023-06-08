@@ -7,8 +7,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team3176.robot.subsystems.vision.VisionDualIO.VisionDualInputs;
-
 public class VisionDual extends SubsystemBase{
     private VisionDualIO io;
     private VisionDualInputsAutoLogged inputs;
@@ -37,7 +35,9 @@ public class VisionDual extends SubsystemBase{
         return inputs.lValid || inputs.rValid;
     }
 
+    @Override
     public void periodic() {
+        io.updateInputs(inputs);
         Logger.getInstance().processInputs("Vision", inputs);
         boolean isRed = DriverStation.getAlliance() == Alliance.Red;
         Pose3d rPose = isRed ? inputs.rfovRed : inputs.rfovBlue;

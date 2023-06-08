@@ -6,34 +6,21 @@ package team3176.robot;
 
 import java.io.File;
 
-import edu.wpi.first.hal.PowerDistributionStickyFaults;
+
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.hal.PowerDistributionStickyFaults;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team3176.robot.commands.*;
-import team3176.robot.commands.autons.*;
 import team3176.robot.commands.drivetrain.*;
-import team3176.robot.commands.superstructure.*;
-import team3176.robot.commands.superstructure.arm.*;
-import team3176.robot.commands.superstructure.claw.*;
 import team3176.robot.commands.superstructure.claw.ClawIdle;
 import team3176.robot.commands.superstructure.intakecube.*;
-import team3176.robot.commands.vision.*;
 import team3176.robot.constants.Hardwaremap;
-import team3176.robot.constants.SuperStructureConstants;
 import team3176.robot.subsystems.controller.Controller;
 import team3176.robot.subsystems.drivetrain.Drivetrain;
-import team3176.robot.subsystems.drivetrain.Drivetrain.coordType;
-import team3176.robot.subsystems.drivetrain.Drivetrain.driveMode;
-import team3176.robot.subsystems.RobotState;
 import team3176.robot.subsystems.superstructure.Arm;
 import team3176.robot.subsystems.superstructure.Claw;
 import team3176.robot.subsystems.superstructure.IntakeCube;
@@ -41,7 +28,6 @@ import team3176.robot.subsystems.superstructure.IntakeCone;
 
 import team3176.robot.subsystems.superstructure.Superstructure;
 import team3176.robot.subsystems.vision.VisionDual;
-import team3176.robot.subsystems.vision.VisionDualIOLime;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -62,8 +48,8 @@ public class RobotContainer {
   private final IntakeCone m_IntakeCone;
   private PowerDistribution m_PDH; 
 
-
-  // private final Compressor m_Compressor;
+  
+  // is this why we don't have a compressor? private final Compressor m_Compressor
   private final Drivetrain m_Drivetrain;
   private final VisionDual m_Vision;
   private final Superstructure m_Superstructure;
@@ -85,9 +71,9 @@ public class RobotContainer {
     m_Vision = VisionDual.getInstance();
     m_Superstructure = Superstructure.getInstance();
     m_Drivetrain.setDefaultCommand(new SwerveDrive(
-        () -> m_Controller.getForward(),
-        () -> m_Controller.getStrafe(),
-        () -> m_Controller.getSpin()));
+        m_Controller::getForward,
+        m_Controller::getStrafe,
+        m_Controller::getSpin));
     m_Arm.setDefaultCommand(m_Arm.armFineTune( () -> m_Controller.operator.getLeftY()));
     m_autonChooser = new SendableChooser<>();
     File paths = new File(Filesystem.getDeployDirectory(), "pathplanner");
