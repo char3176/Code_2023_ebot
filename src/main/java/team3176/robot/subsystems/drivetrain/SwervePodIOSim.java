@@ -1,7 +1,6 @@
 package team3176.robot.subsystems.drivetrain;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,7 +12,6 @@ public class SwervePodIOSim implements SwervePodIO{
     private FlywheelSim driveSim = new FlywheelSim(DCMotor.getFalcon500(1), 4.714, 0.025);
     private FlywheelSim turnSim = new FlywheelSim(DCMotor.getNeo550(1), 70.0, 0.0005);
     //private PIDController drivePID = new PIDController(.03, 0, 0.0,.045);
-    private double turnRelativePositionRad = 0.0;
     private double turnAbsolutePositionRad = Math.random() * 2.0 * Math.PI;
     private double driveAppliedVolts = 0.0;
     private double turnAppliedVolts = 0.0;
@@ -23,7 +21,6 @@ public class SwervePodIOSim implements SwervePodIO{
         driveSim.update(Constants.LOOP_PERIODIC_SECS);
         turnSim.update(Constants.LOOP_PERIODIC_SECS);
         double angleDiffRad = Units.radiansToDegrees(turnSim.getAngularVelocityRadPerSec() * Constants.LOOP_PERIODIC_SECS);
-        turnRelativePositionRad += angleDiffRad;
         turnAbsolutePositionRad += angleDiffRad;
         while (turnAbsolutePositionRad < -180) {
         turnAbsolutePositionRad += 360;
