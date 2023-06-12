@@ -13,7 +13,7 @@ import java.util.Map;
 public final class Constants {
   private static final RobotType robot = RobotType.ROBOT_SIMBOT;
   public static final double LOOP_PERIODIC_SECS = 0.02;
-  public static final boolean TUNING_MODE = false;
+  public static final boolean TUNING_MODE = true;
 
   public static boolean invalidRobotAlertSent = false;
 
