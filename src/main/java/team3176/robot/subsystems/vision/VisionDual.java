@@ -11,7 +11,7 @@ import team3176.robot.subsystems.vision.VisionDualIO.VisionDualInputs;
 
 public class VisionDual extends SubsystemBase{
     private VisionDualIO io;
-    private VisionDualInputsAutoLogged inputs;
+    private VisionDualInputs inputs;
     private Pose3d bestVisionPose3d;
     private Pose2d bestVisionPose2d;
     private enum blendModes {RIGHT,LEFT,BOTH};
@@ -19,6 +19,7 @@ public class VisionDual extends SubsystemBase{
     private static VisionDual instance;
     private VisionDual(VisionDualIO io) {
         this.io = io;
+        this.inputs = new VisionDualInputs(); 
         mode = blendModes.LEFT;
     }
     public static VisionDual getInstance() {

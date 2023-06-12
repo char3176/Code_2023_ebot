@@ -35,6 +35,7 @@ import team3176.robot.Constants;
 import team3176.robot.Constants.Mode;
 import team3176.robot.constants.DrivetrainConstants;
 import team3176.robot.constants.SwervePodHardwareID;
+import team3176.robot.subsystems.drivetrain.GyroIO.GyroIOInputs;
 import team3176.robot.subsystems.vision.VisionDual;
 
 import java.util.ArrayList;
@@ -103,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
   double lastVisionX = 0.0;
   Rotation2d wheelOnlyHeading = new Rotation2d();
   private final GyroIO io;
-  private GyroIOInputsAutoLogged inputs;
+  private GyroIOInputs inputs;
   Field2d field;
   Pose3d visionPose3d;
   
@@ -111,7 +112,7 @@ public class Drivetrain extends SubsystemBase {
 
   private Drivetrain(GyroIO io) {
     this.io = io;
-    inputs = new GyroIOInputsAutoLogged();
+    inputs = new GyroIOInputs();
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("datatable");
 
