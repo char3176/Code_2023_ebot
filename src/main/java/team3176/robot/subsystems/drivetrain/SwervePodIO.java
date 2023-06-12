@@ -8,7 +8,8 @@ public interface SwervePodIO {
         public double drivePositionRad = 0.0;
         public double driveVelocityRadPerSec = 0.0;
         public double driveAppliedVolts = 0.0;
-        public double[] driveCurrentAmps = new double[] {};
+        public double[] driveCurrentAmpsStator = new double[] {};
+        public double[] driveCurrentAmpsSupply = new double[] {};
         public double[] driveTempCelcius = new double[] {};
 
         public double turnAbsolutePositionDegrees = 0.0;

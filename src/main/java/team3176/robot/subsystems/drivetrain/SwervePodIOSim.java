@@ -50,7 +50,7 @@ public class SwervePodIOSim implements SwervePodIO{
                 + (driveSim.getAngularVelocityRadPerSec() * Constants.loopPeriodSecs);
         inputs.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
         inputs.driveAppliedVolts = driveAppliedVolts;
-        inputs.driveCurrentAmps = new double[] {Math.abs(driveSim.getCurrentDrawAmps())};
+        inputs.driveCurrentAmpsStator = new double[] {Math.abs(driveSim.getCurrentDrawAmps())};
         inputs.driveTempCelcius = new double[] {};
         currentDriveSpeed = driveSim.getAngularVelocityRadPerSec();
 

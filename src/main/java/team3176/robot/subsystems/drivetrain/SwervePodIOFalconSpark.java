@@ -45,7 +45,8 @@ public class SwervePodIOFalconSpark implements SwervePodIO{
         inputs.drivePositionRad = thrustFalcon.getSelectedSensorPosition() * (DrivetrainConstants.THRUST_GEAR_RATIO) * 1.0/DrivetrainConstants.THRUST_ENCODER_UNITS_PER_REVOLUTION* 2 * Math.PI;
         inputs.driveVelocityRadPerSec = thrustFalcon.getSelectedSensorVelocity() * (DrivetrainConstants.THRUST_GEAR_RATIO) * 1.0/DrivetrainConstants.THRUST_ENCODER_UNITS_PER_REVOLUTION * 10 * 2 * Math.PI;
         inputs.driveAppliedVolts = thrustFalcon.getMotorOutputVoltage();
-        inputs.driveCurrentAmps = new double[] {thrustFalcon.getStatorCurrent()};
+        inputs.driveCurrentAmpsStator = new double[] {thrustFalcon.getStatorCurrent()};
+        inputs.driveCurrentAmpsSupply = new double[] {thrustFalcon.getSupplyCurrent()};
         inputs.driveTempCelcius = new double[] {thrustFalcon.getTemperature()};
 
         inputs.turnAbsolutePositionDegrees = azimuthEncoder.getAbsolutePosition();
